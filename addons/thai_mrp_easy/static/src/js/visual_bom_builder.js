@@ -44,6 +44,7 @@ export class VisualBomBuilder extends Component {
             nextNodeId: -1,
             examples: [],
             zoom: 1,
+            bomStack: [],
         });
 
         onWillStart(async () => {
@@ -66,7 +67,48 @@ export class VisualBomBuilder extends Component {
     }
 
     async cancel() {
+        if (this.state.bomStack.length) {
+            this.state.bom = this.state.bomStack.pop().bom;
+            return;
+        }
         await this.action.doAction({ type: "ir.actions.act_window", name: "สูตรการผลิต", res_model: "mrp.bom", views: [[false, "list"], [false, "form"]] });
+    }
+
+    async openSubBom(line) {
+        const bomId = line.selected_bom_id || line.sub_bom?.id;
+        if (!bomId) {
+            return this.createSubBom(line);
+        }
+        this.state.bomStack.push({ bom: this.state.bom, lineKey: line.key || line.id });
+        this.state.bom = await this.orm.call("mrp.bom", "get_visual_bom_data", [bomId]);
+        this.state.editingLine = false;
+    }
+
+    async createSubBom(line) {
+        if (line.product_id === this.state.bom.product_id) {
+            this.notification.add("สินค้าเดียวกับสูตรหลักไม่สามารถเป็น BOM ย่อยได้", { type: "warning" });
+            return;
+        }
+        const products = await this.orm.read("product.product", [line.product_id], ["product_tmpl_id", "uom_id", "default_code"]);
+        const product = products[0];
+        if (!product) {
+            this.notification.add("ไม่พบสินค้าสำหรับสร้าง BOM ย่อย", { type: "warning" });
+            return;
+        }
+        this.state.bomStack.push({ bom: this.state.bom, lineKey: line.key || line.id });
+        this.state.bom = {
+            id: false,
+            product_id: line.product_id,
+            product_tmpl_id: product.product_tmpl_id[0],
+            product_name: line.product_name,
+            product_qty: 1,
+            product_uom_id: product.uom_id[0],
+            product_uom_name: product.uom_id[1],
+            image_url: line.image_url,
+            code: product.default_code || "",
+            lines: [],
+        };
+        this.state.editingLine = false;
     }
 
     printBom() {
@@ -109,6 +151,7 @@ export class VisualBomBuilder extends Component {
 
     newBom() {
         this.clearMainProduct();
+        this.state.bomStack = [];
         this.state.editingLine = false;
         this.state.materialSearch = "";
     }
@@ -251,7 +294,19 @@ export class VisualBomBuilder extends Component {
             this.notification.add("บันทึกสูตรการผลิต (BOM) เรียบร้อยแล้ว", { type: "success" });
             
             // Reload the view
-            this.state.bom = await this.orm.call("mrp.bom", "get_visual_bom_data", [newBomId]);
+            const savedBom = await this.orm.call("mrp.bom", "get_visual_bom_data", [newBomId]);
+            if (this.state.bomStack.length) {
+                const parent = this.state.bomStack.pop();
+                const line = parent.bom.lines.find((item) => (item.key || item.id) === parent.lineKey);
+                if (line) {
+                    line.selected_bom_id = newBomId;
+                    line.has_bom = true;
+                    line.sub_bom = savedBom;
+                }
+                this.state.bom = parent.bom;
+            } else {
+                this.state.bom = savedBom;
+            }
             this.state.examples = await this.orm.call("mrp.bom", "get_visual_bom_examples", []);
         } catch (error) {
             this.notification.add("เกิดข้อผิดพลาดในการบันทึก", { type: "danger" });

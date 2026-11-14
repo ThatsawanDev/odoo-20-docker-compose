@@ -8,19 +8,20 @@
                 <strong t-esc="this.props.node.product_name"/>
                 <small><t t-esc="this.props.node.product_qty"/> <t t-esc="this.props.node.product_uom_name"/></small>
                 <span t-if="this.props.node.has_bom" class="vb-node-bom">มี BOM</span>
+                <button t-if="this.props.editable" type="button" class="vb-sub-bom-action" t-on-click="() => this.props.onSubBom(this.props.node)"><t t-esc="this.props.node.has_bom ? 'เปิด BOM ย่อย' : '+ สร้าง BOM ย่อย'"/></button>
             </div>
             <div t-if="this.props.node.sub_bom &amp;&amp; this.props.node.sub_bom.lines &amp;&amp; this.props.node.sub_bom.lines.length" class="vb-children">
-                <BomTreeNode t-foreach="this.props.node.sub_bom.lines" t-as="child" t-key="child.id" node="child" onEdit="this.props.onEdit" onRemove="this.props.onRemove" editable="false"/>
+                <BomTreeNode t-foreach="this.props.node.sub_bom.lines" t-as="child" t-key="child.id" node="child" onEdit="this.props.onEdit" onRemove="this.props.onRemove" onSubBom="this.props.onSubBom" editable="false"/>
             </div>
         </div>
     </t>
     <t t-name="thai_mrp_easy.VisualBomBuilder">
         <div class="visual-bom-container">
             <div class="bom-header d-flex justify-content-between align-items-center p-3 border-bottom bg-white">
-                <h2><i class="fa fa-sitemap me-2 text-primary"/><t t-esc="this.state.bom.id ? 'แก้ไข BOM' : 'สร้าง BOM ใหม่'"/></h2>
+                <h2><i class="fa fa-sitemap me-2 text-primary"/><t t-esc="this.state.bom.id ? 'แก้ไข BOM' : 'สร้าง BOM ใหม่'"/> <small t-if="this.state.bomStack.length" class="vb-sub-bom-title">/ BOM ย่อย</small></h2>
                 <div>
-                    <button t-if="this.state.bom.product_id" class="btn btn-outline-primary me-2" t-on-click="this.newBom">สร้างสูตรใหม่</button>
-                    <button t-if="this.state.bom.id" class="btn btn-outline-danger me-2" t-on-click="this.deleteBom">ลบสูตร</button>
+                    <button t-if="this.state.bom.product_id &amp;&amp; !this.state.bomStack.length" class="btn btn-outline-primary me-2" t-on-click="this.newBom">สร้างสูตรใหม่</button>
+                    <button t-if="this.state.bom.id &amp;&amp; !this.state.bomStack.length" class="btn btn-outline-danger me-2" t-on-click="this.deleteBom">ลบสูตร</button>
                     <button t-if="this.state.bom.product_id" class="btn btn-outline-secondary me-2" t-on-click="this.printBom"><i class="fa fa-print me-1"/> พิมพ์ / ส่งออก</button>
                     <button class="btn btn-secondary me-2" t-on-click="this.cancel">ยกเลิก</button>
                     <button class="btn btn-primary" t-on-click="this.saveBom">บันทึก</button>
@@ -55,7 +56,7 @@
                         </div>
                         
                         <div t-if="this.state.bom.lines.length" class="vb-children vb-root-children">
-                            <BomTreeNode t-foreach="this.state.bom.lines" t-as="line" t-key="line.key or line.id" node="line" onEdit="this.editLine.bind(this)" onRemove="this.removeLine.bind(this)" editable="true"/>
+                            <BomTreeNode t-foreach="this.state.bom.lines" t-as="line" t-key="line.key or line.id" node="line" onEdit="this.editLine.bind(this)" onRemove="this.removeLine.bind(this)" onSubBom="(line) => line.has_bom ? this.openSubBom(line) : this.createSubBom(line)" editable="true"/>
                             <div class="vb-branch vb-add-branch"><button type="button" class="vb-add-node" t-on-click="this.focusMaterialSearch"><b>+</b><span>เพิ่มวัตถุดิบ</span></button></div>
                         </div>
                         <div class="vb-add-hint">เลือกวัตถุดิบหรือ BOM ที่มีอยู่ด้านขวาเพื่อเพิ่มในผัง</div>
@@ -75,7 +76,7 @@
                             <div class="flex-grow-1">
                                 <div><t t-esc="this.state.bom.product_name"/></div>
                             </div>
-                            <button class="btn btn-sm btn-link text-danger" t-on-click="this.clearMainProduct"><i class="fa fa-times"/></button>
+                            <button t-if="!this.state.bomStack.length" class="btn btn-sm btn-link text-danger" t-on-click="this.clearMainProduct"><i class="fa fa-times"/></button>
                         </div>
                         
                         <!-- Main Product Search Results -->

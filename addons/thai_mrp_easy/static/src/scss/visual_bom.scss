@@ -52,6 +52,9 @@
 .vb-node strong { max-width: 100%; font-size: 11px; line-height: 1.2; overflow-wrap: anywhere; }
 .vb-node small { color: #607799; }
 .vb-node-bom { color: #0a7990; font-size: 10px; }
+.vb-sub-bom-action { width: 100%; min-height: 22px; margin-top: auto; padding: 2px 4px; border: 1px solid #bfd5f2; border-radius: 5px; background: #fff; color: #2864aa; font-size: 10px; line-height: 1.2; }
+.vb-sub-bom-action:hover { background: #edf5ff; }
+.vb-sub-bom-title { font-size: 12px; color: #607799; }
 .vb-add-hint { margin-top: 30px; color: #4f78a7; font-size: 12px; }
 .vb-add-hint i { margin-right: 4px; }
 .vb-add-node { align-self: flex-start; width: 150px; min-height: 125px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; border: 1px dashed #83b6f6; border-radius: 7px; background: #f5f9ff; color: #1670e4; font-size: 12px; font-weight: 600; }
