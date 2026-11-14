@@ -31,14 +31,15 @@
 .vb-example small { color: #7589a7; }
 .vb-example b { min-width: 32px; padding: 2px 8px; text-align: center; color: #fff; background: #202f5b; border-radius: 20px; }
 .vb-tree { display: flex; flex-direction: column; align-items: center; width: max-content; min-width: 100%; margin: 10px auto; transform-origin: top center; }
-.vb-children { position: relative; display: flex; justify-content: center; align-items: flex-start; gap: 18px; padding-top: 32px; }
-.vb-children::before { content: ''; position: absolute; top: 0; left: 50%; height: 32px; border-left: 1px solid #a9c5ec; }
-.vb-branch { position: relative; display: flex; flex-direction: column; align-items: center; }
+.vb-children { position: relative; display: flex; justify-content: center; align-items: flex-start; gap: 0; padding-top: 32px; }
+.vb-children::before { content: ''; position: absolute; top: 0; left: 50%; height: 16px; border-left: 1px solid #a9c5ec; }
+.vb-branch { position: relative; display: flex; flex-direction: column; align-items: center; padding-inline: 9px; }
 .vb-branch::before { content: ''; position: absolute; top: -16px; left: 50%; height: 16px; border-left: 1px solid #a9c5ec; }
-.vb-children > .vb-branch::after { content: ''; position: absolute; top: -16px; left: calc(-9px - 50%); right: calc(-9px - 50%); border-top: 1px solid #a9c5ec; }
+.vb-children > .vb-branch::after { content: ''; position: absolute; top: -16px; left: 0; right: 0; border-top: 1px solid #a9c5ec; }
 .vb-children > .vb-branch:first-child::after { left: 50%; }
 .vb-children > .vb-branch:last-child::after { right: 50%; }
 .vb-children > .vb-branch:only-child::after { display: none; }
+.vb-add-branch { flex: 0 0 auto; }
 .vb-node { width: 150px; min-height: 125px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px; background: #fff; border: 1px solid #cddcf0; border-radius: 7px; box-shadow: 0 2px 6px #1d3d6119; text-align: center; color: #102951; }
 .vb-node-toolbar { display: flex; justify-content: space-between; width: 100%; color: #5676a0; font-size: 10px; }
 .vb-node-toolbar button { border: 0; background: transparent; color: #5071a5; padding: 0 3px; }
@@ -53,6 +54,11 @@
 .vb-node-bom { color: #0a7990; font-size: 10px; }
 .vb-add-hint { margin-top: 30px; color: #4f78a7; font-size: 12px; }
 .vb-add-hint i { margin-right: 4px; }
+.vb-add-node { align-self: flex-start; width: 150px; min-height: 125px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; border: 1px dashed #83b6f6; border-radius: 7px; background: #f5f9ff; color: #1670e4; font-size: 12px; font-weight: 600; }
+.vb-add-node b { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 7px; background: #dfedff; font-size: 20px; }
+.vb-component-tabs { display: flex; gap: 6px; }
+.vb-component-tabs button { flex: 1; min-height: 30px; padding: 4px 7px; border: 1px solid #cddcf0; border-radius: 6px; background: #fff; color: #466182; font-size: 12px; }
+.vb-component-tabs button.active { border-color: #2479df; background: #eaf3ff; color: #176be4; font-weight: 700; }
 
 .bom-node {
     background-color: white;

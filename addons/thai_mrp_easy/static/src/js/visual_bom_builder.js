@@ -37,6 +37,7 @@ export class VisualBomBuilder extends Component {
             },
             materialSearch: "",
             materialResults: [],
+            componentMode: "material",
             mainProductSearch: "",
             mainProductResults: [],
             editingLine: false,
@@ -129,7 +130,27 @@ export class VisualBomBuilder extends Component {
 
     async searchMaterial(ev) {
         this.state.materialSearch = ev.target.value;
-        this.state.materialResults = await this.orm.call("mrp.bom", "search_materials", [this.state.materialSearch]);
+        await this.loadComponentResults();
+    }
+
+    async setComponentMode(mode) {
+        this.state.componentMode = mode;
+        this.state.materialSearch = "";
+        await this.loadComponentResults();
+    }
+
+    async loadComponentResults() {
+        this.state.materialResults = this.state.componentMode === "bom"
+            ? await this.orm.call("mrp.bom", "search_existing_boms", [
+                this.state.materialSearch, this.state.bom.id || false, this.state.bom.product_tmpl_id || false,
+            ])
+            : await this.orm.call("mrp.bom", "search_materials", [this.state.materialSearch]);
+    }
+
+    focusMaterialSearch() {
+        this.state.componentMode = "material";
+        this.loadComponentResults();
+        document.querySelector(".visual-bom-container .vb-material-search")?.focus();
     }
 
     addMaterial(material) {
@@ -143,6 +164,7 @@ export class VisualBomBuilder extends Component {
             product_uom_name: material.uom_name,
             image_url: material.image_url,
             has_bom: material.has_bom,
+            selected_bom_id: material.bom_id || false,
             sub_bom: null, // We'll fetch this upon save or backend save
             isNew: true
         };
@@ -178,7 +200,9 @@ export class VisualBomBuilder extends Component {
         const line = this.state.editingLine;
         
         // If it has a BOM and it's new, we need to fetch the sub_bom structure to display it
-        if (line.has_bom && !line.sub_bom) {
+        if (line.selected_bom_id && !line.sub_bom) {
+            line.sub_bom = await this.orm.call("mrp.bom", "get_visual_bom_data", [line.selected_bom_id]);
+        } else if (line.has_bom && !line.sub_bom) {
              const subBoms = await this.orm.searchRead("mrp.bom", [["product_id", "=", line.product_id]], ["id"], {limit: 1});
              if (subBoms.length > 0) {
                  line.sub_bom = await this.orm.call("mrp.bom", "get_visual_bom_data", [subBoms[0].id]);

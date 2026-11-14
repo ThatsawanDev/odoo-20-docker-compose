@@ -1,4 +1,5 @@
 from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 class MrpBom(models.Model):
     _inherit = 'mrp.bom'
@@ -23,8 +24,10 @@ class MrpBom(models.Model):
             return {'lines': []}
         return self._get_bom_hierarchy(bom)
 
-    def _get_bom_hierarchy(self, bom):
+    def _get_bom_hierarchy(self, bom, visited=None):
         bom.ensure_one()
+        visited = set(visited or ())
+        visited.add(bom.id)
         result = {
             'id': bom.id,
             'product_id': bom.product_tmpl_id.product_variant_id.id or bom.product_id.id,
@@ -48,9 +51,10 @@ class MrpBom(models.Model):
                 'image_url': f'/web/image/product.product/{line.product_id.id}/image_128',
                 'has_bom': False,
                 'sub_bom': None,
+                'selected_bom_id': line.visual_sub_bom_id.id or False,
             }
             # Check if this product has a BOM
-            sub_boms = self.env['mrp.bom'].search([
+            sub_boms = line.visual_sub_bom_id or self.env['mrp.bom'].search([
                 '|', ('product_id', '=', line.product_id.id),
                 '&', ('product_tmpl_id', '=', line.product_id.product_tmpl_id.id),
                      ('product_id', '=', False),
@@ -58,14 +62,15 @@ class MrpBom(models.Model):
             ], limit=1)
             if sub_boms:
                 line_data['has_bom'] = True
-                line_data['sub_bom'] = self._get_bom_hierarchy(sub_boms[0])
+                if sub_boms[0].id not in visited:
+                    line_data['sub_bom'] = self._get_bom_hierarchy(sub_boms[0], visited)
             
             result['lines'].append(line_data)
         return result
 
     @api.model
     def search_materials(self, query):
-        domain = [('is_storable', '=', True)]
+        domain = [('type', '!=', 'service')]
         if query:
             domain.append(('name', 'ilike', query))
         
@@ -93,6 +98,30 @@ class MrpBom(models.Model):
         return res
 
     @api.model
+    def search_existing_boms(self, query='', exclude_bom_id=False, exclude_product_tmpl_id=False):
+        domain = [('active', '=', True), ('company_id', 'in', (False, self.env.company.id))]
+        if exclude_bom_id:
+            domain.append(('id', '!=', exclude_bom_id))
+        if exclude_product_tmpl_id:
+            domain.append(('product_tmpl_id', '!=', exclude_product_tmpl_id))
+        if query:
+            domain += ['|', '|', ('product_tmpl_id.name', 'ilike', query),
+                       ('product_tmpl_id.default_code', 'ilike', query), ('code', 'ilike', query)]
+        boms = self.search(domain, order='id desc', limit=30)
+        return [{
+            'id': bom.product_id.id or bom.product_tmpl_id.product_variant_id.id,
+            'bom_id': bom.id,
+            'product_tmpl_id': bom.product_tmpl_id.id,
+            'name': bom.product_tmpl_id.name,
+            'code': bom.code or bom.product_tmpl_id.default_code or '',
+            'qty_available': bom.product_id.qty_available if bom.product_id else bom.product_tmpl_id.product_variant_id.qty_available,
+            'uom_name': bom.uom_id.name,
+            'uom_id': bom.uom_id.id,
+            'image_url': f'/web/image/product.template/{bom.product_tmpl_id.id}/image_128',
+            'has_bom': True,
+        } for bom in boms if bom.product_id or bom.product_tmpl_id.product_variant_id]
+
+    @api.model
     def save_visual_bom(self, bom_data):
         bom_id = bom_data.get('id')
         vals = {
@@ -117,6 +146,14 @@ class MrpBom(models.Model):
             }
             if 'product_uom_id' in line:
                 line_vals['uom_id'] = line['product_uom_id']
+            selected_bom_id = line.get('selected_bom_id') or False
+            if selected_bom_id:
+                selected = self.browse(selected_bom_id).exists()
+                if not selected or selected.id == bom.id or selected.product_tmpl_id.id == bom.product_tmpl_id.id:
+                    raise UserError(_('The selected sub-BOM is invalid for this product.'))
+                if selected.product_tmpl_id.id != self.env['product.product'].browse(line['product_id']).product_tmpl_id.id:
+                    raise UserError(_('The selected sub-BOM does not match the material product.'))
+            line_vals['visual_sub_bom_id'] = selected_bom_id
                 
             if line.get('id') and line['id'] in existing_lines:
                 self.env['mrp.bom.line'].browse(line['id']).write(line_vals)
@@ -130,3 +167,9 @@ class MrpBom(models.Model):
             self.env['mrp.bom.line'].browse(list(lines_to_unlink)).unlink()
             
         return bom.id
+
+
+class MrpBomLine(models.Model):
+    _inherit = 'mrp.bom.line'
+
+    visual_sub_bom_id = fields.Many2one('mrp.bom', string='Visual Sub-BOM', ondelete='set null')

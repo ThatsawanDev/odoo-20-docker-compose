@@ -56,8 +56,9 @@
                         
                         <div t-if="this.state.bom.lines.length" class="vb-children vb-root-children">
                             <BomTreeNode t-foreach="this.state.bom.lines" t-as="line" t-key="line.key or line.id" node="line" onEdit="this.editLine.bind(this)" onRemove="this.removeLine.bind(this)" editable="true"/>
+                            <div class="vb-branch vb-add-branch"><button type="button" class="vb-add-node" t-on-click="this.focusMaterialSearch"><b>+</b><span>เพิ่มวัตถุดิบ</span></button></div>
                         </div>
-                        <div class="vb-add-hint"><i class="fa fa-plus-circle"/> เลือกวัตถุดิบด้านขวาเพื่อเพิ่มใน BOM</div>
+                        <div class="vb-add-hint">เลือกวัตถุดิบหรือ BOM ที่มีอยู่ด้านขวาเพื่อเพิ่มในผัง</div>
                         </div>
                     </t>
                 </div>
@@ -98,10 +99,14 @@
                         
                         <hr/>
                         
-                        <h5 class="mb-3">เพิ่มวัตถุดิบ</h5>
+                        <h5 class="mb-2">เพิ่มส่วนประกอบ</h5>
+                        <div class="vb-component-tabs mb-2">
+                            <button type="button" t-att-class="this.state.componentMode === 'material' ? 'active' : ''" t-on-click="() => this.setComponentMode('material')">วัตถุดิบ</button>
+                            <button type="button" t-att-class="this.state.componentMode === 'bom' ? 'active' : ''" t-on-click="() => this.setComponentMode('bom')">BOM ที่มีอยู่</button>
+                        </div>
                         <div class="input-group mb-3">
                             <span class="input-group-text"><i class="fa fa-search"/></span>
-                            <input type="text" class="form-control" placeholder="ค้นหาสินค้า (ชื่อ, รหัส)..." t-on-input="this.searchMaterial" t-att-value="this.state.materialSearch"/>
+                            <input type="text" class="form-control vb-material-search" t-att-placeholder="this.state.componentMode === 'bom' ? 'ค้นหา BOM หรือสินค้าที่ผลิต...' : 'ค้นหาสินค้า (ชื่อ, รหัส)...'" t-on-input="this.searchMaterial" t-att-value="this.state.materialSearch"/>
                         </div>
                         
                         <div class="material-list flex-grow-1 overflow-auto pe-2">
@@ -120,7 +125,7 @@
                                             </div>
                                         </div>
                                         <button class="btn btn-outline-primary btn-sm ms-2 vb-material-select" t-on-click="() => this.addMaterial(mat)">
-                                            <i class="fa fa-plus"/> เลือก
+                                            + เลือก
                                         </button>
                                     </div>
                                 </div>
