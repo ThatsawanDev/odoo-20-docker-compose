@@ -3,7 +3,7 @@
     <t t-name="thai_mrp_easy.BomTreeNode">
         <div class="vb-branch">
             <div class="vb-node">
-                <div class="vb-node-toolbar"><span t-esc="this.props.node.has_bom ? 'Sub-BOM' : 'Material'"/><span t-if="this.props.editable"><button t-on-click="() => this.props.onEdit(this.props.node)"><i class="fa fa-pencil"/></button><button t-on-click="() => this.props.onRemove(this.props.node)"><i class="fa fa-trash"/></button></span></div>
+                <div class="vb-node-toolbar"><span t-esc="this.props.node.has_bom ? 'Sub-BOM' : 'Material'"/><span t-if="this.props.editable" class="vb-node-actions"><button type="button" title="แก้ไขวัตถุดิบ" t-on-click="() => this.props.onEdit(this.props.node)">แก้ไข</button><button type="button" title="ลบวัตถุดิบ" t-on-click="() => this.props.onRemove(this.props.node)">ลบ</button></span></div>
                 <img t-att-src="this.props.node.image_url" alt=""/>
                 <strong t-esc="this.props.node.product_name"/>
                 <small><t t-esc="this.props.node.product_qty"/> <t t-esc="this.props.node.product_uom_name"/></small>
@@ -19,6 +19,8 @@
             <div class="bom-header d-flex justify-content-between align-items-center p-3 border-bottom bg-white">
                 <h2><i class="fa fa-sitemap me-2 text-primary"/><t t-esc="this.state.bom.id ? 'แก้ไข BOM' : 'สร้าง BOM ใหม่'"/></h2>
                 <div>
+                    <button t-if="this.state.bom.product_id" class="btn btn-outline-primary me-2" t-on-click="this.newBom">สร้างสูตรใหม่</button>
+                    <button t-if="this.state.bom.id" class="btn btn-outline-danger me-2" t-on-click="this.deleteBom">ลบสูตร</button>
                     <button t-if="this.state.bom.product_id" class="btn btn-outline-secondary me-2" t-on-click="this.printBom"><i class="fa fa-print me-1"/> พิมพ์ / ส่งออก</button>
                     <button class="btn btn-secondary me-2" t-on-click="this.cancel">ยกเลิก</button>
                     <button class="btn btn-primary" t-on-click="this.saveBom">บันทึก</button>
@@ -117,7 +119,7 @@
                                                 <span t-if="mat.has_bom" class="badge bg-info ms-1">มี BOM</span>
                                             </div>
                                         </div>
-                                        <button class="btn btn-outline-primary btn-sm ms-2" t-on-click="() => this.addMaterial(mat)">
+                                        <button class="btn btn-outline-primary btn-sm ms-2 vb-material-select" t-on-click="() => this.addMaterial(mat)">
                                             <i class="fa fa-plus"/> เลือก
                                         </button>
                                     </div>
@@ -137,7 +139,7 @@
             </div>
             
             <!-- Quick Edit Popup Overlay -->
-            <div t-if="this.state.editingLine" class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center" style="z-index: 1050;">
+            <div t-if="this.state.editingLine" class="vb-edit-overlay bg-dark bg-opacity-50 d-flex justify-content-center align-items-center">
                 <div class="card shadow" style="width: 400px;">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0">กำหนดจำนวนวัตถุดิบ</h5>

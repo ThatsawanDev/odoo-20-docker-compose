@@ -3,6 +3,21 @@ from odoo import api, fields, models
 class MrpProduction(models.Model):
     _inherit = 'mrp.production'
 
+    @api.model
+    def get_easy_list_summary(self):
+        """Small, company-scoped counters for the manufacturing order list."""
+        domain = [('company_id', '=', self.env.company.id),
+                  ('picking_type_id.active', '=', True)]
+        active = domain + [('state', 'in', ('confirmed', 'progress', 'to_close'))]
+        today = fields.Date.context_today(self)
+        return {
+            'draft': self.search_count(domain + [('state', '=', 'draft')]),
+            'confirmed': self.search_count(domain + [('state', '=', 'confirmed')]),
+            'progress': self.search_count(domain + [('state', '=', 'progress')]),
+            'material_waiting': self.search_count(active + [('reservation_state', 'in', ('confirmed', 'waiting'))]),
+            'done_today': self.search_count(domain + [('state', '=', 'done'), ('date_finished', '>=', today)]),
+        }
+
     easy_material_readiness = fields.Float(
         string='ความพร้อมของวัตถุดิบ (%)',
         compute='_compute_easy_material_readiness'

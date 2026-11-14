@@ -1,0 +1,28 @@
+.o_thai_mrp_list_summary {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px 14px;
+    background: #f1f5fb;
+    border-bottom: 1px solid #dbe5f2;
+}
+.o_thai_mrp_list_stat {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    min-height: 50px;
+    padding: 7px 11px;
+    border: 1px solid #dbe5f2;
+    border-radius: 9px;
+    background: #fff;
+    color: #60718d;
+    .o_thai_mrp_list_icon { display: grid; place-items: center; flex: 0 0 30px; height: 30px; border-radius: 8px; background: #eaf3ff; color: #2479df; }
+    .o_thai_mrp_list_icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    > span:not(.o_thai_mrp_list_icon) { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; line-height: 1.2; }
+    strong { display: block; margin-top: 2px; color: #17345f; font-size: 18px; line-height: 1.1; }
+    &.is-warning .o_thai_mrp_list_icon { background: #fff2e4; color: #d77a17; }
+    &.is-done .o_thai_mrp_list_icon { background: #e8f7ed; color: #20a05b; }
+}
+@media (max-width: 1100px) { .o_thai_mrp_list_summary { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 650px) { .o_thai_mrp_list_summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

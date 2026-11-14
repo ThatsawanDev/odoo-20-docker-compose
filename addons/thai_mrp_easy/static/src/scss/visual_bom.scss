@@ -16,8 +16,9 @@
     background-size: 22px 22px;
 }
 .vb-zoom { position: sticky; top: 0; left: 0; z-index: 3; display: inline-flex; background: #fff; border: 1px solid #cfdaec; border-radius: 8px; box-shadow: 0 2px 8px #142b4b18; overflow: hidden; }
-.vb-zoom button { width: 40px; height: 40px; border: 0; background: #fff; color: #12336a; font-size: 22px; font-weight: 700; }
-.vb-zoom span { min-width: 55px; padding: 10px 5px; text-align: center; border-inline: 1px solid #cfdaec; color: #12336a; font-weight: 700; }
+.visual-bom-container .vb-zoom button { width: 30px; min-width: 30px; height: 30px; min-height: 30px; padding: 0; border: 0; background: #fff; color: #12336a; font-size: 18px; line-height: 1; font-weight: 700; }
+.visual-bom-container .vb-zoom span { min-width: 46px; height: 30px; padding: 5px 4px; text-align: center; border-inline: 1px solid #cfdaec; color: #12336a; font-size: 13px; line-height: 20px; font-weight: 700; }
+.visual-bom-container .vb-material-select { flex: 0 0 auto; width: auto; min-width: 58px; min-height: 30px; padding: 4px 8px; font-size: 12px; line-height: 18px; white-space: nowrap; }
 .vb-empty { max-width: 1050px; margin: 30px auto 0; }
 .vb-empty > i { color: #7b8793; }
 .vb-empty h3 { color: #0c2347; font-weight: 700; }
@@ -41,6 +42,11 @@
 .vb-node { width: 150px; min-height: 125px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px; background: #fff; border: 1px solid #cddcf0; border-radius: 7px; box-shadow: 0 2px 6px #1d3d6119; text-align: center; color: #102951; }
 .vb-node-toolbar { display: flex; justify-content: space-between; width: 100%; color: #5676a0; font-size: 10px; }
 .vb-node-toolbar button { border: 0; background: transparent; color: #5071a5; padding: 0 3px; }
+.vb-node-actions { display: flex; gap: 3px; }
+.vb-node-actions button { padding: 1px 3px; font-size: 10px; line-height: 1.2; white-space: nowrap; }
+.vb-node-actions button:last-child { color: #c83b46; }
+.vb-edit-overlay { position: fixed; inset: 0; z-index: 2000; padding: 16px; }
+.vb-edit-overlay > .card { max-width: 100%; }
 .vb-node img { width: 32px; height: 32px; object-fit: contain; }
 .vb-node strong { max-width: 100%; font-size: 11px; line-height: 1.2; overflow-wrap: anywhere; }
 .vb-node small { color: #607799; }

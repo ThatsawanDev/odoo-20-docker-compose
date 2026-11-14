@@ -106,6 +106,27 @@ export class VisualBomBuilder extends Component {
         };
     }
 
+    newBom() {
+        this.clearMainProduct();
+        this.state.editingLine = false;
+        this.state.materialSearch = "";
+    }
+
+    async deleteBom() {
+        if (!this.state.bom.id || !window.confirm("ลบสูตรการผลิตนี้ใช่หรือไม่?")) {
+            return;
+        }
+        try {
+            await this.orm.unlink("mrp.bom", [this.state.bom.id]);
+            this.notification.add("ลบสูตรการผลิตแล้ว", { type: "success" });
+            this.newBom();
+            this.state.examples = await this.orm.call("mrp.bom", "get_visual_bom_examples", []);
+        } catch (error) {
+            this.notification.add("ลบสูตรการผลิตไม่ได้: กรุณาตรวจสอบสิทธิ์หรือรายการผลิตที่อ้างอิงสูตรนี้", { type: "danger" });
+            console.error(error);
+        }
+    }
+
     async searchMaterial(ev) {
         this.state.materialSearch = ev.target.value;
         this.state.materialResults = await this.orm.call("mrp.bom", "search_materials", [this.state.materialSearch]);
@@ -140,6 +161,9 @@ export class VisualBomBuilder extends Component {
     }
 
     removeLine(line) {
+        if (!window.confirm(`ลบ ${line.product_name} ออกจากสูตรนี้ใช่หรือไม่?`)) {
+            return;
+        }
         const index = this.state.bom.lines.findIndex(l => l.key === line.key || l.id === line.id);
         if (index > -1) {
             this.state.bom.lines.splice(index, 1);
