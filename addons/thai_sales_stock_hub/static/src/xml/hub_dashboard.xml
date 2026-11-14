@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="thai_sales_stock_hub.Dashboard">
+        <div class="o_hub_dashboard">
+            <t t-if="this.state.loading"><div class="o_hub_loading">กำลังโหลดภาพรวม...</div></t>
+            <t t-else="">
+                <main>
+                    <header class="o_hub_page_header">
+                        <div><h1><i class="fa fa-clipboard"/> ภาพรวมการดำเนินงานวันนี้</h1><span><i class="fa fa-calendar"/> วันนี้: <t t-esc="this.state.data.date"/></span></div>
+                    </header>
+                    <section class="o_hub_channel_summary">
+                        <button class="o_hub_channel_total" t-on-click="() => this.open('thai_sales_stock_hub.action_hub_orders')"><i class="fa fa-th-large"/><span>ทั้งหมด<strong><t t-esc="this.money(this.state.data.orders_total)"/> ออเดอร์</strong></span></button>
+                        <button t-foreach="this.state.data.channels" t-as="channel" t-key="channel.key" t-on-click="() => this.openChannel(channel.key)"><img t-if="channel.icon" t-att-src="channel.icon"/><i t-else="" class="fa fa-shopping-bag"/><span><t t-esc="channel.name"/><strong t-esc="this.money(channel.count)"/></span></button>
+                    </section>
+                    <section class="o_hub_totals_summary">
+                        <button t-on-click="() => this.open('thai_sales_stock_hub.action_hub_orders')"><i class="fa fa-shopping-cart is-blue"/><span>ออเดอร์ทั้งหมด<strong t-esc="this.money(this.state.data.orders_total)"/></span></button>
+                        <button t-on-click="() => this.open('thai_sales_stock_easy.action_outgoing')"><i class="fa fa-check-circle is-green"/><span>จัดส่งแล้ว<strong t-esc="this.money(this.state.data.shipped_total)"/></span></button>
+                        <button t-on-click="() => this.open('thai_sales_stock_easy.action_outgoing')"><i class="fa fa-cube is-purple"/><span>รอจัดส่งสินค้า<strong t-esc="this.money(this.state.data.waiting_pack + this.state.data.ready_ship)"/></span></button>
+                        <button t-on-click="() => this.open('thai_sales_stock_easy.action_outgoing')"><i class="fa fa-exclamation-circle is-red"/><span>เกินกำหนด<strong t-esc="this.money(this.state.data.issues)"/></span></button>
+                        <button t-on-click="() => this.open('thai_sales_stock_hub.action_hub_orders')"><i class="fa fa-bar-chart is-blue"/><span>ยอดขายเดือนนี้<strong><t t-esc="this.state.data.currency"/><t t-esc="this.money(this.state.data.month_revenue)"/></strong></span></button>
+                    </section>
+                    <div class="o_hub_row o_hub_row_main">
+                        <section class="o_hub_card o_hub_status"><h2><i class="fa fa-pie-chart"/> สถานะออเดอร์ทุกช่องทาง</h2><div class="o_hub_status_body"><div class="o_hub_donut" t-att-style="'background:' + this.statusGradient()"><div><strong t-esc="this.money(this.state.data.orders_total)"/><small>ออเดอร์</small></div></div><div class="o_hub_legend"><button t-foreach="this.state.data.statuses" t-as="item" t-key="item.name" t-on-click="() => this.open('thai_sales_stock_hub.action_hub_orders')"><i t-att-style="'background:' + item.color"/><span t-esc="item.name"/><strong t-esc="this.money(item.count)"/></button></div></div></section>
+                        <div class="o_hub_stack"><section class="o_hub_card o_hub_sales"><h2><i class="fa fa-line-chart"/> ยอดขายวันนี้</h2><strong><t t-esc="this.state.data.currency"/><t t-esc="this.money(this.state.data.sales_today)"/></strong><small>จากออเดอร์ที่ยืนยันแล้ว</small></section><section class="o_hub_card"><h2><i class="fa fa-cube"/> สต็อกใกล้หมด</h2><div class="o_hub_compact_list"><button t-foreach="this.state.data.low_stock" t-as="product" t-key="product.id" t-on-click="() => this.open('thai_sales_stock_easy.action_products')"><span t-esc="product.name"/><b><t t-esc="this.money(product.qty)"/> <t t-esc="product.uom"/></b></button><p t-if="!this.state.data.low_stock.length">ไม่มีสินค้าใกล้หมด</p></div></section></div>
+                        <section class="o_hub_card o_hub_tasks"><h2><i class="fa fa-clipboard"/> งานที่ต้องดำเนินการ</h2><button t-on-click="() => this.open('thai_sales_stock_easy.action_outgoing')"><i class="fa fa-exclamation-circle is-red"/><span>ตรวจสอบใบส่งเกินกำหนด</span><b t-esc="this.state.data.issues"/><i class="fa fa-chevron-right"/></button><button t-on-click="() => this.open('thai_sales_stock_easy.action_products')"><i class="fa fa-cube is-blue"/><span>ตรวจสอบสต็อกใกล้หมด</span><b t-esc="this.state.data.low_stock.length"/><i class="fa fa-chevron-right"/></button><button t-on-click="() => this.open('thai_sales_stock_easy.action_purchase_rfq')"><i class="fa fa-shopping-cart is-blue"/><span>ยืนยันใบสั่งซื้อ</span><b t-esc="this.state.data.purchase_waiting"/><i class="fa fa-chevron-right"/></button><button t-on-click="() => this.open('thai_sales_stock_easy.action_outgoing')"><i class="fa fa-truck is-blue"/><span>เตรียมส่งสินค้า</span><b t-esc="this.state.data.ready_ship"/><i class="fa fa-chevron-right"/></button></section>
+                    </div>
+                    <div class="o_hub_row o_hub_row_bottom">
+                        <section class="o_hub_card"><h2><i class="fa fa-bar-chart"/> ยอดขายตามช่องทางวันนี้</h2><div class="o_hub_channel_list"><div t-foreach="this.state.data.channels" t-as="channel" t-key="channel.key"><span><img t-if="channel.icon" t-att-src="channel.icon"/> <t t-esc="channel.name"/></span><div class="o_hub_bar"><i t-att-style="'width:' + this.pct(channel.percent)"/></div><b><t t-esc="channel.percent"/>%</b><strong><t t-esc="this.state.data.currency"/><t t-esc="this.money(channel.amount)"/></strong></div></div></section>
+                        <section class="o_hub_card"><h2><i class="fa fa-industry"/> แผนการผลิต</h2><t t-if="this.state.data.mrp_available"><div class="o_hub_production"><div t-foreach="this.state.data.production" t-as="mo" t-key="mo.name"><b t-esc="mo.name"/><span t-esc="mo.product"/><span><t t-esc="this.money(mo.qty)"/> <t t-esc="mo.uom"/></span><em t-esc="mo.state"/></div><p t-if="!this.state.data.production.length">ไม่มีใบสั่งผลิตที่ค้างอยู่</p></div></t><p t-else="" class="o_hub_empty">ติดตั้งโมดูลการผลิตเพื่อแสดงแผนการผลิต</p></section>
+                        <section class="o_hub_card"><h2><i class="fa fa-plug"/> Marketplace</h2><div class="o_hub_marketplaces"><div t-foreach="this.state.data.marketplace_enabled" t-as="channel" t-key="channel.name"><span t-esc="channel.name"/><b t-att-class="channel.shop_count ? 'is-on' : ''"><t t-esc="channel.shop_count"/> ร้านค้า</b></div></div><p>เชื่อมบัญชีและร้านค้าผ่านโมดูล Shopee, Lazada และ TikTok Shop</p><button t-if="this.state.data.can_configure" class="o_hub_settings" t-on-click="() => this.open('sale_shopee.action_shopee_account_list')">ตั้งค่า Shopee <i class="fa fa-arrow-right"/></button><button t-if="this.state.data.can_configure" class="o_hub_settings" t-on-click="() => this.open('sale_lazada.action_lazada_shop_list')">Lazada</button><button t-if="this.state.data.can_configure" class="o_hub_settings" t-on-click="() => this.open('smart_sale_tiktok.action_tiktok_account_list')">TikTok Shop</button></section>
+                    </div>
+                </main>
+            </t>
+        </div>
+    </t>
+</templates>
+

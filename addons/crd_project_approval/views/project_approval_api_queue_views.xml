@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- LIST VIEW -->
+    <record id="project_approval_api_queue_list" model="ir.ui.view">
+        <field name="name">project.approval.api.queue.list</field>
+        <field name="model">project.approval.api.queue</field>
+        <field name="arch" type="xml">
+            <list string="API Queue"
+                  create="0" edit="0" delete="0"
+                  decoration-success="state == 'done'"
+                  decoration-danger="state == 'failed' and retry_count &gt;= max_retry"
+                  decoration-warning="state == 'failed' and retry_count &lt; max_retry"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="approval_id"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'failed'"
+                       decoration-info="state == 'draft'"
+                       decoration-muted="state == 'cancelled'"/>
+                <field name="http_status"/>
+                <field name="retry_count"/>
+                <field name="max_retry"/>
+                <field name="last_attempt_date"/>
+                <field name="next_retry_date"/>
+                <field name="create_date" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="project_approval_api_queue_form" model="ir.ui.view">
+        <field name="name">project.approval.api.queue.form</field>
+        <field name="model">project.approval.api.queue</field>
+        <field name="arch" type="xml">
+            <form string="API Queue" create="0" edit="0" delete="0">
+                <header>
+                    <button name="action_retry" string="Retry Now" type="object"
+                            class="btn-primary"
+                            invisible="state != 'failed'"/>
+                    <button name="action_reset_draft" string="Reset to Pending" type="object"
+                            invisible="state not in ('failed', 'cancelled')"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state not in ('draft', 'failed')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,done,failed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+
+                    <group>
+                        <group string="Request Info">
+                            <field name="approval_id"/>
+                            <field name="url"/>
+                        </group>
+                        <group string="Execution">
+                            <field name="retry_count"/>
+                            <field name="max_retry"/>
+                            <field name="last_attempt_date"/>
+                            <field name="next_retry_date"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Payload">
+                            <field name="payload" widget="code" readonly="1"
+                                   style="font-family: monospace; min-height: 200px;"/>
+                        </page>
+                        <page string="Response">
+                            <group>
+                                <field name="http_status"/>
+                            </group>
+                            <field name="response_body" widget="code" readonly="1"
+                                   style="font-family: monospace; min-height: 150px;"/>
+                        </page>
+                        <page string="Error" invisible="not error_message">
+                            <field name="error_message" readonly="1"
+                                   style="color: #a00; font-family: monospace;"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- SEARCH VIEW -->
+    <record id="project_approval_api_queue_search" model="ir.ui.view">
+        <field name="name">project.approval.api.queue.search</field>
+        <field name="model">project.approval.api.queue</field>
+        <field name="arch" type="xml">
+            <search string="Search API Queue">
+                <field name="name" string="Reference"/>
+                <field name="approval_id"/>
+                <field name="http_status"/>
+                <separator/>
+                <filter name="filter_draft"     string="Pending"   domain="[('state','=','draft')]"/>
+                <filter name="filter_done"      string="Success"   domain="[('state','=','done')]"/>
+                <filter name="filter_failed"    string="Failed"    domain="[('state','=','failed')]"/>
+                <filter name="filter_cancelled" string="Cancelled" domain="[('state','=','cancelled')]"/>
+                <separator/>
+                <filter name="filter_retryable" string="Can Retry"
+                        domain="[('state','=','failed'),('retry_count','&lt;',3)]"/>
+                <filter name="filter_max_retry" string="Max Retry Exceeded"
+                        domain="[('state','=','failed'),('retry_count','&gt;=',3)]"/>
+                <separator/>
+                <filter name="filter_today" string="Today"
+                        domain="[('create_date','&gt;=', datetime.datetime.now().replace(hour=0,minute=0,second=0).strftime('%Y-%m-%d %H:%M:%S'))]"/>
+                <group>
+                    <filter name="group_state"       string="Status"          context="{'group_by': 'state'}"/>
+                    <filter name="group_approval"    string="Project Request"  context="{'group_by': 'approval_id'}"/>
+                    <filter name="group_create_date" string="Created Date"    context="{'group_by': 'create_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ACTION -->
+    <record id="project_approval_api_queue_action" model="ir.actions.act_window">
+        <field name="name">API Queue</field>
+        <field name="res_model">project.approval.api.queue</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="project_approval_api_queue_search"/>
+        <field name="context">{'search_default_filter_draft': 0, 'create': False, 'edit': False, 'delete': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">ยังไม่มีรายการใน Queue</p>
+            <p>รายการที่รอส่ง API จะแสดงที่นี่</p>
+        </field>
+    </record>
+
+</odoo>

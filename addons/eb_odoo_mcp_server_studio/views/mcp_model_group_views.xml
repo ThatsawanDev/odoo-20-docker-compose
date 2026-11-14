@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_mcp_model_group" model="ir.actions.act_window">
+        <field name="name">Model Restriction Groups</field>
+        <field name="res_model">mcp.model.group</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No model restriction groups configured.</p>
+            <p>
+                Restriction groups block AI access to specific Odoo models and fields.
+                Works on top of Odoo native ACLs.
+                Common use cases: block HR salary fields, hide API keys,
+                prevent AI from modifying accounting entries.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_mcp_model_group_list" model="ir.ui.view">
+        <field name="name">mcp.model.group.list</field>
+        <field name="model">mcp.model.group</field>
+        <field name="arch" type="xml">
+            <list string="Model Restriction Groups"
+                  decoration-muted="not active">
+                <field name="name" string="Group Name"/>
+                <field name="user_ids" widget="many2many_tags"
+                       string="Apply to Users" optional="show"/>
+                <field name="model_count" string="Models" optional="show"/>
+                <field name="field_count" string="Fields" optional="show"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mcp_model_group_form" model="ir.ui.view">
+        <field name="name">mcp.model.group.form</field>
+        <field name="model">mcp.model.group</field>
+        <field name="arch" type="xml">
+            <form string="Model Restriction Group">
+                <sheet>
+                    <div class="oe_title">
+                        <label class="o_form_label" for="name">Group Name</label>
+                        <h1>
+                            <field name="name" id="name"
+                                   placeholder="e.g. HR — Block Salary and Personal Data"/>
+                        </h1>
+                    </div>
+
+                    <div class="alert alert-info py-2 px-3 mb-3" role="alert">
+                        <strong><i class="fa fa-shield me-1" title="model group"/>How Restriction Groups Work</strong>
+                        <ul class="mb-0 ps-3 mt-1 small">
+                            <li><strong>Users empty</strong> → applies to ALL MCP users (except MCP Admin who always bypasses).</li>
+                            <li><strong>Users specified</strong> → applies only to those users.</li>
+                            <li><strong>Model-level block</strong> → AI cannot perform that CRUD operation. Blocked models are hidden from odoo_list_models.</li>
+                            <li><strong>Field-level block</strong> → fields are stripped from responses before the AI sees them. AI cannot set them in create/write.</li>
+                        </ul>
+                    </div>
+
+                    <group>
+                        <group string="Group Settings">
+                            <field name="active" widget="boolean_toggle" string="Active"/>
+                        </group>
+                        <group string="Applies To">
+                            <field name="user_ids" widget="many2many_tags"
+                                   string="Restrict These Users"/>
+                        </group>
+                    </group>
+
+                    <group string="Purpose / Notes">
+                        <field name="description" nolabel="1"
+                               placeholder="e.g. Block AI access to payroll and personal employee data for all standard MCP users."/>
+                    </group>
+
+                    <notebook>
+                        <page string="Model Restrictions" name="models">
+                            <div class="alert alert-secondary py-2 px-3 mb-3" role="alert">
+                                <i class="fa fa-info-circle me-1" title="model group"/>
+                                <strong>Model-level control:</strong> Check operations to block entirely.
+                                Models with Block Read enabled are also hidden from <code>odoo_list_models</code>.
+                                These restrictions apply to standard CRUD tools only
+                                (<code>odoo_search_read</code>, <code>odoo_create</code>, <code>odoo_write</code>,
+                                <code>odoo_unlink</code>, <code>odoo_call_method</code>).
+                                They do NOT restrict <code>odoo_execute_orm</code> or builder tools.
+                            </div>
+                            <field name="line_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="model_id" string="Odoo Model"/>
+                                    <field name="block_read" widget="boolean_toggle"
+                                           string="Block Read" optional="show"/>
+                                    <field name="block_create" widget="boolean_toggle"
+                                           string="Block Create" optional="show"/>
+                                    <field name="block_write" widget="boolean_toggle"
+                                           string="Block Update" optional="show"/>
+                                    <field name="block_unlink" widget="boolean_toggle"
+                                           string="Block Delete" optional="show"/>
+                                    <field name="block_execute" widget="boolean_toggle"
+                                           string="Block Methods" optional="show"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Field Restrictions" name="field_restrictions">
+                            <div class="alert alert-info py-2 px-3 mb-3" role="alert">
+                                <i class="fa fa-shield me-1" title="model group"/>
+                                <strong>Field-level security.</strong>
+                                Restricted fields are stripped from API responses before the AI sees them.
+                                The AI cannot read, discover, or set these fields.
+                            </div>
+                            <div class="alert alert-warning py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-exclamation-triangle me-1" title="model group"/>
+                                <strong>Three controls per field:</strong>
+                                <ul class="mb-0 ps-3 mt-1 small">
+                                    <li><strong>Block Read</strong> — stripped from search_read, get_record, get_fields. AI never sees it.</li>
+                                    <li><strong>Block Create</strong> — AI cannot set this field in odoo_create.</li>
+                                    <li><strong>Block Write</strong> — AI cannot set this field in odoo_write.</li>
+                                </ul>
+                            </div>
+                            <field name="line_ids" nolabel="1">
+                                <list>
+                                    <field name="model_id" column_invisible="1"/>
+                                    <field name="model_name" string="Model"/>
+
+                                    <field name="field_ids"
+                                           context="{'default_line_id': id}">
+
+                                        <!-- LIST VIEW -->
+                                        <list>
+                                            <field name="model_id" column_invisible="1"/>
+                                            <field name="field_id"
+                                                   domain="[('model_id', '=', model_id)]"
+                                                   options="{'no_create': True}"/>
+                                            <field name="field_description"/>
+                                            <field name="field_type"/>
+                                            <field name="block_read" widget="boolean_toggle"/>
+                                            <field name="block_create" widget="boolean_toggle"/>
+                                            <field name="block_write" widget="boolean_toggle"/>
+                                        </list>
+
+                                        <!-- FORM VIEW (THIS ENABLES POPUP) -->
+                                        <form string="Field Restriction">
+                                            <group>
+                                                <field name="model_id" invisible="1"/>
+                                                <field name="field_id"/>
+                                                <field name="field_description"/>
+                                                <field name="field_type"/>
+                                                <field name="block_read"/>
+                                                <field name="block_create"/>
+                                                <field name="block_write"/>
+                                            </group>
+                                        </form>
+
+                                    </field>
+                                </list>
+                            </field>
+                            <div class="alert alert-secondary py-2 px-3 mt-3" role="alert">
+                                <i class="fa fa-lightbulb-o me-1" title="model group"/>
+                                <strong>Common fields to restrict:</strong>
+                                hr.employee: <code>wage</code>, <code>ssnid</code> ·
+                                res.users: <code>password</code> ·
+                                mcp.api.token: <code>token</code>, <code>refresh_token</code>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

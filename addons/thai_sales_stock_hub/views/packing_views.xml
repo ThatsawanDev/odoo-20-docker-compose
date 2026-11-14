@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hub_outgoing_list" model="ir.ui.view">
+        <field name="name">hub.stock.picking.outgoing.list</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <list string="รอส่งสินค้า" js_class="hub_outgoing_list" create="0" default_order="scheduled_date asc">
+                <field name="name" string="เลขที่ใบส่งสินค้า"/>
+                <field name="partner_id" string="ลูกค้า"/>
+                <field name="origin" string="เอกสารอ้างอิง"/>
+                <field name="hub_line_count" string="จำนวนรายการ"/>
+                <field name="hub_total_qty" string="จำนวนทั้งหมด"/>
+                <field name="scheduled_date" string="วันที่กำหนดการ"/>
+                <field name="state" string="สถานะสินค้า" widget="badge" optional="hide"/>
+                <field name="hub_packing_state" string="สถานะแพ็ก" widget="badge" decoration-success="hub_packing_state == 'packed'" decoration-warning="hub_packing_state == 'packing'"/>
+                <button name="action_hub_open_packing_station" type="object" string="แพ็กสินค้า" icon="fa-play" invisible="hub_packing_state == 'packed' or state != 'assigned'"/>
+            </list>
+        </field>
+    </record>
+    <record id="thai_sales_stock_easy.action_outgoing" model="ir.actions.act_window">
+        <field name="view_id" ref="view_hub_outgoing_list"/>
+    </record>
+    <record id="view_hub_packing_station_list" model="ir.ui.view">
+        <field name="name">hub.packing.station.list</field>
+        <field name="model">thai.sales.stock.packing.station</field>
+        <field name="arch" type="xml"><list><field name="name"/><field name="warehouse_id"/><field name="worker_count"/><field name="target_today"/><field name="active"/></list></field>
+    </record>
+    <record id="view_hub_packing_station_form" model="ir.ui.view">
+        <field name="name">hub.packing.station.form</field>
+        <field name="model">thai.sales.stock.packing.station</field>
+        <field name="arch" type="xml"><form string="จุดแพ็ก"><sheet><group><field name="name"/><field name="warehouse_id"/><field name="worker_count"/><field name="target_today"/><field name="active"/></group></sheet></form></field>
+    </record>
+    <record id="action_hub_packing_stations" model="ir.actions.act_window">
+        <field name="name">ตั้งค่าจุดแพ็ก</field>
+        <field name="res_model">thai.sales.stock.packing.station</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="view_hub_stock_picking_packing_form" model="ir.ui.view">
+        <field name="name">hub.stock.picking.packing.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="priority" eval="99"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/header" position="inside">
+                <field name="picking_type_code" invisible="1"/>
+                <field name="hub_packing_state" invisible="1"/>
+                <button name="action_hub_start_packing" type="object" string="เริ่มแพ็กสินค้า" class="btn-primary" invisible="picking_type_code != 'outgoing' or state != 'assigned' or hub_packing_state != 'waiting'"/>
+                <button name="action_hub_finish_packing" type="object" string="แพ็กเสร็จ" class="btn-primary" invisible="picking_type_code != 'outgoing' or state in ('done', 'cancel') or hub_packing_state != 'packing'"/>
+            </xpath>
+            <xpath expr="//form/sheet/notebook" position="inside">
+                <page string="งานแพ็ก" invisible="picking_type_code != 'outgoing'"><group>
+                    <field name="hub_packing_state" readonly="1"/>
+                    <field name="hub_packing_station_id" domain="[('company_id', '=', company_id)]"/>
+                    <field name="hub_packer_id" readonly="1"/>
+                    <field name="hub_pack_box_count" readonly="1"/>
+                    <field name="hub_pack_video_id" widget="many2one" readonly="1"/>
+                    <field name="hub_packed_at"/>
+                </group></page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+
+
+

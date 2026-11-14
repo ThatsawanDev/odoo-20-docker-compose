@@ -1,0 +1,301 @@
+.o_form_renderer:has(.crd-request-hero) {
+    --crd-ink: #19254d;
+    --crd-accent: #0869df;
+    --crd-border: #ceddf5;
+
+    color: var(--crd-ink);
+
+    .o_form_statusbar {
+        background: #fff !important;
+        border-bottom: 1px solid var(--crd-border) !important;
+        min-height: 0 !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0.45rem 1.25rem !important;
+        align-items: center !important;
+        gap: 0.5rem;
+
+        .o_statusbar_buttons:not(:has(> :not(.d-none))) {
+            display: none !important;
+        }
+
+        .o_field_dynamic_config_statusbar {
+            margin-left: auto;
+        }
+
+        .btn-primary {
+            background: var(--crd-accent) !important;
+            border-color: var(--crd-accent) !important;
+            color: #fff !important;
+        }
+
+        .btn-secondary {
+            background: #fff !important;
+            border-color: #cfd5ea !important;
+            color: var(--crd-ink) !important;
+        }
+
+        .btn {
+            border-radius: 0.6rem !important;
+            font-weight: 600;
+        }
+    }
+
+    .o_form_sheet_bg {
+        background: #f5f8ff !important;
+        padding: 1.25rem !important;
+    }
+
+    .o_form_sheet {
+        max-width: 1500px !important;
+        margin: 0 auto !important;
+        padding: 0 1.5rem 1.5rem !important;
+        border: 1px solid #e9ecf7 !important;
+        border-radius: 1rem !important;
+        background: #fff !important;
+        box-shadow: 0 16px 42px rgba(31, 45, 82, 0.06) !important;
+    }
+
+    .crd-request-hero {
+        display: flex;
+        align-items: center;
+        gap: 1.15rem;
+        margin: 0 -1.5rem 1.3rem;
+        padding: 1.35rem 1.5rem;
+        border-radius: 1rem 1rem 0 0;
+        background:
+            radial-gradient(ellipse at 92% 115%, rgba(54, 143, 255, 0.42) 0 24%, transparent 24.5%),
+            radial-gradient(ellipse at 66% 145%, rgba(105, 170, 255, 0.2) 0 34%, transparent 34.5%),
+            linear-gradient(110deg, #eaf2ff 0%, #e1edff 66%, #c8e1ff 100%);
+    }
+
+    .crd-request-hero-icon {
+        display: grid;
+        place-items: center;
+        flex: 0 0 4rem;
+        width: 4rem;
+        height: 4rem;
+        border-radius: 1rem;
+        background: #cfe1ff;
+        color: var(--crd-accent);
+        font-size: 2rem;
+    }
+
+    .crd-request-hero-copy {
+        min-width: 0;
+
+        h1 {
+            margin: 0;
+            color: #111b42;
+            font-size: clamp(1.5rem, 2vw, 2rem);
+            font-weight: 750;
+            line-height: 1.15;
+        }
+
+        p {
+            margin: 0.3rem 0 0;
+            color: #555f7c;
+            font-size: 0.95rem;
+        }
+    }
+
+    .crd-request-identity {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        margin-top: 0.65rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .crd-request-summary { margin-bottom: 1.2rem; }
+
+    .crd-request-card,
+    .crd-impact-card,
+    .crd-attachments-card {
+        height: 100%;
+        overflow: hidden;
+        border: 1px solid var(--crd-border);
+        border-radius: 0.85rem;
+        background: #fff;
+    }
+
+    .crd-request-card-title {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        min-height: 2.4rem;
+        margin: 0;
+        padding: 0.55rem 1rem;
+        background: linear-gradient(90deg, #e9f2ff, #dceafe);
+        color: #073b94;
+        font-size: 1rem;
+        font-weight: 700;
+
+        .oi { font-size: 1.3rem; }
+    }
+
+    .crd-request-card-body {
+        padding: 0.85rem 1.25rem 1.1rem;
+    }
+
+    .crd-request-card .o_group {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .crd-request-card .o_inner_group {
+        column-gap: 1.25rem !important;
+        row-gap: 0.55rem !important;
+    }
+
+    .crd-request-card .o_form_label {
+        padding-right: 0.5rem;
+    }
+
+    .crd-document-card {
+        background: linear-gradient(135deg, #fff 68%, #edf5ff);
+    }
+
+    .crd-request-notebook {
+        .nav-tabs {
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--crd-border);
+        }
+
+        .nav-link {
+            border: 0 !important;
+            border-bottom: 3px solid transparent !important;
+            border-radius: 0 !important;
+            color: var(--crd-ink) !important;
+            font-weight: 600;
+
+            &.active {
+                border-bottom-color: var(--crd-accent) !important;
+                background: transparent !important;
+                color: var(--crd-accent) !important;
+            }
+        }
+    }
+
+    .crd-overview-intro { margin-bottom: 1.25rem; }
+
+    .crd-field-heading {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        margin-bottom: 0.45rem;
+        color: #20205d;
+        font-weight: 700;
+
+        .oi { color: var(--crd-accent); font-size: 1.25rem; }
+        .o_form_label { margin: 0; font-weight: 700; }
+    }
+
+    .crd-text-block textarea {
+        min-height: 4.2rem;
+        border-radius: 0.6rem !important;
+    }
+
+    .crd-business-impact .crd-request-card-title {
+        background: linear-gradient(90deg, #eaf5ff, #e1f0ff);
+    }
+
+    .crd-financial-impact .crd-request-card-title {
+        background: linear-gradient(90deg, #e9f2ff, #dceafe);
+    }
+
+    .crd-impact-options {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem 1rem;
+        padding: 0.85rem 1rem;
+    }
+
+    .crd-impact-options > div,
+    .crd-financial-impact > .d-flex {
+        min-width: 0;
+        flex-wrap: wrap;
+        margin: 0 !important;
+    }
+
+    .crd-impact-options > div > div:first-child,
+    .crd-financial-impact > .d-flex > div:first-child {
+        width: auto !important;
+        min-width: 0;
+    }
+
+    .crd-impact-options .o_field_widget:not(.o_field_boolean),
+    .crd-financial-impact > .d-flex > .o_field_widget:not(.o_field_boolean) {
+        width: 100%;
+    }
+
+    .crd-financial-impact > .d-flex {
+        padding: 0.35rem 1rem;
+    }
+
+    .crd-financial-impact > .d-flex:nth-child(2) { padding-top: 0.85rem; }
+
+    .crd-attachments-card {
+        height: auto;
+        padding-bottom: 1rem;
+
+        > .o_field_widget { margin: 1rem; }
+    }
+
+    .o_input,
+    .o-autocomplete--input {
+        border-radius: 0.55rem !important;
+        border: 1px solid #bfd1ee !important;
+        background-color: #fff !important;
+        color: var(--crd-ink) !important;
+    }
+
+    .crd-request-card .o_field_widget > .o_input,
+    .crd-request-card .o_field_many2many_tags {
+        min-height: 2.35rem !important;
+    }
+
+    // The tag field already draws the outer border; its search input is borderless.
+    .o_field_many2many_tags .o_input,
+    .o_field_many2many_tags .o-autocomplete--input {
+        border: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        outline: 0 !important;
+        background: transparent !important;
+    }
+
+    .o_form_label,
+    .crd-request-card .o_form_label {
+        color: #172244 !important;
+        font-weight: 650 !important;
+    }
+
+    .o_form_statusbar .o_field_dynamic_config_statusbar > .o_statusbar_status > .o_arrow_button,
+    .o_form_statusbar .o_field_dynamic_config_statusbar .o_statusbar_status > .o_arrow_button {
+        background: #f3f8ff !important;
+        background-color: #f3f8ff !important;
+        color: #172b56 !important;
+        opacity: 1 !important;
+        text-shadow: none !important;
+
+        &.o_arrow_button_current,
+        &[aria-checked="true"],
+        &[aria-current="step"] {
+            background: #0869df !important;
+            background-color: #0869df !important;
+            color: #fff !important;
+            font-weight: 700 !important;
+            box-shadow: 0 2px 8px rgba(8, 105, 223, 0.35) !important;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .o_form_sheet_bg { padding: 0.5rem !important; }
+        .o_form_sheet { padding: 0 0.85rem 1rem !important; }
+        .crd-request-hero { margin: 0 -0.85rem 1rem; padding: 1rem; }
+        .crd-request-hero-icon { flex-basis: 3.2rem; width: 3.2rem; height: 3.2rem; }
+        .crd-impact-options { grid-template-columns: 1fr; }
+    }
+}

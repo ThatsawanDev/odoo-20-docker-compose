@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ACTION
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="action_mcp_log" model="ir.actions.act_window">
+        <field name="name">Execution Logs</field>
+        <field name="res_model">mcp.log</field>
+        <field name="view_mode">list,form,graph</field>
+        <field name="context">{"search_default_group_by_tool": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No execution logs yet.</p>
+            <p>Logs appear here once AI agents start calling MCP tools.</p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LIST VIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_log_tree" model="ir.ui.view">
+        <field name="name">mcp.log.list</field>
+        <field name="model">mcp.log</field>
+        <field name="arch" type="xml">
+            <list string="Execution Logs"
+                  default_order="create_date desc"
+                  decoration-danger="state == 'error'"
+                  decoration-success="state == 'ok'"
+                  decoration-warning="log_level == 'warning'">
+                <field name="create_date" string="Time" optional="show"/>
+                <field name="log_level" string="Level" widget="badge"
+                       decoration-danger="log_level == 'error'"
+                       decoration-warning="log_level == 'warning'"
+                       decoration-info="log_level == 'info'"
+                       decoration-muted="log_level == 'debug'"
+                       optional="show"/>
+                <field name="method" optional="show"/>
+                <field name="tool_name" optional="show"/>
+                <field name="model_name" optional="show"/>
+                <field name="operation" optional="hide"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="duration_ms" string="ms" optional="show"/>
+                <field name="response_size" string="Resp (B)" optional="hide"/>
+                <field name="request_id" optional="hide"/>
+                <field name="session_id" optional="hide"/>
+                <field name="ip_address" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'ok'"
+                       decoration-danger="state == 'error'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         FORM VIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_log_form" model="ir.ui.view">
+        <field name="name">mcp.log.form</field>
+        <field name="model">mcp.log</field>
+        <field name="arch" type="xml">
+            <form string="Execution Log">
+                <sheet>
+                    <!-- State banner -->
+                    <div class="alert alert-danger d-flex gap-2 align-items-center mb-3" role="alert"
+                         invisible="state != 'error'">
+                        <i class="fa fa-times-circle fa-lg" title="Error"/>
+                        <strong>Tool call failed.</strong>
+                        See the Error / Traceback tabs below.
+                    </div>
+
+                    <group>
+                        <group string="Tool Call">
+                            <field name="method"/>
+                            <field name="tool_name"/>
+                            <field name="model_name" optional="show"/>
+                            <field name="operation" optional="show"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                        </group>
+                        <group string="Result">
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'ok'"
+                                   decoration-danger="state == 'error'"/>
+                            <field name="log_level" widget="badge"
+                                   decoration-danger="log_level == 'error'"
+                                   decoration-warning="log_level == 'warning'"
+                                   decoration-info="log_level == 'info'"/>
+                            <field name="duration_ms" string="Duration (ms)"/>
+                            <field name="response_size" string="Response Size (B)"/>
+                            <field name="ip_address" optional="show"/>
+                            <field name="create_date" string="Time" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Context">
+                            <field name="request_id"/>
+                            <field name="session_id"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Parameters" name="params">
+                            <field name="payload" nolabel="1" readonly="1"
+                                   widget="ace"
+                                   style="min-height:280px;"/>
+                        </page>
+                        <page string="Result" name="result">
+                            <field name="result_summary" nolabel="1" readonly="1"
+                                   widget="ace"
+                                   style="min-height:280px;"/>
+                        </page>
+                        <page string="Error" name="error" invisible="state == 'ok'">
+                            <field name="error_message" nolabel="1" readonly="1"
+                                   widget="ace"
+                                   style="min-height:200px;"/>
+                        </page>
+                        <page string="Traceback" name="traceback"
+                              invisible="not traceback_info">
+                            <field name="traceback_info" nolabel="1" readonly="1"
+                                   widget="ace"
+                                   style="min-height:300px;"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         GRAPH VIEW — Analytics
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_log_graph" model="ir.ui.view">
+        <field name="name">mcp.log.graph</field>
+        <field name="model">mcp.log</field>
+        <field name="arch" type="xml">
+            <graph string="MCP Log Analytics" type="bar">
+                <field name="tool_name" type="row"/>
+                <field name="duration_ms" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+</odoo>

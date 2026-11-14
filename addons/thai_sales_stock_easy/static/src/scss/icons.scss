@@ -1,0 +1,72 @@
+// Odoo 20 does not supply the Font Awesome glyphs used by these custom views.
+// Match the legacy class names to the RemixIcon font supplied by Spiffy.
+@font-face {
+    font-family: 'remixicon';
+    src: url('/spiffy_theme_backend/static/src/font/RemixIcon/remixicon.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+@mixin thai-easy-icon($legacy, $glyph) {
+    .fa.fa-#{$legacy} {
+        font-family: 'remixicon' !important;
+        &::before { content: $glyph !important; }
+    }
+}
+
+.o_thai_easy_dashboard, .o_thai_sale_portal, .o_thai_sale_order_v2 {
+    @include thai-easy-icon(archive, "\ea48");
+    @include thai-easy-icon(arrow-left, "\ea60");
+    @include thai-easy-icon(angle-right, "\ea6e");
+    @include thai-easy-icon(barcode, "\eaa2");
+    @include thai-easy-icon(balance-scale, "\f0b9");
+    @include thai-easy-icon(building-o, "\eb0f");
+    @include thai-easy-icon(calculator, "\eb1f");
+    @include thai-easy-icon(calendar, "\eb27");
+    @include thai-easy-icon(calendar-o, "\eb27");
+    @include thai-easy-icon(check, "\eb81");
+    @include thai-easy-icon(check-circle, "\eb81");
+    @include thai-easy-icon(check-square-o, "\eb85");
+    @include thai-easy-icon(clock-o, "\f20f");
+    @include thai-easy-icon(cube, "\ea48");
+    @include thai-easy-icon(cubes, "\f181");
+    @include thai-easy-icon(credit-card, "\ea92");
+    @include thai-easy-icon(ellipsis-h, "\ef79");
+    @include thai-easy-icon(envelope, "\eef6");
+    @include thai-easy-icon(external-link, "\ecaf");
+    @include thai-easy-icon(file-o, "\eceb");
+    @include thai-easy-icon(file-text, "\ed0f");
+    @include thai-easy-icon(file-text-o, "\ed0f");
+    @include thai-easy-icon(filter, "\ed27");
+    @include thai-easy-icon(folder-o, "\ed6a");
+    @include thai-easy-icon(home, "\ee2b");
+    @include thai-easy-icon(id-card-o, "\f256");
+    @include thai-easy-icon(line-chart, "\eeab");
+    @include thai-easy-icon(link, "\eeb2");
+    @include thai-easy-icon(list-alt, "\ecf1");
+    @include thai-easy-icon(location-arrow, "\ef89");
+    @include thai-easy-icon(lock, "\eece");
+    @include thai-easy-icon(map, "\ef08");
+    @include thai-easy-icon(map-marker, "\ef14");
+    @include thai-easy-icon(minus, "\f1af");
+    @include thai-easy-icon(money, "\ef65");
+    @include thai-easy-icon(paper-plane, "\f0da");
+    @include thai-easy-icon(phone, "\efec");
+    @include thai-easy-icon(plus, "\ea13");
+    @include thai-easy-icon(print, "\f029");
+    @include thai-easy-icon(search, "\f0d1");
+    @include thai-easy-icon(shopping-basket, "\f11c");
+    @include thai-easy-icon(shopping-cart, "\f120");
+    @include thai-easy-icon(sort-amount-asc, "\f15f");
+    @include thai-easy-icon(sticky-note-o, "\f19b");
+    @include thai-easy-icon(tag, "\f023");
+    @include thai-easy-icon(tags, "\f023");
+    @include thai-easy-icon(thumbs-up, "\f207");
+    @include thai-easy-icon(trash-o, "\ec2a");
+    @include thai-easy-icon(truck, "\f231");
+    @include thai-easy-icon(upload, "\f250");
+    @include thai-easy-icon(user, "\f264");
+    @include thai-easy-icon(user-o, "\f264");
+    @include thai-easy-icon(user-circle-o, "\f256");
+    @include thai-easy-icon(user-plus, "\f25e");
+}

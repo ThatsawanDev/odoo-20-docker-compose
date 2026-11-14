@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════
+         ROOT APP
+    ═══════════════════════════════════════════════════ -->
+    <menuitem id="menu_mcp_root"
+              name="MCP Studio"
+              sequence="90"
+              web_icon="eb_odoo_mcp_server_studio,static/description/icon.png"/>
+
+    <!-- ── Main sections ── -->
+    <menuitem id="menu_mcp_webapp"
+              name="Web Apps"
+              parent="menu_mcp_root"
+              action="action_mcp_webapp"
+              sequence="10"/>
+
+    <menuitem id="menu_mcp_echart"
+              name="EChart Dashboards"
+              parent="menu_mcp_root"
+              action="action_mcp_echart"
+              sequence="20"/>
+
+    <menuitem id="menu_mcp_module"
+              name="Generated Modules"
+              parent="menu_mcp_root"
+              action="action_mcp_module"
+              sequence="30"/>
+
+    <menuitem id="menu_mcp_logs"
+              name="Execution Logs"
+              parent="menu_mcp_root"
+              action="action_mcp_log"
+              sequence="50"
+              groups="base.group_system"/>
+
+    <!-- ── Configuration (admin only) ── -->
+    <menuitem id="menu_mcp_config"
+              name="Configuration"
+              parent="menu_mcp_root"
+              action="action_mcp_config"
+              sequence="1"
+              groups="base.group_system"/>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         MENU ITEM (added to existing MCP Studio root menu)
+    ═══════════════════════════════════════════════════════════ -->
+    <menuitem id="menu_mcp_snippet"
+              name="Snippets"
+              parent="menu_mcp_root"
+              action="action_mcp_snippet"
+              sequence="40"/>
+
+
+     <menuitem id="menu_mcp_report"
+              name="Reports"
+              parent="menu_mcp_root"
+              action="action_mcp_report"
+              sequence="28"/>
+
+
+     <!-- Menu Items -->
+    <menuitem id="menu_mcp_email_template_root"
+              name="Email Templates"
+              parent="menu_mcp_root"
+              action="action_mcp_email_template"
+              sequence="10"/>
+
+</odoo>

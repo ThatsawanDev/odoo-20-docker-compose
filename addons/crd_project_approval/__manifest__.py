@@ -1,0 +1,36 @@
+# -*- coding: utf-8 -*-
+{
+    'name': 'CRD Project Approval Sign-Off',
+    'version': '20.0.1.4.0',
+    'category': 'Project',
+    'summary': 'Manage project approval workflows and sign-off requests',
+    'depends': ['base', 'mail', 'base_setup', 'hr'],
+    'application': True,
+    'installable': True,
+    'data': [
+        'security/groups.xml',
+        'security/ir.access.csv',
+        'data/sequence.xml',
+        'data/sequence_api_queue.xml',
+        'data/config_params.xml',
+        'data/mail_template_assignment.xml',
+        'data/mail_template_requester_notification.xml',
+        'data/cron.xml',
+        'data/statusbar_state_option_data.xml',
+        'views/project_approval_role_views.xml',
+        'views/statusbar_label_config_views.xml',
+        'views/approval_transition_wizard_views.xml',
+        'views/project_approval_views.xml',
+        'views/project_approval_api_queue_views.xml',
+        'views/project_approval_config_views.xml',
+        'views/project_size_views.xml',
+        'views/menu.xml',
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'crd_project_approval/static/src/scss/dynamic_statusbar.scss',
+            'crd_project_approval/static/src/scss/project_request_form.scss',
+            'crd_project_approval/static/src/js/dynamic_config_statusbar.js',
+        ],
+    },
+}

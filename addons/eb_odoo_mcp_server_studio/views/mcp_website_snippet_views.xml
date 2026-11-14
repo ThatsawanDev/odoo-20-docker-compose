@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_mcp_snippet" model="ir.actions.act_window">
+        <field name="name">Website Snippets</field>
+        <field name="res_model">mcp.snippet</field>
+        <field name="view_mode">kanban,list,form</field>
+<!--        <field name="search_view_id" ref="view_mcp_snippet_search"/>-->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No snippets yet — ask AI to build one!
+            </p>
+            <p>
+                Ask the AI agent: <em>"Create a hero banner website snippet"</em>.
+                It generates the HTML, CSS, and installs it directly into the
+                Website Builder — no restart or manual steps needed.
+            </p>
+        </field>
+    </record>
+
+<!--    &lt;!&ndash; ═══════════════════════════════════════════════════════════-->
+<!--         SEARCH-->
+<!--    ═══════════════════════════════════════════════════════════ &ndash;&gt;-->
+<!--    <record id="view_mcp_snippet_search" model="ir.ui.view">-->
+<!--        <field name="name">mcp.snippet.search</field>-->
+<!--        <field name="model">mcp.snippet</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <search string="Website Snippets">-->
+<!--                <field name="name" string="Name"-->
+<!--                       filter_domain="['|',('name','ilike',self),('snippet_class','ilike',self)]"/>-->
+<!--                <separator/>-->
+<!--                <filter name="installed" string="Installed" domain="[('state','=','installed')]"/>-->
+<!--                <filter name="draft"     string="Draft"     domain="[('state','=','draft')]"/>-->
+<!--                <filter name="error"     string="Error"     domain="[('state','=','error')]"/>-->
+<!--                <separator/>-->
+<!--                <filter name="structure" string="Structure" domain="[('category','=','snippet_structure')]"/>-->
+<!--                <filter name="content"   string="Content"   domain="[('category','=','snippet_content')]"/>-->
+<!--                <filter name="feature"   string="Feature"   domain="[('category','=','snippet_feature')]"/>-->
+<!--                <filter name="effect"    string="Effect"    domain="[('category','=','snippet_effect')]"/>-->
+<!--                <separator/>-->
+<!--                <filter name="archived" string="Archived"   domain="[('active','=',False)]"/>-->
+<!--                <group expand="0" string="Group By">-->
+<!--                    <filter name="grp_cat"   string="Category"   context="{'group_by':'category'}"/>-->
+<!--                    <filter name="grp_state" string="State"      context="{'group_by':'state'}"/>-->
+<!--                </group>-->
+<!--            </search>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LIST
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_snippet_list" model="ir.ui.view">
+        <field name="name">mcp.snippet.list</field>
+        <field name="model">mcp.snippet</field>
+        <field name="arch" type="xml">
+            <list string="Website Snippets"
+                  default_order="write_date desc"
+                  decoration-success="state == 'installed'"
+                  decoration-danger="state == 'error'"
+                  decoration-muted="active == False">
+                <field name="name"/>
+                <field name="snippet_class" optional="show"/>
+<!--                <field name="category" widget="badge"-->
+<!--                       decoration-info="category == 'snippet_structure'"-->
+<!--                       decoration-success="category == 'snippet_content'"-->
+<!--                       decoration-warning="category == 'snippet_feature'"-->
+<!--                       optional="show"/>-->
+                <field name="state" widget="badge"
+                       decoration-success="state == 'installed'"
+                       decoration-danger="state == 'error'"
+                       decoration-info="state == 'draft'"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="write_date" string="Updated" optional="show"/>
+                <field name="active" column_invisible="1"/>
+                <button name="action_install" string="Install" type="object"
+                        icon="fa-globe" class="btn-sm btn-primary"
+                        invisible="state == 'installed'"/>
+                <button name="action_uninstall" string="Remove" type="object"
+                        icon="fa-trash" class="btn-sm btn-secondary"
+                        invisible="state != 'installed'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         KANBAN
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_snippet_kanban" model="ir.ui.view">
+        <field name="name">mcp.snippet.kanban</field>
+        <field name="model">mcp.snippet</field>
+        <field name="arch" type="xml">
+            <kanban sample="1" default_order="write_date desc">
+                <field name="name"/>
+                <field name="snippet_class"/>
+<!--                <field name="category"/>-->
+                <field name="state"/>
+                <field name="description"/>
+                <field name="thumb_url"/>
+                <field name="user_id"/>
+                <field name="write_date"/>
+                <templates>
+                    <t t-name="card">
+                        <!-- Category colour strip -->
+<!--                        <div t-attf-style="-->
+<!--                            height:5px;margin:-12px -12px 12px;-->
+<!--                            background:#{-->
+<!--                                record.category.raw_value == 'snippet_structure' ? '#3b82f6' :-->
+<!--                                record.category.raw_value == 'snippet_content'   ? '#10b981' :-->
+<!--                                record.category.raw_value == 'snippet_feature'   ? '#f59e0b' : '#8b5cf6'-->
+<!--                            };border-radius:8px 8px 0 0;"/>-->
+
+                        <!-- Thumbnail preview -->
+                        <div t-if="record.thumb_url.raw_value"
+                             class="text-center mb-2">
+                            <img t-attf-src="#{record.thumb_url.raw_value}"
+                                 style="height:80px;width:auto;border-radius:6px;" alt="Description of image"/>
+                        </div>
+
+                        <div class="d-flex align-items-start justify-content-between mb-1">
+                            <strong class="fs-6 text-truncate" style="max-width:72%;">
+                                <field name="name"/>
+                            </strong>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'installed'"
+                                   decoration-danger="state == 'error'"
+                                   decoration-info="state == 'draft'"
+                                   class="ms-2 flex-shrink-0"/>
+                        </div>
+
+                        <div class="text-muted small mb-3">
+                            <code><field name="snippet_class"/></code>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between border-top pt-2 mt-auto">
+                            <field name="user_id" widget="many2one_avatar_user" readonly="1"/>
+                            <div class="d-flex gap-1">
+                                <button name="action_uninstall" type="object"
+                                        t-if="record.state.raw_value == 'installed'"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        onclick="event.stopPropagation()">
+                                    <i class="fa fa-trash" title="Delete"/>
+                                </button>
+                                <button name="action_install" type="object"
+                                        t-if="record.state.raw_value != 'installed'"
+                                        class="btn btn-sm btn-outline-primary"
+                                        onclick="event.stopPropagation()">
+                                    <i class="fa fa-globe me-1" title="fa-globe me-1"/>Install
+                                </button>
+                                <span t-else=""
+                                      class="text-success small fw-semibold align-self-center">
+                                    <i class="fa fa-check-circle me-1" title="fa-check-circle me-1"/>Live
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         FORM
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_snippet_form" model="ir.ui.view">
+        <field name="name">mcp.snippet.form</field>
+        <field name="model">mcp.snippet</field>
+        <field name="arch" type="xml">
+            <form string="Website Snippet">
+                <header>
+                    <button name="action_install" string="Install on Website"
+                            type="object" class="btn-primary" icon="fa-globe"
+                            invisible="state == 'installed'"/>
+                    <button name="action_install" string="Re-Install"
+                            type="object" class="btn-secondary" icon="fa-refresh"
+                            invisible="state != 'installed'"/>
+                    <button name="action_uninstall" string="Remove from Website"
+                            type="object" class="btn-secondary" icon="fa-trash"
+                            invisible="state != 'installed'"
+                            confirm="This removes the snippet from the Website Builder panel. Continue?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,installed"/>
+                </header>
+                <sheet>
+                    <!-- Success banner -->
+                    <div class="alert alert-success d-flex gap-2 align-items-center mb-3" role="alert"
+                         invisible="state != 'installed'">
+                        <i class="fa fa-check-circle fa-lg" title="fa-check-circle fa-lg"/>
+                        <span>
+                            <strong>Live in Website Builder.</strong>
+                            Hard-refresh the browser (<kbd>Ctrl+Shift+R</kbd>),
+                            then go to Website → Edit → Blocks to find it.
+                        </span>
+                    </div>
+                    <div class="alert alert-danger d-flex gap-2 align-items-center mb-3" role="alert"
+                         invisible="state != 'error'">
+                        <i class="fa fa-exclamation-triangle fa-lg" title="fa-exclamation-triangle fa-lg"/>
+                        <span>Install failed — see the <strong>Install Log</strong> tab.</span>
+                    </div>
+
+                    <div class="oe_title mb-3">
+                        <label class="o_form_label" for="name">Snippet Name</label>
+                        <h1>
+                            <field name="name" id="name" placeholder="e.g. Hero Banner"/>
+                        </h1>
+                        <div class="d-flex align-items-center gap-2 mt-1 text-muted small">
+                            CSS class: <code><field name="snippet_class" readonly="1"/></code>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Settings">
+                            <field name="technical_name"
+                                   placeholder="hero_banner  (s_ auto-added)"/>
+<!--                            <field name="category"/>-->
+                            <field name="description" placeholder="What this snippet does…"/>
+                        </group>
+                        <group string="Info">
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="user_id" readonly="1"
+                                   widget="many2one_avatar_user"/>
+                            <field name="write_date" readonly="1" string="Updated"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <!-- Tab 1: Template -->
+                        <page string="Template (HTML)" name="template">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                Root element must be:
+                                <code>&lt;section class="s_name o_colored_level"
+                                data-name="Name" data-snippet="s_name"&gt;</code>.
+                                Use <code>class="oe_editable"</code> on editable text.
+                                Bootstrap 5 grid: <code>container &gt; row &gt; col-*</code>.
+                            </div>
+                            <field name="template_xml" nolabel="1"
+                                   widget="ace" options="{'mode': 'xml', 'theme': 'monokai'}"
+                                   style="min-height:380px;"/>
+                        </page>
+
+                        <!-- Tab 2: SCSS/CSS -->
+                        <page string="CSS / SCSS" name="scss">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                Use <code>.s_name</code> as root selector.
+                                Prefix all sub-classes: <code>.s_name_card</code>.
+                                Plain CSS works — SCSS syntax also supported.
+                            </div>
+                            <field name="scss_code" nolabel="1"
+                                   widget="ace" options="{'mode': 'scss', 'theme': 'monokai'}"
+                                   style="min-height:280px;"/>
+                        </page>
+
+                        <!-- Tab 3: JavaScript -->
+                        <page string="JavaScript" name="js">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                Optional. For animations or interactivity.
+                                Loaded on all frontend pages when installed.
+                            </div>
+                            <field name="js_code" nolabel="1"
+                                   widget="ace" options="{'mode': 'javascript', 'theme': 'monokai'}"
+                                   style="min-height:280px;"/>
+                        </page>
+
+                        <!-- Tab 4: Thumbnail -->
+                        <page string="Thumbnail (SVG)" name="thumb">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                SVG preview shown in the Website Builder panel (200×150).
+                                Auto-generated if empty.
+                            </div>
+                            <field name="thumbnail_svg" nolabel="1"
+                                   widget="ace" options="{'mode': 'xml', 'theme': 'monokai'}"
+                                   style="min-height:180px;"/>
+                        </page>
+
+                        <!-- Tab 5: Install Log -->
+                        <page string="Install Log" name="log"
+                              invisible="not install_log">
+                            <field name="install_log" nolabel="1" readonly="1"
+                                   widget="ace"
+                                   style="min-height:160px;"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+</odoo>

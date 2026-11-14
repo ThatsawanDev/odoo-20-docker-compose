@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="ir_cron_sync_tiktok_orders" model="ir.cron">
+        <field name="name">TikTok Shop: Synchronize Orders</field>
+        <field name="model_id" ref="model_tiktok_shop"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_tiktok_orders()</field>
+        <field name="interval_number">30</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+
+    <record id="ir_cron_sync_tiktok_inventory" model="ir.cron">
+        <field name="name">TikTok Shop: Synchronize Inventory</field>
+        <field name="model_id" ref="model_tiktok_shop"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_tiktok_inventory()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+
+    <record id="ir_cron_retry_tiktok_webhooks" model="ir.cron">
+        <field name="name">TikTok Shop: Retry Webhook Events</field>
+        <field name="model_id" ref="model_tiktok_webhook_event"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_retry_events()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+        <field name="user_id" ref="base.user_root"/>
+    </record>
+
+</odoo>

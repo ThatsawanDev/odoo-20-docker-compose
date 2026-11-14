@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="thai_sales_stock_easy.Dashboard">
+        <div class="o_thai_easy_dashboard">
+            <t t-if="this.state.loading"><div class="o_thai_loading">กำลังโหลดข้อมูล...</div></t>
+            <t t-else="">
+                <main t-att-class="this.state.quotationOpen ? 'is-sale-page' : ''">
+                    <header class="o_thai_header">
+                        <div class="o_thai_header_copy">
+                            <span class="o_thai_eyebrow" t-esc="this.state.data.company_name"/>
+                            <h1>สวัสดีค่ะ <t t-esc="this.state.data.user_name"/></h1>
+                            <p>จัดการงานขายและสต็อกได้ง่าย ๆ ครบจบในที่เดียว</p>
+                            <small><i class="fa fa-calendar-o"/> <t t-esc="this.state.data.date_th"/></small>
+                        </div>
+                        <div class="o_thai_header_art" aria-hidden="true">
+                            <div class="o_thai_boxes"><i class="fa fa-cubes"/></div>
+                            <blockquote>“ขายง่าย สต็อกครบ<br/>การเงินชัดเจน<br/>ธุรกิจเดินหน้าได้ทุกวัน”</blockquote>
+                        </div>
+                    </header>
+                    <div t-if="this.state.quotationOpen" class="o_thai_sale_page">
+                    <section class="o_thai_quote_panel o_thai_pos_modal" aria-label="สร้างใบเสนอราคา">
+                        <div class="o_thai_quote_heading">
+                            <div><span class="o_thai_quote_icon"><i class="fa fa-file-text-o"/></span><div><h2>สร้างใบเสนอราคา</h2><p>กรอกข้อมูลลูกค้า เลือกสินค้า และบันทึกใบเสนอราคาได้ทันที</p></div></div>
+                            <div class="o_thai_page_actions">
+                                <button t-on-click="this.openCustomerSearch"><i class="fa fa-user-o"/><span>ดึงข้อมูลลูกค้า<small>จากประวัติ</small></span></button>
+                                <button t-on-click="() => this.open('thai_sales_stock_easy.action_quotation')"><i class="fa fa-file-text-o"/><span>สร้างจาก<small>ใบเสนอราคาเดิม</small></span></button>
+                                <button class="is-muted" title="เตรียมไว้สำหรับนำเข้า"><i class="fa fa-upload"/><span>นำเข้าสินค้าจากไฟล์<small>(Excel)</small></span></button>
+                                <button class="o_thai_back" t-on-click="this.closeQuotation"><i class="fa fa-arrow-left"/> กลับ</button>
+                            </div>
+                        </div>
+                        <div class="o_thai_pos_customer">
+                            <div class="o_thai_customer_block">
+                            <div class="o_thai_customer_select">
+                                <label><i class="fa fa-user"/> ลูกค้า <em>*</em></label>
+                                <div class="o_thai_customer_search">
+                                    <i class="fa fa-search"/>
+                                    <input t-att-disabled="this.state.newCustomer" t-att-value="this.state.customerSearch" placeholder="พิมพ์ชื่อลูกค้า หรือเบอร์โทร..." t-on-focus="this.openCustomerSearch" t-on-input="(ev) => this.searchCustomer(ev.target.value)"/>
+                                    <div t-if="this.state.customerResultsOpen &amp;&amp; !this.state.newCustomer" class="o_thai_customer_results">
+                                        <button t-foreach="this.customerMatches()" t-as="customer" t-key="customer.id" t-on-click="() => this.selectCustomer(customer)">
+                                            <i class="fa fa-user-circle-o"/><span><strong t-esc="customer.name"/><small t-if="customer.phone"><i class="fa fa-phone"/> <t t-esc="customer.phone"/></small></span>
+                                        </button>
+                                        <div t-if="!this.customerMatches().length" class="o_thai_no_customer"><i class="fa fa-search"/> ไม่พบลูกค้า ลองค้นชื่อหรือเบอร์อื่น</div>
+                                    </div>
+                                </div>
+                                <button class="o_thai_new_customer" t-on-click="this.toggleNewCustomer"><i t-att-class="this.state.newCustomer ? 'fa fa-search' : 'fa fa-user-plus'"/> <t t-if="this.state.newCustomer">เลือกลูกค้าเดิม</t><t t-else="">เพิ่มลูกค้าใหม่</t></button>
+                            </div>
+                            <div t-if="this.state.newCustomer" class="o_thai_customer_form">
+                                <input placeholder="ชื่อลูกค้า *" t-on-input="(ev) => this.setCustomerField('name', ev.target.value)"/>
+                                <input placeholder="เบอร์โทร" t-on-input="(ev) => this.setCustomerField('phone', ev.target.value)"/>
+                                <input class="is-wide" placeholder="ที่อยู่ / บ้านเลขที่ / ถนน" t-on-input="(ev) => this.setCustomerField('street', ev.target.value)"/>
+                                <input placeholder="อำเภอ / เขต / จังหวัด" t-on-input="(ev) => this.setCustomerField('city', ev.target.value)"/>
+                                <input placeholder="รหัสไปรษณีย์" t-on-input="(ev) => this.setCustomerField('zip', ev.target.value)"/>
+                            </div>
+                            <div t-if="!this.state.newCustomer &amp;&amp; this.selectedCustomer()" class="o_thai_selected_customer">
+                                <span class="o_thai_customer_avatar"><i class="fa fa-user"/></span>
+                                <div><strong t-esc="this.selectedCustomer().name"/><span t-if="this.selectedCustomer().phone"><i class="fa fa-phone"/> <t t-esc="this.selectedCustomer().phone"/></span><span t-if="this.selectedCustomer().vat"><i class="fa fa-id-card-o"/> เลขผู้เสียภาษี <t t-esc="this.selectedCustomer().vat"/></span></div>
+                                <div class="o_thai_customer_address"><i class="fa fa-map-marker"/><span><t t-if="this.selectedCustomer().address" t-esc="this.selectedCustomer().address"/><t t-else="">ยังไม่ได้บันทึกที่อยู่</t></span></div>
+                            </div>
+                            </div>
+                            <div class="o_thai_order_dates">
+                                <label><i class="fa fa-calendar"/><span>วันที่เสนอราคา<input type="date" t-att-value="this.state.quote.date" disabled="disabled"/></span></label>
+                                <label><i class="fa fa-tag"/><span>กำหนดยืนราคา<input type="date" t-att-value="this.state.quote.validity_date" t-on-input="(ev) => this.setValidityDate(ev.target.value)"/></span></label>
+                            </div>
+                        </div>
+                        <div class="o_thai_pos_body">
+                            <div class="o_thai_product_area">
+                                <aside class="o_thai_categories">
+                                    <h3>หมวดหมู่สินค้า</h3>
+                                    <button t-att-class="this.state.categoryId === 0 ? 'is-active' : ''" t-on-click="() => this.setCategory(0)"><i class="fa fa-list-alt"/><span>ทั้งหมด</span><b t-esc="this.state.formData.products.length"/></button>
+                                    <button t-foreach="this.categories()" t-as="category" t-key="category.id" t-att-class="this.state.categoryId === category.id ? 'is-active' : ''" t-on-click="() => this.setCategory(category.id)"><i class="fa fa-folder-o"/><span t-esc="category.name"/><b t-esc="category.count"/></button>
+                                </aside>
+                                <div class="o_thai_product_browser">
+                                <div class="o_thai_product_toolbar"><div><i class="fa fa-search"/><input placeholder="ค้นหาสินค้า (ชื่อสินค้า หรือรหัสสินค้า)" t-on-input="(ev) => this.setProductSearch(ev.target.value)"/></div><button><i class="fa fa-filter"/> ตัวกรอง</button><button><i class="fa fa-sort-amount-asc"/> เรียงตาม</button></div>
+                                <div class="o_thai_product_grid">
+                                    <button class="o_thai_product_tile" t-foreach="this.filteredProducts()" t-as="product" t-key="product.key" t-on-click="() => this.addProduct(product)">
+                                        <img t-att-src="product.image" t-att-alt="product.name"/>
+                                        <small class="o_thai_sku" t-esc="product.key"/><span t-esc="product.name"/><small><i class="fa fa-balance-scale"/> <t t-esc="product.uom"/></small><strong><t t-esc="this.money(product.price)"/> <t t-esc="this.state.formData.currency"/></strong>
+                                        <em t-att-class="product.stock &gt; 0 ? 'is-stock' : 'is-empty'">มีในสต็อก <t t-esc="this.money(product.stock)"/> <t t-esc="product.uom"/></em>
+                                        <i class="fa fa-plus"/>
+                                    </button>
+                                </div>
+                                </div>
+                            </div>
+                            <aside class="o_thai_cart">
+                                <div class="o_thai_pos_title"><h3><i class="fa fa-shopping-cart"/> ตะกร้าสินค้า</h3><span><t t-esc="this.state.quote.lines.length"/> รายการ</span></div>
+                                <div t-if="!this.state.quote.lines.length" class="o_thai_cart_empty"><i class="fa fa-shopping-basket"/><span>ยังไม่มีสินค้า</span><small>เลือกรูปสินค้าทางซ้าย</small></div>
+                                <div class="o_thai_cart_line" t-foreach="this.state.quote.lines" t-as="line" t-key="line.key">
+                                    <div><strong t-esc="line.name"/><small><t t-esc="this.money(line.price)"/> <t t-esc="this.state.formData.currency"/> / <t t-esc="line.uom"/></small></div>
+                                    <div class="o_thai_qty_control">
+                                        <button t-on-click="() => this.adjustQuantity(line, -1)" t-att-disabled="line.quantity &lt;= 1" aria-label="ลดจำนวน"><i class="fa fa-minus"/></button>
+                                        <input type="number" min="1" step="1" t-att-value="line.quantity" t-on-input="(ev) => this.setQuantity(line, ev.target.value)"/>
+                                        <button t-on-click="() => this.adjustQuantity(line, 1)" aria-label="เพิ่มจำนวน"><i class="fa fa-plus"/></button>
+                                    </div>
+                                    <b><t t-esc="this.money(line.quantity * line.price)"/></b>
+                                    <button class="o_thai_remove" t-on-click="() => this.removeQuoteLine(line_index)"><i class="fa fa-trash-o"/></button>
+                                </div>
+                            </aside>
+                        </div>
+                        <div class="o_thai_quote_footer">
+                            <div class="o_thai_note"><label>หมายเหตุ</label><input type="text" placeholder="รายละเอียดเพิ่มเติม (ถ้ามี)" t-on-input="(ev) => this.setNote(ev.target.value)"/></div>
+                            <div class="o_thai_tax_summary">
+                                <div><span>รวมก่อนภาษี</span><b><t t-esc="this.money(this.state.totals.untaxed)"/> <t t-esc="this.state.formData.currency"/></b></div>
+                                <div><span>ภาษีมูลค่าเพิ่ม (<t t-esc="this.state.totals.tax_label"/>)</span><b><t t-esc="this.money(this.state.totals.tax)"/> <t t-esc="this.state.formData.currency"/></b></div>
+                                <div class="is-total"><span>ยอดรวมทั้งสิ้น</span><strong><t t-esc="this.money(this.state.totals.total)"/> <t t-esc="this.state.formData.currency"/></strong></div>
+                            </div>
+                            <button class="o_thai_cancel" t-on-click="this.closeQuotation">ยกเลิก</button>
+                            <button class="o_thai_save" t-on-click="this.saveQuotation" t-att-disabled="this.state.saving"><i class="fa fa-check"/> <t t-if="this.state.saving">กำลังบันทึก...</t><t t-else="">บันทึกใบเสนอราคา</t></button>
+                        </div>
+                    </section>
+                    </div>
+                    <section class="o_thai_kpis">
+                        <button t-on-click="() => this.open('thai_sales_stock_easy.action_sales_order')"><i class="fa fa-shopping-cart"/><span>ยอดขายวันนี้<strong><t t-esc="this.money(this.state.data.today_sales)"/> <t t-esc="this.state.data.currency"/></strong><small>ข้อมูลจากคำสั่งขาย</small></span></button>
+                        <button t-on-click="() => this.open('thai_sales_stock_easy.action_customer_invoice')"><i class="fa fa-file-text"/><span>ออกใบกำกับภาษี<strong><t t-esc="this.state.data.invoice_total"/> รายการ</strong><small>รวมใบกำกับที่ยืนยันแล้ว</small></span></button>
+                        <button t-on-click="() => this.open('thai_sales_stock_easy.action_receivable')"><i class="fa fa-clock-o"/><span>รอรับเงิน<strong><t t-esc="this.state.data.receivable_count"/> รายการ</strong><small>มูลค่า <t t-esc="this.money(this.state.data.receivable)"/> <t t-esc="this.state.data.currency"/></small></span></button>
+                        <button t-on-click="() => this.open('thai_sales_stock_easy.action_products')"><i class="fa fa-cube"/><span>สินค้าใกล้หมด<strong><t t-esc="this.state.data.low_stock"/> รายการ</strong><small>ต่ำกว่าจุดแจ้งเตือน</small></span></button>
+                        <button t-on-click="() => this.open('thai_sales_stock_easy.action_incoming')"><i class="fa fa-shopping-cart"/><span>รอรับสินค้าจัดซื้อ<strong><t t-esc="this.state.data.incoming"/> รายการ</strong><small>จากใบสั่งซื้อ</small></span></button>
+                    </section>
+                    <div class="o_thai_dashboard_tables">
+                        <section class="o_thai_dash_panel"><div class="o_thai_dash_title"><h2>รายการขายล่าสุด</h2><button t-on-click="() => this.open('thai_sales_stock_easy.action_sales_order')">ดูทั้งหมด <i class="fa fa-angle-right"/></button></div><div class="o_thai_recent_table"><div class="is-head"><span>เลขที่เอกสาร</span><span>ลูกค้า</span><span>วันที่</span><span>ยอดรวม</span><span>สถานะ</span></div><button t-foreach="this.state.data.recent_orders" t-as="order" t-key="order.id" t-on-click="() => this.openSaleOrder(order.id)"><b t-esc="order.name"/><span t-esc="order.customer"/><span t-esc="order.date"/><strong><t t-esc="this.money(order.amount)"/> <t t-esc="this.state.data.currency"/></strong><em t-att-class="'is-' + order.state" t-esc="order.state_label"/></button><div t-if="!this.state.data.recent_orders.length" class="o_thai_empty_row">ยังไม่มีรายการขาย</div></div></section>
+                        <section class="o_thai_dash_panel"><div class="o_thai_dash_title"><h2>สินค้าใกล้หมด <em><t t-esc="this.state.data.low_stock"/> รายการ</em></h2><button t-on-click="() => this.open('thai_sales_stock_easy.action_products')">ดูทั้งหมด <i class="fa fa-angle-right"/></button></div><div class="o_thai_low_list"><button t-foreach="this.state.data.low_products" t-as="product" t-key="product.id" t-on-click="() => this.openProduct(product.id)"><img t-if="product.image" t-att-src="product.image"/><span t-else="" class="o_thai_product_image_fallback"><i class="fa fa-cube"/></span><span t-esc="product.name"/><b><t t-esc="this.money(product.stock)"/> <t t-esc="product.uom"/></b><i class="fa fa-ellipsis-h"/></button><div t-if="!this.state.data.low_products.length" class="o_thai_empty_row">สต็อกสินค้าเพียงพอ</div></div></section>
+                    </div>
+                    <div class="o_thai_dashboard_bottom">
+                        <section class="o_thai_dash_panel o_thai_sales_chart"><div class="o_thai_dash_title"><h2>สรุปยอดขาย (30 วันล่าสุด)</h2><strong><t t-esc="this.money(this.state.data.sales_30_total)"/> <t t-esc="this.state.data.currency"/></strong></div><div class="o_thai_bars"><div t-foreach="this.state.data.sales_chart" t-as="bar" t-key="bar_index" class="o_thai_bar"><span t-att-style="'height:' + bar.height + '%'" t-att-title="this.money(bar.amount)"/><small t-if="bar_index % 5 === 0" t-esc="bar.label"/></div></div></section>
+                        <section class="o_thai_dash_panel o_thai_payment_chart"><div class="o_thai_dash_title"><h2>สถานะการรับชำระ</h2></div><div class="o_thai_donut"><div><strong><t t-esc="this.money(this.state.data.receivable)"/></strong><small>ยอดรอรับ</small></div></div><p><span/><b>ชำระแล้ว</b><em>ติดตามในใบกำกับภาษี</em></p><p><span class="is-orange"/><b>รอชำระ</b><em><t t-esc="this.state.data.receivable_count"/> รายการ</em></p></section>
+                        <section class="o_thai_dash_panel"><div class="o_thai_dash_title"><h2>เมนูใช้บ่อย</h2></div><div class="o_thai_menu_grid"><button t-on-click="() => this.open('thai_sales_stock_easy.action_customers')"><i class="fa fa-user"/>ลูกค้า</button><button t-on-click="() => this.open('thai_sales_stock_easy.action_products')"><i class="fa fa-archive"/>สินค้า</button><button t-on-click="() => this.open('thai_sales_stock_easy.action_customer_invoice')"><i class="fa fa-file-text-o"/>ใบกำกับภาษี</button><button t-on-click="() => this.open('thai_sales_stock_easy.action_purchase_rfq')"><i class="fa fa-file-o"/>ใบสั่งซื้อ</button><button t-on-click="() => this.open('thai_sales_stock_easy.action_incoming')"><i class="fa fa-cube"/>รับสินค้า</button><button t-on-click="() => this.open('thai_sales_stock_easy.action_sales_order')"><i class="fa fa-line-chart"/>รายงานยอดขาย</button></div></section>
+                    </div>
+                </main>
+            </t>
+        </div>
+    </t>
+</templates>

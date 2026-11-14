@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_mcp_prompt_template" model="ir.actions.act_window">
+        <field name="name">Prompt Templates</field>
+        <field name="res_model">mcp.prompt.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No prompt templates yet.</p>
+            <p>
+                Templates appear as <strong>/commands</strong> in Claude, Windsurf,
+                and other MCP clients. Use <code>{{variable}}</code> syntax for
+                dynamic argument placeholders.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_mcp_prompt_template_list" model="ir.ui.view">
+        <field name="name">mcp.prompt.template.list</field>
+        <field name="model">mcp.prompt.template</field>
+        <field name="arch" type="xml">
+            <list string="Prompt Templates" decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="name" string="Command Name"/>
+                <field name="description" string="Description" optional="show"/>
+                <field name="visibility" widget="badge" string="Visibility"
+                       decoration-success="visibility == 'public'"
+                       decoration-info="visibility == 'shared'"
+                       decoration-warning="visibility == 'private'"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mcp_prompt_template_form" model="ir.ui.view">
+        <field name="name">mcp.prompt.template.form</field>
+        <field name="model">mcp.prompt.template</field>
+        <field name="arch" type="xml">
+            <form string="Prompt Template">
+                <sheet>
+                    <div class="oe_title">
+                        <label class="o_form_label" for="name">Command Name</label>
+                        <h1>
+                            <field name="name" id="name"
+                                   placeholder="e.g. generate_report"/>
+                        </h1>
+                    </div>
+
+                    <div class="alert alert-info py-2 px-3 mb-3" role="alert">
+                        <i class="fa fa-lightbulb-o me-1" title="prompt template"/>
+                        <strong>How it works:</strong> After saving, AI clients show this
+                        as a selectable <code>/command</code>. Users fill in the Arguments
+                        below, values replace <code>{{variable}}</code> placeholders,
+                        and the completed prompt is sent to the AI.
+                    </div>
+
+                    <group>
+                        <group string="Template Settings">
+                            <field name="description"
+                                   string="Description (shown in AI client)"
+                                   placeholder="e.g. Generate a PDF report for any Odoo model"/>
+                            <field name="visibility" string="Visibility"/>
+                            <field name="sequence" string="Sort Order"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                        <group string="Sharing" invisible="visibility != 'shared'">
+                            <field name="user_ids" widget="many2many_tags"
+                                   string="Shared With"
+                                   placeholder="Select users to share with…"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Prompt Text" name="prompt">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="prompt template"/>
+                                Write the full prompt. Use <code>{{variable_name}}</code>
+                                for parts the user fills in. Variable names must match the
+                                Arguments tab exactly.
+                            </div>
+                            <field name="prompt_text" nolabel="1" widget="ace"
+                                   style="min-height:300px;"
+                                   placeholder="Create a {{report_type}} report for {{model_name}} from {{date_from}} to {{date_to}}."/>
+                        </page>
+
+                        <page string="Arguments" name="arguments">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="prompt template"/>
+                                One row per <code>{{variable}}</code> placeholder.
+                                AI clients show these as labelled input fields.
+                            </div>
+                            <field name="argument_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name" string="Variable Name"
+                                           placeholder="e.g. model_name"/>
+                                    <field name="description" string="Label / Description"
+                                           placeholder="e.g. Odoo model (e.g. sale.order)"/>
+                                    <field name="default_value" string="Default"
+                                           placeholder="e.g. sale.order"/>
+                                    <field name="required" widget="boolean_toggle"
+                                           string="Required"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

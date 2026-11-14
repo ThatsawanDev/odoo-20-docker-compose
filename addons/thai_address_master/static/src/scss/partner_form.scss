@@ -1,0 +1,76 @@
+.o_form_view .thai_partner_sheet {
+    --thai-primary: #173f74;
+    --thai-border: #dce6f3;
+    --thai-muted: #71829a;
+    background: linear-gradient(135deg, #f3f7fd 0%, #f8fbff 48%, #f4f7fb 100%);
+    padding: 16px !important;
+
+    .thai_partner_hero,
+    .thai_partner_card,
+    > .o_notebook {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid var(--thai-border);
+        border-radius: 16px;
+        box-shadow: 0 7px 24px rgba(29, 69, 122, 0.08);
+    }
+
+    .thai_partner_hero { padding: 18px 20px; margin-bottom: 16px !important; }
+    .thai_partner_info_grid { gap: 16px; }
+    .thai_partner_card { padding: 18px 20px; }
+    > .o_notebook { overflow: hidden; margin-top: 16px; }
+
+    .o_field_widget input,
+    .o_field_widget .o_input {
+        border-color: #cfdbeb;
+        border-radius: 8px;
+        min-height: 34px;
+    }
+
+    .thai_address_editor {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+        width: 100%;
+    }
+
+    .thai_address_grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 9px 12px;
+    }
+
+    .thai_address_line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+
+        > i {
+            color: var(--thai-primary);
+            flex: 0 0 18px;
+            text-align: center;
+        }
+
+        > .o_field_widget {
+            flex: 1 1 auto;
+            min-width: 0;
+            width: 100%;
+        }
+    }
+
+    .thai_address_editor_compact .thai_address_grid {
+        grid-template-columns: 1fr;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #173f74;
+        font-weight: 600;
+        border-bottom-color: #173f74;
+    }
+}
+
+@media (max-width: 991px) {
+    .o_form_view .thai_partner_sheet .thai_address_grid {
+        grid-template-columns: 1fr;
+    }
+}

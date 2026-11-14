@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="thai_sales_stock_hub.LegacyOrderCenter">
+        <div class="p-4 text-muted">กำลังเปิดรายการออเดอร์...</div>
+    </t>
+</templates>

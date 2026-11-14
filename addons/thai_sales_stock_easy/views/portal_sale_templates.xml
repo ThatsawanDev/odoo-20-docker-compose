@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_sale_order_shell_thai" inherit_id="sale.sale_order_portal_template">
+        <xpath expr="//t[@t-call='portal.portal_record_sidebar']" position="replace"/>
+        <xpath expr="//div[hasclass('o_portal_sale_sidebar')]" position="attributes">
+            <attribute name="class" add="o_thai_sale_portal" separator=" "/>
+            <attribute name="t-att-data-company-name">sale_order.company_id.name</attribute>
+        </xpath>
+        <xpath expr="//div[@id='quote_content']" position="attributes">
+            <attribute name="class">col-12 mt-0</attribute>
+        </xpath>
+    </template>
+
+    <template id="portal_sale_order_content_thai" inherit_id="sale.sale_order_portal_content">
+        <xpath expr="//div[@id='introduction']" position="replace">
+            <div id="introduction" class="o_thai_portal_heading">
+                <div>
+                    <span class="o_thai_portal_title_icon"><i class="fa fa-tags"/></span>
+                    <div>
+                        <h1><t t-out="sale_order.type_name"/> <t t-out="sale_order.name"/></h1>
+                        <p>สร้างเมื่อ <span t-field="sale_order.date_order"/> · โดย <t t-out="sale_order.user_id.name or '-'"/></p>
+                    </div>
+                </div>
+                <div class="o_thai_portal_actions d-print-none">
+                    <a class="btn btn-light" t-att-href="sale_order.get_portal_url(report_type='pdf')" target="_blank"><i class="fa fa-print"/> พิมพ์</a>
+                    <a t-if="sale_order._has_to_be_signed()" class="btn btn-primary" href="#" data-bs-toggle="modal" data-bs-target="#modalaccept"><i class="fa fa-paper-plane"/> ยืนยันใบเสนอราคา</a>
+                    <span t-elif="sale_order.signature" class="o_thai_signed_badge"><i class="fa fa-check-circle"/> ลูกค้ายืนยันแล้ว</span>
+                </div>
+            </div>
+            <div class="o_thai_portal_timeline">
+                <div class="is-done"><i class="fa fa-file-text-o"/><b>ใบเสนอราคา</b><small t-field="sale_order.easy_quotation_datetime"/></div>
+                <div t-att-class="'is-done' if sale_order.state in ('sale','done') else 'is-current'"><i class="fa fa-shopping-cart"/><b>ยืนยันการขาย</b><small t-if="sale_order.easy_confirmation_datetime" t-field="sale_order.easy_confirmation_datetime"/><small t-else="">รอการยืนยัน</small></div>
+                <div t-att-class="'is-done' if sale_order.easy_invoice_datetime else ''"><i class="fa fa-file-text"/><b>เอกสารการเงิน</b><small t-if="sale_order.easy_invoice_datetime" t-field="sale_order.easy_invoice_datetime"/><small t-else="">ยังไม่ถึงขั้นตอน</small></div>
+                <div t-att-class="'is-done' if sale_order.easy_delivery_datetime else ''"><i class="fa fa-truck"/><b>จัดเตรียม/จัดส่ง</b><small t-if="sale_order.easy_delivery_datetime" t-field="sale_order.easy_delivery_datetime"/><small t-else="">ยังไม่ถึงขั้นตอน</small></div>
+                <div t-att-class="'is-done' if sale_order.easy_payment_datetime else ''"><i class="fa fa-money"/><b>รับเงิน</b><small t-if="sale_order.easy_payment_datetime" t-field="sale_order.easy_payment_datetime"/><small t-else="">ยังไม่ได้รับเงิน</small></div>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[@id='introduction']" position="after">
+            <div id="informations" class="o_thai_portal_info_grid">
+                <section class="is-document"><i class="fa fa-file-text-o"/><div><small>ใบเสนอราคา</small><strong t-out="sale_order.name"/><span>วันที่เสนอราคา <b t-field="sale_order.date_order"/></span></div></section>
+                <section><h3><i class="fa fa-user-o"/> ข้อมูลลูกค้า</h3><strong t-field="sale_order.partner_id"/><p><i class="fa fa-map-marker"/> <span t-field="sale_order.partner_id" t-options="{'widget':'contact','fields':['address'],'no_marker':True}"/></p><p t-if="sale_order.partner_id.phone"><i class="fa fa-phone"/> <span t-field="sale_order.partner_id.phone"/></p><p t-if="sale_order.partner_id.email"><i class="fa fa-envelope"/> <span t-field="sale_order.partner_id.email"/></p></section>
+                <section><h3><i class="fa fa-tag"/> เงื่อนไขการชำระเงิน</h3><strong t-field="sale_order.payment_term_id"/><p><i class="fa fa-calendar"/> วันที่สิ้นสุด <span t-field="sale_order.validity_date"/></p><p><i class="fa fa-barcode"/> เลขที่อ้างอิง / Tracking<br/><t t-out="sale_order.easy_tracking_number or '-'"/></p></section>
+            </div>
+        </xpath>
+
+        <xpath expr="//th[@id='product_name_header']" position="replace"><th id="product_name_header" class="text-start">สินค้า / รายละเอียด</th></xpath>
+        <xpath expr="//th[@id='product_qty_header']" position="replace"><th id="product_qty_header" class="text-end">ปริมาณ</th></xpath>
+        <xpath expr="//th[@id='product_unit_price_header']" position="replace"><th id="product_unit_price_header" class="text-end d-none d-sm-table-cell">ราคาต่อหน่วย</th></xpath>
+        <xpath expr="//th[@id='subtotal_header']/span" position="replace"><span>จำนวนเงิน</span></xpath>
+
+    </template>
+
+    <template id="portal_sale_order_totals_thai" inherit_id="sale.sale_order_portal_content_totals_table">
+        <xpath expr="//table[@name='sale_order_totals_table']" position="replace">
+            <table class="table table-sm o_thai_portal_totals" name="sale_order_totals_table">
+                <tbody>
+                    <tr>
+                        <td>จำนวนรายการ</td>
+                        <td class="text-end"><strong><span t-field="sale_order.easy_line_count"/> รายการ</strong></td>
+                    </tr>
+                    <tr>
+                        <td>ยอดก่อนภาษี</td>
+                        <td class="text-end"><strong t-field="sale_order.amount_untaxed" t-options="{'widget':'monetary','display_currency':sale_order.currency_id}"/></td>
+                    </tr>
+                    <tr>
+                        <td>ภาษีมูลค่าเพิ่ม (7%)</td>
+                        <td class="text-end"><strong t-field="sale_order.amount_tax" t-options="{'widget':'monetary','display_currency':sale_order.currency_id}"/></td>
+                    </tr>
+                    <tr class="is-total">
+                        <td><strong>ยอดรวมทั้งหมด</strong></td>
+                        <td class="text-end"><strong t-field="sale_order.amount_total" t-options="{'widget':'monetary','display_currency':sale_order.currency_id}"/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </xpath>
+    </template>
+</odoo>
+

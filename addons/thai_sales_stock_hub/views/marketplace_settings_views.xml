@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_marketplace_settings_form" model="ir.ui.view">
+        <field name="name">res.config.settings.marketplace.hub</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="thai_sales_stock_easy.res_config_settings_view_form_thai_sale_flow"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='thai_sales_stock_easy']" position="inside">
+                <block title="Marketplace" name="thai_marketplace_settings">
+                    <setting id="hub_marketplace_enabled" string="เปิดใช้งาน Marketplace"
+                             help="แสดงเมนูออเดอร์ทุกช่องทาง และเปิดการซิงค์ Shopee, Lazada และ TikTok Shop">
+                        <field name="hub_marketplace_enabled"/>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

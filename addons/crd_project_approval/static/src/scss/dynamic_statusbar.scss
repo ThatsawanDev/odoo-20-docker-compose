@@ -1,0 +1,79 @@
+.o_field_dynamic_config_statusbar {
+    @extend .o_field_statusbar;
+
+    // ==========================================
+    // 🎨 CUSTOM BLUE THEME PALETTE
+    // ==========================================
+    $bg-current: #1e40af; // น้ำเงินเข้มขรึม (Deep Corporate Blue)
+    $text-current: #ffffff;
+
+    $bg-past: #3b82f6; // น้ำเงินสว่าง (Vibrant Business Blue)
+    $text-past: #ffffff;
+
+    $bg-future: #f0f7ff; // ฟ้าไอซ์บลูสว่าง (Premium Ice Blue)
+    $text-future: #475569; // ตัวหนังสือสีน้ำเงินอมเทาเข้ม (ช่วยให้เห็น Contrast ชัดเจน)
+    // ==========================================
+
+    >.o_statusbar_status {
+        border: none !important;
+        background: transparent !important;
+        gap: 0;
+    }
+
+    // Base: future/inactive stages
+    >.o_statusbar_status>.o_arrow_button {
+        border-radius: 0 !important;
+        position: relative !important;
+        padding-right: 20px !important;
+        padding-left: 25px !important;
+        margin: 0 !important;
+        border: none !important;
+        overflow: visible !important;
+        background-color: $bg-future !important;
+        color: $text-future !important;
+        clip-path: polygon(0% 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 0% 100%, 10px 50%) !important;
+    }
+
+    // Pull each notched button left 10px so the left-neighbour's tip fills the notch.
+    >.o_statusbar_status>.o_arrow_button:not(.o_last) {
+        margin-left: -10px !important;
+    }
+
+    // Past stages (completed, clickable)
+    >.o_statusbar_status>.o_arrow_button:not(.o_arrow_button_current):not([disabled]) {
+        background-color: $bg-past !important;
+        color: $text-past !important;
+    }
+
+    // Current active stage
+    >.o_statusbar_status>.o_arrow_button.o_arrow_button_current {
+        background-color: $bg-current !important;
+        color: $text-current !important;
+    }
+
+    // o_last = leftmost (first stage, flex-row-reverse): flat left edge, no notch
+    >.o_statusbar_status>.o_arrow_button.o_last {
+        padding-left: 15px !important;
+        margin-left: 0 !important;
+        clip-path: polygon(0% 0%, calc(100% - 10px) 0%, 100% 50%, calc(100% - 10px) 100%, 0% 100%) !important;
+    }
+
+    // o_first = rightmost button (last stage): flat right edge
+    >.o_statusbar_status>.o_arrow_button.o_first {
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%, 10px 50%) !important;
+    }
+
+    // Hide Odoo's CSS triangle pseudo-elements
+    >.o_statusbar_status>.o_arrow_button::before,
+    >.o_statusbar_status>.o_arrow_button::after {
+        display: none !important;
+    }
+
+    // Current stage emphasis
+    .o_arrow_button_current:disabled {
+        font-weight: bold !important;
+        text-decoration: none !important;
+        /* เอาขีดเส้นใต้ออกเพื่อให้ปุ่มดูคลีนเป็นเนื้อเดียวกัน */
+        opacity: 1 !important;
+    }
+}

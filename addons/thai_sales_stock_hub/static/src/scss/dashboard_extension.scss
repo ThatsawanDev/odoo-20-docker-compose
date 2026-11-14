@@ -1,0 +1,24 @@
+.o_hub_overview {
+    margin: 12px 0 16px;
+    padding: 20px 24px;
+    background: #fff;
+    border: 1px solid #c9dbf3;
+    border-radius: 16px;
+    box-shadow: 0 6px 24px rgba(28, 60, 108, .06);
+    .o_hub_overview_head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .o_hub_eyebrow { color: #3173d3; font-weight: 700; font-size: 12px; }
+    h2 { margin: 2px 0; color: #173462; font-size: 22px; }
+    p { margin: 0; color: #66809f; }
+    button { border: 0; cursor: pointer; }
+    .o_hub_primary { border-radius: 10px; padding: 11px 18px; background: #1767d4; color: white; font-weight: 700; white-space: nowrap; }
+    .o_hub_overview_grid { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 12px; margin-top: 16px; }
+    .o_hub_overview_grid > button, .o_hub_channels { min-height: 90px; padding: 14px 16px; border-radius: 12px; background: #f1f6fd; color: #264a7d; text-align: left; }
+    .o_hub_overview_grid > button { display: grid; grid-template-columns: 24px 1fr; align-items: center; gap: 4px 8px; }
+    .o_hub_overview_grid > button strong { grid-column: 2; font-size: 25px; color: #123d7a; }
+    .o_hub_channels > span { font-weight: 700; }
+    .o_hub_channels > div { display: flex; gap: 7px; margin: 7px 0; flex-wrap: wrap; }
+    .o_hub_channels > div > span { background: #e6ebf1; border-radius: 20px; padding: 3px 9px; }
+    .o_hub_channels > div > span.is-enabled { background: #d9f3e7; color: #087244; }
+    .o_hub_channels small { color: #7b8da2; }
+    @media (max-width: 900px) { .o_hub_overview_grid { grid-template-columns: 1fr; } .o_hub_overview_head { align-items: flex-start; flex-direction: column; } }
+}

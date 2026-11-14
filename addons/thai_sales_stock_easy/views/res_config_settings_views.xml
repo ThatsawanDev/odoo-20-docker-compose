@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_thai_sale_flow" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.thai.sale.flow</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ระบบขายและสต็อก" name="thai_sales_stock_easy" groups="base.group_system">
+                    <block title="ลำดับการทำงานขาย" name="thai_sale_flow_settings">
+                        <setting id="thai_sale_flow_sequence_setting"
+                                 string="ลำดับออกใบแจ้งหนี้และจัดส่ง"
+                                 help="กำหนดว่าต้องตัดสต็อกก่อนออกใบแจ้งหนี้ หรือออกใบแจ้งหนี้ก่อนตัดสต็อก">
+                            <field name="thai_sale_flow_sequence"/>
+                        </setting>
+                    </block>
+                    <block title="Quotation Pricing" name="thai_easy_pricelist_settings">
+                        <setting id="thai_easy_enable_pricelist_setting"
+                                 string="Use Pricelists on Quotations"
+                                 help="Show a Pricelist selector on quotations for this company only.">
+                            <field name="thai_easy_enable_pricelist"/>
+                            <div class="content-group mt-2" invisible="not thai_easy_enable_pricelist">
+                                <button name="action_thai_easy_create_sample_pricelists" type="object"
+                                        string="Create Sample Pricelists" class="btn btn-secondary"/>
+                                <div class="text-muted mt-1">Wholesale, Retail, and Government are examples. Set their pricing rules before use.</div>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

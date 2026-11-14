@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="thai_sales_stock_hub.OrderCenter">
+        <div class="o_hub_order_center">
+            <div class="o_hub_oc_body">
+                <aside class="o_hub_oc_sidebar">
+                    <h2><i class="fa fa-shopping-cart"/> จัดการออเดอร์</h2>
+                    <button t-att-class="!this.state.status &amp;&amp; !this.state.channel ? 'is-active' : ''" t-on-click="this.resetFilters"><i class="fa fa-list"/> ออเดอร์ทั้งหมด <b t-esc="this.state.data.all_count || 0"/></button>
+                    <button t-foreach="this.state.data.statuses || []" t-as="item" t-key="item.key" t-att-class="this.state.status === item.key ? 'is-active' : ''" t-on-click="() => this.setStatus(item.key)"><i class="fa fa-circle-o"/> <t t-esc="item.name"/><b t-esc="item.count"/></button>
+                    <h3>ช่องทางการขาย</h3>
+                    <button t-foreach="this.state.data.channels || []" t-as="item" t-key="item.key" t-att-class="this.state.channel === item.key ? 'is-active' : ''" t-on-click="() => this.setChannel(item.key)"><img t-att-src="'/thai_sales_stock_hub/static/src/img/channels/' + item.key + '.svg'"/> <t t-esc="item.name"/><b t-esc="item.count"/></button>
+                    <button t-if="this.state.data.can_configure" class="o_hub_oc_config" t-on-click="() => this.open('thai_sales_stock_hub.action_hub_settings')"><i class="fa fa-cog"/> ตั้งค่า Marketplace</button>
+                </aside>
+                <main>
+                    <header class="o_hub_oc_header"><div><h1><i class="fa fa-shopping-cart"/> ศูนย์ออเดอร์ (ทุกช่องทาง)</h1><p>รวมออเดอร์ทุกช่องทาง จัดการได้ในหน้าจอเดียว <span t-if="this.state.data.demo_count" class="o_hub_oc_demo">มีข้อมูลตัวอย่าง <t t-esc="this.state.data.demo_count"/> รายการ</span></p></div><div class="o_hub_oc_company_picker"><button class="o_hub_oc_company" t-on-click="this.toggleCompanies"><i class="fa fa-building"/> <t t-esc="this.state.data.companies || ''"/> <i class="fa fa-angle-down"/></button><div t-if="this.state.companyOpen" class="o_hub_oc_company_options"><button t-foreach="companyOptions" t-as="company" t-key="company.id" t-on-click="() => this.toggleCompany(company.id)"><i t-att-class="this.isCompanyActive(company.id) ? 'fa fa-check-square-o' : 'fa fa-square-o'"/> <t t-esc="company.name"/></button><small t-if="companyOptions.length === 1">ขณะนี้มีบริษัทเดียวที่บัญชีนี้เลือกได้</small></div></div></header>
+                    <section class="o_hub_oc_kpis"><div><i class="fa fa-shopping-cart is-blue"/><span>ออเดอร์ทั้งหมด<strong t-esc="this.state.data.all_count || 0"/></span></div><div><i class="fa fa-clock-o is-orange"/><span>รอดำเนินการ<strong t-esc="this.state.data.statuses?.[0]?.count || 0"/></span></div><div><i class="fa fa-cube is-purple"/><span>รอแพ็ก<strong t-esc="this.state.data.statuses?.[2]?.count || 0"/></span></div><div><i class="fa fa-truck is-blue"/><span>พร้อมจัดส่ง<strong t-esc="this.state.data.statuses?.[3]?.count || 0"/></span></div><div><i class="fa fa-check-circle is-green"/><span>จัดส่งแล้ว<strong t-esc="this.state.data.statuses?.[4]?.count || 0"/></span></div><div><i class="fa fa-times-circle is-red"/><span>ยกเลิก<strong t-esc="this.state.data.statuses?.[5]?.count || 0"/></span></div></section>
+                    <section class="o_hub_oc_channels"><button t-att-class="!this.state.channel ? 'is-active' : ''" t-on-click="() => this.setChannel('')">ทั้งหมด (<t t-esc="this.state.data.all_count || 0"/>)</button><button t-foreach="this.state.data.channels || []" t-as="item" t-key="item.key" t-att-class="this.state.channel === item.key ? 'is-active' : ''" t-on-click="() => this.setChannel(item.key)"><img t-att-src="'/thai_sales_stock_hub/static/src/img/channels/' + item.key + '.svg'"/> <t t-esc="item.name"/> (<t t-esc="item.count"/>)</button></section>
+                    <section class="o_hub_oc_toolbar"><div class="o_hub_oc_search"><i class="fa fa-search"/><input placeholder="ค้นหาเลขออเดอร์ / ชื่อลูกค้า / เบอร์โทร" t-att-value="this.state.search" t-on-change="this.setSearch"/></div><select t-att-value="this.state.status" t-on-change="(ev) => this.setStatus(ev.target.value)"><option value="">สถานะ: ทั้งหมด</option><option t-foreach="this.state.data.statuses || []" t-as="item" t-key="item.key" t-att-value="item.key" t-esc="item.name"/></select><input type="date" title="ตั้งแต่วันที่" t-att-value="this.state.dateFrom" t-on-change="this.setDateFrom"/><input type="date" title="ถึงวันที่" t-att-value="this.state.dateTo" t-on-change="this.setDateTo"/><button t-on-click="this.resetFilters"><i class="fa fa-undo"/> ล้างตัวกรอง</button><button class="o_hub_oc_import" t-on-click="() => this.open('thai_sales_stock_hub.action_hub_orders')"><i class="fa fa-upload"/> นำเข้าผ่าน Odoo</button></section>
+                    <div class="o_hub_oc_content">
+                        <section class="o_hub_oc_table_card">
+                            <table><thead><tr><th>เลขออเดอร์</th><th>ช่องทาง</th><th>ลูกค้า</th><th>ยอดรวม</th><th>ชำระเงิน</th><th>สถานะ</th><th></th></tr></thead>
+                                <tbody><tr t-foreach="this.state.data.rows || []" t-as="row" t-key="row.id" t-att-class="this.state.selectedId === row.id ? 'is-selected' : ''" t-on-click="() => this.selectOrder(row.id)">
+                                    <td><strong t-esc="row.name"/><small t-if="row.name !== row.odoo_name" t-esc="row.odoo_name"/><em t-if="row.is_demo" class="o_hub_oc_demo">ตัวอย่าง</em></td>
+                                    <td><span class="o_hub_oc_channel"><img t-att-src="row.channel_icon"/><t t-esc="row.channel_label"/></span></td>
+                                    <td t-esc="row.customer"/><td><t t-esc="row.currency"/><t t-esc="this.money(row.amount)"/></td>
+                                    <td><span t-att-class="row.payment === 'paid' ? 'is-paid' : 'is-unpaid'" t-esc="row.payment === 'paid' ? 'ชำระแล้ว' : 'ตรวจสอบ'"/></td>
+                                    <td><span t-att-class="'o_hub_oc_status ' + row.status" t-esc="row.status_label"/></td><td><i class="fa fa-chevron-right"/></td>
+                                </tr></tbody>
+                            </table>
+                            <div t-if="!this.state.data.rows?.length" class="o_hub_oc_empty">ไม่พบออเดอร์ตามตัวกรองนี้</div>
+                            <footer><span>แสดง <t t-esc="this.pageStart()"/>–<t t-esc="this.pageEnd()"/> จาก <t t-esc="this.state.data.total || 0"/> รายการ</span><div><button t-att-disabled="this.state.page &lt;= 1" t-on-click="() => this.setPage(this.state.page - 1)"><i class="fa fa-chevron-left"/></button><b><t t-esc="this.state.page"/> / <t t-esc="this.state.data.max_page || 1"/></b><button t-att-disabled="this.state.page &gt;= this.state.data.max_page" t-on-click="() => this.setPage(this.state.page + 1)"><i class="fa fa-chevron-right"/></button></div></footer>
+                        </section>
+                        <aside class="o_hub_oc_detail" t-if="this.state.data.detail">
+                            <h2>รายละเอียดออเดอร์ <em t-if="this.state.data.detail.is_demo" class="o_hub_oc_demo">ตัวอย่าง</em></h2>
+                            <div class="o_hub_oc_detail_title"><div><small><img t-att-src="this.state.data.detail.channel_icon"/> <t t-esc="this.state.data.detail.channel"/></small><h3 t-esc="this.state.data.detail.external_ref || this.state.data.detail.name"/><small t-if="this.state.data.detail.external_ref">Odoo: <t t-esc="this.state.data.detail.name"/></small></div><span t-att-class="'o_hub_oc_status ' + this.state.data.detail.status" t-esc="this.state.data.detail.status_label"/></div>
+                            <div class="o_hub_oc_customer"><img t-att-src="this.state.data.detail.customer_image"/><div><strong t-esc="this.state.data.detail.customer"/><small t-esc="this.state.data.detail.phone || 'ไม่มีเบอร์โทร'"/></div></div>
+                            <dl><dt>ที่อยู่จัดส่ง</dt><dd t-esc="this.state.data.detail.address || '—'"/><dt>การชำระเงิน</dt><dd t-esc="this.state.data.detail.payment"/></dl>
+                            <h3>รายการสินค้า (<t t-esc="this.state.data.detail.lines.length"/>)</h3>
+                            <div class="o_hub_oc_lines"><div t-foreach="this.state.data.detail.lines" t-as="line" t-key="line_index"><img t-att-src="line.image"/><span t-esc="line.name"/><small>× <t t-esc="this.money(line.qty)"/> <t t-esc="line.uom"/></small><b><t t-esc="this.state.data.detail.currency"/><t t-esc="this.money(line.subtotal)"/></b></div></div>
+                            <div class="o_hub_oc_totals"><div><span>ยอดก่อนภาษี</span><b><t t-esc="this.state.data.detail.currency"/><t t-esc="this.money(this.state.data.detail.amount_untaxed)"/></b></div><div><span>ภาษี</span><b><t t-esc="this.state.data.detail.currency"/><t t-esc="this.money(this.state.data.detail.amount_tax)"/></b></div><div class="is-total"><span>ยอดรวม</span><strong><t t-esc="this.state.data.detail.currency"/><t t-esc="this.money(this.state.data.detail.amount_total)"/></strong></div></div>
+                            <div class="o_hub_oc_detail_actions"><button t-on-click="() => this.openOrder(this.state.data.detail.id)">เปิดออเดอร์</button><button t-if="this.state.data.detail.picking_ids.length" class="is-primary" t-on-click="() => this.openDelivery(this.state.data.detail)">ดูใบส่งสินค้า</button></div>
+                        </aside>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </t>
+</templates>

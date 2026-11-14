@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_project_approval_signoff" model="ir.sequence">
+            <field name="name">Project Approval Sign-Off</field>
+            <field name="code">project.approval.signoff</field>
+            <field name="prefix">PRJ-%(year)s-</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">1</field>
+        </record>
+    </data>
+</odoo>

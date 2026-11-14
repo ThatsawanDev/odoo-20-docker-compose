@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="thai_sales_stock_easy.QuotationListView" t-inherit="web.ListView" t-inherit-mode="primary">
+        <xpath expr="//t[@t-component='this.props.Renderer']" position="before">
+            <div class="o_thai_sale_list_summary">
+                <div class="o_thai_sale_list_stat"><i class="fa fa-file-text-o"/><span>ใบเสนอราคาใหม่<strong t-esc="this.saleSummary.draft"/></span></div>
+                <div class="o_thai_sale_list_stat"><i class="fa fa-paper-plane-o"/><span>ส่งแล้วรอยืนยัน<strong t-esc="this.saleSummary.sent"/></span></div>
+                <div class="o_thai_sale_list_stat"><i class="fa fa-check-circle-o"/><span>คำสั่งขาย<strong t-esc="this.saleSummary.confirmed"/></span></div>
+                <div class="o_thai_sale_list_stat"><i class="fa fa-line-chart"/><span>ยอดขายเดือนนี้<strong><t t-esc="this.monthTotalText"/> <t t-esc="this.saleSummary.currency"/></strong></span></div>
+            </div>
+        </xpath>
+    </t>
+</templates>

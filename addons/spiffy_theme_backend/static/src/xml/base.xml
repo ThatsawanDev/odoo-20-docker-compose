@@ -1,0 +1,33 @@
+<!-- Part of Bizople Solutions Pvt. Ltd. -->
+<!-- Licensed under the Bizople Proprietary License v1.0. -->
+<!-- Copyright (C) 2026 Bizople Solutions Pvt. Ltd. -->
+<templates id="template" xml:space="preserve">
+	<t t-name="show_icon_pack" t-inherit="web.ListView.Buttons" t-inherit-mode="primary"  >
+		<xpath expr="." position="inside">
+			<a class="btn btn-primary open_wizard_action" href="https://store.bizople.com/remix-icons" target="_blank">
+				Show Icon Pack
+			</a>
+		</xpath>
+	</t>
+
+	<t t-name="spiffy_theme_backend.UserMenuInherit" t-inherit="web.UserMenu" t-inherit-mode="extension" >
+		<xpath expr="//Dropdown/button/small" position="replace">
+			<div class="user-info">
+				<span class="oe_topbar_name text-truncate"><span class="user_name"><t t-out="this.userName"/></span><span class="database_name"><t t-if="this.debugMode.isActive()" t-out="' (' + this.dbName + ')'"/></span></span>
+				<span class="this.greeting">
+					<t t-if="this.greeting">
+						<t t-out="this.greeting"/>
+					</t>
+				</span>
+			</div>
+		</xpath>
+	</t>
+<t t-inherit="web.LoadingIndicator" t-inherit-mode="extension" >
+		<xpath expr="//Transition" position="attributes">
+            <attribute name="leaveDuration">700</attribute>
+        </xpath>
+		<xpath expr="//span[hasclass('o_loading_indicator')]" position="replace">
+			<img class="bi_loader"></img>
+		</xpath>
+	</t>
+</templates>

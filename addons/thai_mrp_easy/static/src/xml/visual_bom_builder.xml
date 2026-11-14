@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates>
+    <t t-name="thai_mrp_easy.BomTreeNode">
+        <div class="vb-branch">
+            <div class="vb-node">
+                <div class="vb-node-toolbar"><span t-esc="this.props.node.has_bom ? 'Sub-BOM' : 'Material'"/><span t-if="this.props.editable"><button t-on-click="() => this.props.onEdit(this.props.node)"><i class="fa fa-pencil"/></button><button t-on-click="() => this.props.onRemove(this.props.node)"><i class="fa fa-trash"/></button></span></div>
+                <img t-att-src="this.props.node.image_url" alt=""/>
+                <strong t-esc="this.props.node.product_name"/>
+                <small><t t-esc="this.props.node.product_qty"/> <t t-esc="this.props.node.product_uom_name"/></small>
+                <span t-if="this.props.node.has_bom" class="vb-node-bom">มี BOM</span>
+            </div>
+            <div t-if="this.props.node.sub_bom &amp;&amp; this.props.node.sub_bom.lines &amp;&amp; this.props.node.sub_bom.lines.length" class="vb-children">
+                <BomTreeNode t-foreach="this.props.node.sub_bom.lines" t-as="child" t-key="child.id" node="child" onEdit="this.props.onEdit" onRemove="this.props.onRemove" editable="false"/>
+            </div>
+        </div>
+    </t>
+    <t t-name="thai_mrp_easy.VisualBomBuilder">
+        <div class="visual-bom-container">
+            <div class="bom-header d-flex justify-content-between align-items-center p-3 border-bottom bg-white">
+                <h2><i class="fa fa-sitemap me-2 text-primary"/><t t-esc="this.state.bom.id ? 'แก้ไข BOM' : 'สร้าง BOM ใหม่'"/></h2>
+                <div>
+                    <button t-if="this.state.bom.product_id" class="btn btn-outline-secondary me-2" t-on-click="this.printBom"><i class="fa fa-print me-1"/> พิมพ์ / ส่งออก</button>
+                    <button class="btn btn-secondary me-2" t-on-click="this.cancel">ยกเลิก</button>
+                    <button class="btn btn-primary" t-on-click="this.saveBom">บันทึก</button>
+                </div>
+            </div>
+            
+            <div class="bom-main-content d-flex" style="height: calc(100vh - 120px);">
+                <!-- Tree Area -->
+                <div class="bom-tree-area flex-grow-1 p-4 bg-light overflow-auto position-relative">
+                    <div class="vb-zoom"><button t-on-click="() => this.changeZoom(-0.1)">−</button><span><t t-esc="Math.round(this.state.zoom * 100)"/>%</span><button t-on-click="() => this.changeZoom(0.1)">+</button></div>
+                    <t t-if="!this.state.bom.product_id">
+                        <div class="vb-empty text-center text-muted">
+                            <i class="fa fa-cubes fa-4x mb-3"></i>
+                            <h3>เลือกสูตรการผลิต</h3>
+                            <p>เปิด BOM ด้านล่าง หรือค้นหาสินค้าที่ผลิตเพื่อสร้างสูตรใหม่</p>
+                            <div class="vb-examples">
+                                <button t-foreach="this.state.examples" t-as="example" t-key="example.id" class="vb-example" t-on-click="() => this.openExample(example)"><img t-att-src="example.image_url" alt=""/><span><strong t-esc="example.name"/><small t-esc="example.code"/></span><b t-esc="example.line_count"/></button>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="vb-tree" t-att-style="'transform: scale(' + this.state.zoom + ')'">
+                        <div class="bom-tree-wrapper d-flex justify-content-center">
+                            <div class="bom-node root-node card p-3 shadow-sm border-primary text-center">
+                                <img t-att-src="this.state.bom.image_url" class="product-img mb-2" style="width: 64px; height: 64px; object-fit: contain; margin: 0 auto;"/>
+                                <h5 class="mb-1"><t t-esc="this.state.bom.product_name"/></h5>
+                                <div class="text-muted"><t t-esc="this.state.bom.code"/></div>
+                                <div class="mt-2 fw-bold text-primary">
+                                    <t t-esc="this.state.bom.product_qty"/> <t t-esc="this.state.bom.product_uom_name"/>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div t-if="this.state.bom.lines.length" class="vb-children vb-root-children">
+                            <BomTreeNode t-foreach="this.state.bom.lines" t-as="line" t-key="line.key or line.id" node="line" onEdit="this.editLine.bind(this)" onRemove="this.removeLine.bind(this)" editable="true"/>
+                        </div>
+                        <div class="vb-add-hint"><i class="fa fa-plus-circle"/> เลือกวัตถุดิบด้านขวาเพื่อเพิ่มใน BOM</div>
+                        </div>
+                    </t>
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="bom-sidebar bg-white border-start p-3 d-flex flex-column" style="width: 350px;">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">สินค้าที่ผลิต *</label>
+                        <div t-if="!this.state.bom.product_id" class="input-group">
+                            <input type="text" class="form-control" placeholder="ค้นหาสินค้าหลัก..." t-on-input="this.searchMainProduct" t-att-value="this.state.mainProductSearch"/>
+                        </div>
+                        <div t-else="" class="d-flex align-items-center border p-2 rounded">
+                            <img t-att-src="this.state.bom.image_url" style="width: 32px; height: 32px; object-fit: contain;" class="me-2"/>
+                            <div class="flex-grow-1">
+                                <div><t t-esc="this.state.bom.product_name"/></div>
+                            </div>
+                            <button class="btn btn-sm btn-link text-danger" t-on-click="this.clearMainProduct"><i class="fa fa-times"/></button>
+                        </div>
+                        
+                        <!-- Main Product Search Results -->
+                        <div t-if="this.state.mainProductResults.length > 0 and !this.state.bom.product_id" class="list-group mt-1 shadow-sm position-absolute" style="z-index: 1000; width: 318px;">
+                            <t t-foreach="this.state.mainProductResults" t-as="p" t-key="p.id">
+                                <button class="list-group-item list-group-item-action d-flex align-items-center p-2" t-on-click="() => this.selectMainProduct(p)">
+                                    <img t-att-src="p.image_url" style="width: 24px; height: 24px; object-fit: contain;" class="me-2"/>
+                                    <span><t t-esc="p.name"/></span>
+                                </button>
+                            </t>
+                        </div>
+                    </div>
+                    
+                    <t t-if="this.state.bom.product_id">
+                        <div class="mb-3 row">
+                            <div class="col-6">
+                                <label class="form-label fw-bold">จำนวนที่ผลิต *</label>
+                                <input type="number" class="form-control" t-att-value="this.state.bom.product_qty" t-on-change="this.setBomQty" step="1" min="1"/>
+                            </div>
+                        </div>
+                        
+                        <hr/>
+                        
+                        <h5 class="mb-3">เพิ่มวัตถุดิบ</h5>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="fa fa-search"/></span>
+                            <input type="text" class="form-control" placeholder="ค้นหาสินค้า (ชื่อ, รหัส)..." t-on-input="this.searchMaterial" t-att-value="this.state.materialSearch"/>
+                        </div>
+                        
+                        <div class="material-list flex-grow-1 overflow-auto pe-2">
+                            <t t-foreach="this.state.materialResults" t-as="mat" t-key="mat.id">
+                                <div class="card mb-2 shadow-sm border-0 material-card">
+                                    <div class="card-body p-2 d-flex align-items-center">
+                                        <img t-att-src="mat.image_url" style="width: 40px; height: 40px; object-fit: contain;" class="me-2 rounded"/>
+                                        <div class="flex-grow-1 min-w-0">
+                                            <div class="fw-bold text-truncate"><t t-esc="mat.name"/></div>
+                                            <div class="text-muted small"><t t-esc="mat.code"/></div>
+                                            <div class="small mt-1">
+                                                <span t-attf-class="badge #{mat.qty_available > 0 ? 'bg-success' : 'bg-secondary'}">
+                                                    คงเหลือ <t t-esc="mat.qty_available"/> <t t-esc="mat.uom_name"/>
+                                                </span>
+                                                <span t-if="mat.has_bom" class="badge bg-info ms-1">มี BOM</span>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-outline-primary btn-sm ms-2" t-on-click="() => this.addMaterial(mat)">
+                                            <i class="fa fa-plus"/> เลือก
+                                        </button>
+                                    </div>
+                                </div>
+                            </t>
+                            
+                            <t t-if="this.state.materialResults.length === 0 and this.state.materialSearch">
+                                <div class="text-center text-muted p-3 border border-dashed rounded">
+                                    ไม่พบสินค้า<br/>
+                                    <!-- Simplified quick create, in real app might open a wizard -->
+                                    <button class="btn btn-sm btn-link mt-2"><i class="fa fa-plus"/> สร้างวัตถุดิบใหม่</button>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+            </div>
+            
+            <!-- Quick Edit Popup Overlay -->
+            <div t-if="this.state.editingLine" class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 d-flex justify-content-center align-items-center" style="z-index: 1050;">
+                <div class="card shadow" style="width: 400px;">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">กำหนดจำนวนวัตถุดิบ</h5>
+                        <button class="btn-close" t-on-click="this.closeEditPopup"></button>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3 p-2 bg-light rounded">
+                            <img t-att-src="this.state.editingLine.image_url" style="width: 48px; height: 48px; object-fit: contain;" class="me-3"/>
+                            <div>
+                                <h6 class="mb-0"><t t-esc="this.state.editingLine.product_name"/></h6>
+                                <span class="badge bg-info" t-if="this.state.editingLine.has_bom">สินค้ามีสูตรการผลิต (BOM)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">จำนวนที่ใช้ *</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" t-att-value="this.state.editingLine.product_qty" t-on-change="this.setLineQty" step="0.001" min="0"/>
+                                <span class="input-group-text"><t t-esc="this.state.editingLine.product_uom_name"/></span>
+                            </div>
+                        </div>
+                        <t t-if="this.state.editingLine.has_bom">
+                            <div class="alert alert-success d-flex align-items-center p-2">
+                                <i class="fa fa-info-circle fa-2x me-2"></i>
+                                <small>เมื่อบันทึก ระบบจะแสดงโครงสร้างวัตถุดิบย่อยให้อัตโนมัติ</small>
+                            </div>
+                        </t>
+                    </div>
+                    <div class="card-footer text-end">
+                        <button class="btn btn-secondary me-2" t-on-click="this.closeEditPopup">ยกเลิก</button>
+                        <button class="btn btn-primary" t-on-click="this.saveLineEdit">ตกลง</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    
+</templates>
+

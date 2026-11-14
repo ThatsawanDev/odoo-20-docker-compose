@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="thai_sales_stock_hub.OutgoingListView" t-inherit="web.ListView" t-inherit-mode="primary">
+        <xpath expr="//t[@t-component='this.props.Renderer']" position="before">
+            <div class="o_hub_outgoing_summary">
+                <div class="o_hub_outgoing_card"><i class="fa fa-cube"/><span>ทั้งหมด<strong t-esc="this.outgoingSummary.all"/></span></div>
+                <div class="o_hub_outgoing_card is-ready"><i class="fa fa-dropbox"/><span>พร้อมแพ็ก<strong t-esc="this.outgoingSummary.waiting"/></span></div>
+                <div class="o_hub_outgoing_card is-packing"><i class="fa fa-clock-o"/><span>กำลังแพ็ก<strong t-esc="this.outgoingSummary.packing"/></span></div>
+                <div class="o_hub_outgoing_card is-packed"><i class="fa fa-check"/><span>แพ็กเสร็จ<strong t-esc="this.outgoingSummary.packed"/></span></div>
+                <div class="o_hub_outgoing_card is-issue"><i class="fa fa-exclamation-triangle"/><span>รอสินค้า / มีปัญหา<strong t-esc="this.outgoingSummary.issues"/></span></div>
+            </div>
+        </xpath>
+    </t>
+</templates>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_show_standard_apps" model="res.groups">
+        <field name="name">แสดงแอปมาตรฐานที่ถูกซ่อน</field>
+    </record>
+    <record id="mail.menu_root_discuss" model="ir.ui.menu"><field name="group_ids" eval="[(6, 0, [ref('thai_sales_stock_easy.group_show_standard_apps')])]"/></record>
+    <record id="sale.sale_menu_root" model="ir.ui.menu"><field name="name">Sales</field><field name="active" eval="True"/><field name="group_ids" eval="[(6, 0, [])]"/></record>
+    <record id="sale.menu_sale_marketplaces" model="ir.ui.menu"><field name="active" eval="False"/></record>
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" model="ir.ui.menu"><field name="group_ids" eval="[(6, 0, [ref('thai_sales_stock_easy.group_show_standard_apps')])]"/></record>
+    <record id="account.menu_finance" model="ir.ui.menu"><field name="active" eval="True"/><field name="group_ids" eval="[(6, 0, [])]"/></record>
+    <record id="purchase.menu_purchase_root" model="ir.ui.menu"><field name="name">Purchase</field><field name="active" eval="True"/><field name="group_ids" eval="[(6, 0, [])]"/></record>
+    <record id="stock.menu_stock_root" model="ir.ui.menu"><field name="name">Inventory</field><field name="active" eval="True"/><field name="group_ids" eval="[(6, 0, [])]"/></record>
+</odoo>

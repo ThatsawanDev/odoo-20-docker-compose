@@ -1,0 +1,7 @@
+id,name,model_id,group_id/id,operation,domain
+access_hub_channel_user,hub.channel.user,thai.sales.stock.channel,base.group_user,r,
+access_hub_channel_admin,hub.channel.admin,thai.sales.stock.channel,base.group_system,ru,
+access_hub_packing_station_user,hub.packing.station.user,thai.sales.stock.packing.station,stock.group_stock_user,r,
+access_hub_packing_station_manager,hub.packing.station.manager,thai.sales.stock.packing.station,stock.group_stock_manager,crud,
+access_hub_packing_scan_user,hub.packing.scan.user,thai.sales.stock.packing.scan,stock.group_stock_user,cru,
+access_hub_packing_video_user,hub.packing.video.user,thai.sales.stock.packing.video,stock.group_stock_user,cr,"[('company_id', 'in', company_ids)]"

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root Menu -->
+    <menuitem
+        id="menu_project_approval_root"
+        name="Project Request"
+        web_icon="crd_project_approval,static/image/accept.png"
+        groups="crd_project_approval.group_project_approver,base.group_erp_manager"
+        sequence="90"/>
+
+    <!-- Sub Menu: Project Request group -->
+    <menuitem
+        id="menu_project_approval_group"
+        name="Project Request"
+        parent="menu_project_approval_root"
+        groups="crd_project_approval.group_project_approver,base.group_erp_manager"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_project_approval_signoff"
+        name="IT Project Request"
+        parent="menu_project_approval_group"
+        action="crd_project_approval.project_approval_signoff_action"
+        groups="crd_project_approval.group_project_approver,base.group_erp_manager"
+        sequence="10"/>
+
+    <!-- Monitoring Menu -->
+    <menuitem
+        id="menu_project_approval_monitoring"
+        name="Monitoring"
+        parent="menu_project_approval_root"
+        groups="base.group_erp_manager"
+        sequence="50"/>
+
+    <menuitem
+        id="menu_project_approval_api_queue"
+        name="API Queue"
+        parent="menu_project_approval_monitoring"
+        action="crd_project_approval.project_approval_api_queue_action"
+        groups="base.group_erp_manager"
+        sequence="10"/>
+
+    <!-- Configuration Menu -->
+    <menuitem
+        id="menu_project_approval_config"
+        name="Configuration"
+        parent="menu_project_approval_root"
+        groups="base.group_erp_manager"
+        sequence="90"/>
+
+    <menuitem
+        id="menu_project_approval_role"
+        name="Roles"
+        parent="menu_project_approval_config"
+        action="crd_project_approval.project_approval_role_action"
+        groups="base.group_erp_manager"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_statusbar_label_config"
+        name="Statusbar Label Config"
+        parent="menu_project_approval_config"
+        action="crd_project_approval.statusbar_label_config_action"
+        groups="base.group_erp_manager"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_project_size"
+        name="Project Size"
+        parent="menu_project_approval_config"
+        action="crd_project_approval.project_size_action"
+        groups="base.group_erp_manager"
+        sequence="15"/>
+
+    <menuitem
+        id="menu_project_approval_settings"
+        name="Settings"
+        parent="menu_project_approval_config"
+        action="crd_project_approval.project_approval_open_settings_action"
+        groups="base.group_erp_manager"
+        sequence="90"/>
+
+</odoo>

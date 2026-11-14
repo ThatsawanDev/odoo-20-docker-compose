@@ -1,0 +1,215 @@
+/** @odoo-module **/
+
+import { Component, onWillStart, proxy, useProps } from "@odoo/owl";
+import { registry } from "@web/core/registry";
+import { useService } from "@web/core/utils/hooks";
+
+export class BomTreeNode extends Component {
+    static template = "thai_mrp_easy.BomTreeNode";
+    props = useProps();
+}
+BomTreeNode.components = { BomTreeNode };
+
+export class VisualBomBuilder extends Component {
+    static template = "thai_mrp_easy.VisualBomBuilder";
+    static components = { BomTreeNode };
+    props = useProps();
+
+    setup() {
+        this.orm = useService("orm");
+        this.action = useService("action");
+        this.notification = useService("notification");
+        
+        this.bomId = this.props?.action?.context?.default_bom_id || false;
+        
+        this.state = proxy({
+            bom: {
+                id: false,
+                product_id: false,
+                product_tmpl_id: false,
+                product_name: "",
+                product_qty: 1,
+                product_uom_id: false,
+                product_uom_name: "",
+                image_url: "",
+                code: "",
+                lines: []
+            },
+            materialSearch: "",
+            materialResults: [],
+            mainProductSearch: "",
+            mainProductResults: [],
+            editingLine: false,
+            nextNodeId: -1,
+            examples: [],
+            zoom: 1,
+        });
+
+        onWillStart(async () => {
+            if (this.bomId) {
+                this.state.bom = await this.orm.call("mrp.bom", "get_visual_bom_data", [this.bomId]);
+            }
+            // Load initial materials
+            this.state.materialResults = await this.orm.call("mrp.bom", "search_materials", [""]);
+            this.state.examples = await this.orm.call("mrp.bom", "get_visual_bom_examples", []);
+        });
+    }
+
+    async openExample(example) {
+        this.bomId = example.id;
+        this.state.bom = await this.orm.call("mrp.bom", "get_visual_bom_data", [example.id]);
+    }
+
+    changeZoom(delta) {
+        this.state.zoom = Math.max(0.4, Math.min(1.5, Math.round((this.state.zoom + delta) * 10) / 10));
+    }
+
+    async cancel() {
+        await this.action.doAction({ type: "ir.actions.act_window", name: "สูตรการผลิต", res_model: "mrp.bom", views: [[false, "list"], [false, "form"]] });
+    }
+
+    printBom() {
+        window.print();
+    }
+
+    async searchMainProduct(ev) {
+        this.state.mainProductSearch = ev.target.value;
+        if (this.state.mainProductSearch.length > 1) {
+            this.state.mainProductResults = await this.orm.call("mrp.bom", "search_materials", [this.state.mainProductSearch]);
+        } else {
+            this.state.mainProductResults = [];
+        }
+    }
+
+    selectMainProduct(product) {
+        this.state.bom.product_id = product.id;
+        // In a real app we'd fetch product_tmpl_id, but here we can just use the search results
+        this.state.bom.product_tmpl_id = product.product_tmpl_id;
+        this.state.bom.product_name = product.name;
+        this.state.bom.image_url = product.image_url;
+        this.state.bom.product_qty = 1;
+        this.state.bom.product_uom_id = product.uom_id;
+        this.state.bom.product_uom_name = product.uom_name;
+        this.state.mainProductResults = [];
+        this.state.mainProductSearch = "";
+    }
+
+    clearMainProduct() {
+        this.bomId = false;
+        this.state.bom = {
+            id: false,
+            product_id: false,
+            product_tmpl_id: false,
+            product_name: "",
+            product_qty: 1,
+            lines: []
+        };
+    }
+
+    async searchMaterial(ev) {
+        this.state.materialSearch = ev.target.value;
+        this.state.materialResults = await this.orm.call("mrp.bom", "search_materials", [this.state.materialSearch]);
+    }
+
+    addMaterial(material) {
+        // Open edit popup directly instead of adding instantly
+        this.state.editingLine = {
+            key: this.state.nextNodeId--,
+            product_id: material.id,
+            product_name: material.name,
+            product_qty: 1,
+            product_uom_id: material.uom_id,
+            product_uom_name: material.uom_name,
+            image_url: material.image_url,
+            has_bom: material.has_bom,
+            sub_bom: null, // We'll fetch this upon save or backend save
+            isNew: true
+        };
+    }
+
+    editLine(line) {
+        this.state.editingLine = Object.assign({}, line, {isNew: false});
+    }
+
+    setBomQty(ev) {
+        this.state.bom.product_qty = Math.max(1, Number(ev.target.value) || 1);
+    }
+
+    setLineQty(ev) {
+        this.state.editingLine.product_qty = Math.max(0, Number(ev.target.value) || 0);
+    }
+
+    removeLine(line) {
+        const index = this.state.bom.lines.findIndex(l => l.key === line.key || l.id === line.id);
+        if (index > -1) {
+            this.state.bom.lines.splice(index, 1);
+        }
+    }
+
+    closeEditPopup() {
+        this.state.editingLine = false;
+    }
+
+    async saveLineEdit() {
+        const line = this.state.editingLine;
+        
+        // If it has a BOM and it's new, we need to fetch the sub_bom structure to display it
+        if (line.has_bom && !line.sub_bom) {
+             const subBoms = await this.orm.searchRead("mrp.bom", [["product_id", "=", line.product_id]], ["id"], {limit: 1});
+             if (subBoms.length > 0) {
+                 line.sub_bom = await this.orm.call("mrp.bom", "get_visual_bom_data", [subBoms[0].id]);
+             } else {
+                 // Try by product_tmpl_id
+                 const prods = await this.orm.searchRead("product.product", [["id", "=", line.product_id]], ["product_tmpl_id"]);
+                 if (prods.length > 0) {
+                     const subBomsTmpl = await this.orm.searchRead("mrp.bom", [["product_tmpl_id", "=", prods[0].product_tmpl_id[0]]], ["id"], {limit: 1});
+                     if (subBomsTmpl.length > 0) {
+                         line.sub_bom = await this.orm.call("mrp.bom", "get_visual_bom_data", [subBomsTmpl[0].id]);
+                     }
+                 }
+             }
+        }
+
+        if (line.isNew) {
+            delete line.isNew;
+            this.state.bom.lines.push(line);
+        } else {
+            delete line.isNew;
+            const index = this.state.bom.lines.findIndex(l => l.key === line.key || l.id === line.id);
+            if (index > -1) {
+                this.state.bom.lines[index] = line;
+            }
+        }
+        this.state.editingLine = false;
+    }
+
+    async saveBom() {
+        if (!this.state.bom.product_id) {
+            this.notification.add("กรุณาเลือกสินค้าที่จะผลิต", { type: "warning" });
+            return;
+        }
+        
+        // We need product_tmpl_id. If we don't have it (new creation), fetch it.
+        if (!this.state.bom.product_tmpl_id) {
+            const prods = await this.orm.searchRead("product.product", [["id", "=", this.state.bom.product_id]], ["product_tmpl_id"]);
+            if (prods.length > 0) {
+                this.state.bom.product_tmpl_id = prods[0].product_tmpl_id[0];
+            }
+        }
+
+        try {
+            const newBomId = await this.orm.call("mrp.bom", "save_visual_bom", [this.state.bom]);
+            this.state.bom.id = newBomId;
+            this.notification.add("บันทึกสูตรการผลิต (BOM) เรียบร้อยแล้ว", { type: "success" });
+            
+            // Reload the view
+            this.state.bom = await this.orm.call("mrp.bom", "get_visual_bom_data", [newBomId]);
+            this.state.examples = await this.orm.call("mrp.bom", "get_visual_bom_examples", []);
+        } catch (error) {
+            this.notification.add("เกิดข้อผิดพลาดในการบันทึก", { type: "danger" });
+            console.error(error);
+        }
+    }
+}
+
+registry.category("actions").add("thai_mrp_easy.VisualBomBuilder", VisualBomBuilder);

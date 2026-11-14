@@ -1,0 +1,112 @@
+# Translation of Odoo Server.
+# * thai_sales_stock_hub
+msgid ""
+msgstr ""
+"Language: th_TH\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: thai_sales_stock_hub
+#: model:ir.actions.client,name:thai_sales_stock_hub.action_hub_dashboard
+msgid "Today's Operations"
+msgstr "ภาพรวมการดำเนินงานวันนี้"
+
+#. module: thai_sales_stock_hub
+#: model:ir.actions.client,name:thai_sales_stock_hub.action_hub_packing_dashboard
+msgid "Packing Control Center"
+msgstr "ศูนย์ควบคุมการแพ็ก"
+
+#. module: thai_sales_stock_hub
+#: model:ir.actions.client,name:thai_sales_stock_hub.action_hub_packing_station
+msgid "Packing Station"
+msgstr "จุดแพ็กสินค้า"
+
+#. module: thai_sales_stock_hub
+#: model:ir.actions.client,name:thai_sales_stock_hub.action_hub_order_center
+msgid "Opening All Channel Orders"
+msgstr "กำลังเปิดออเดอร์ทุกช่องทาง"
+
+#. module: thai_sales_stock_hub
+#: model:ir.actions.act_window,name:thai_sales_stock_hub.action_hub_orders
+msgid "All Channel Orders"
+msgstr "ออเดอร์ทุกช่องทาง"
+
+#. module: thai_sales_stock_hub
+#: model:ir.actions.act_window,name:thai_sales_stock_hub.action_hub_marketplace
+msgid "Marketplace Orders"
+msgstr "ออเดอร์ Marketplace"
+
+#. module: thai_sales_stock_hub
+#: model:ir.actions.act_window,name:thai_sales_stock_hub.action_hub_settings
+msgid "Marketplace Settings"
+msgstr "ตั้งค่า Marketplace"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_dashboard
+msgid "Today's Overview"
+msgstr "ภาพรวมวันนี้"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_orders
+msgid "All Channel Orders"
+msgstr "ออเดอร์ทุกช่องทาง"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_marketplace
+msgid "Marketplace"
+msgstr "ออเดอร์ Marketplace"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_shipping
+msgid "Packing"
+msgstr "งานแพ็ก"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_packing_station
+msgid "Packing Station"
+msgstr "จุดแพ็กสินค้า"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_packing_stations
+msgid "Packing Stations"
+msgstr "ตั้งค่าจุดแพ็ก"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_packing_video_history
+msgid "Packing Videos"
+msgstr "ประวัติวิดีโอการแพ็ก"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_settings
+msgid "Settings"
+msgstr "ตั้งค่า"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_channels
+msgid "Sales Channels"
+msgstr "ช่องทางการขาย"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_shopee_accounts
+msgid "Shopee Accounts"
+msgstr "บัญชี Shopee"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_shopee_shops
+msgid "Shopee Shops & Sync"
+msgstr "ร้าน Shopee และซิงค์"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_lazada_shops
+msgid "Lazada Shops & Sync"
+msgstr "ร้าน Lazada และซิงค์"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_tiktok_accounts
+msgid "TikTok Accounts"
+msgstr "บัญชี TikTok"
+
+#. module: thai_sales_stock_hub
+#: model:ir.ui.menu,name:thai_sales_stock_hub.menu_hub_tiktok_shops
+msgid "TikTok Shops & Sync"
+msgstr "ร้าน TikTok และซิงค์"

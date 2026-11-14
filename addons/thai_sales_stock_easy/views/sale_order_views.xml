@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_quotation_list_quick_create" model="ir.ui.view">
+        <field name="name">sale.order.quotation.list.quick.create</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="js_class">thai_quotation_list</attribute>
+            </xpath>
+            <xpath expr="//field[@name='activity_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+                <attribute name="column_invisible">1</attribute>
+                <attribute name="optional">hide</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_sale_order_list_easy_flow" model="ir.ui.view">
+        <field name="name">sale.order.list.easy.flow</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="js_class">thai_quotation_list</attribute>
+            </xpath>
+            <xpath expr="//field[@name='activity_ids']" position="attributes">
+                <attribute name="invisible">1</attribute>
+                <attribute name="column_invisible">1</attribute>
+                <attribute name="optional">hide</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_order_form_thai_business_layout" model="ir.ui.view">
+        <field name="name">sale.order.form.thai.business.layout</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="class">o_sale_order o_thai_sale_order_v2</attribute>
+            </xpath>
+            <!-- Keep the native statusbar for the full sales workflow. -->
+            <xpath expr="//header/button[@name='action_quotation_send']" position="replace"/>
+            <xpath expr="//header/button[@name='action_preview_sale_order']" position="attributes">
+                <attribute name="string">ดูตัวอย่างใบเสนอราคา</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//header/field[@name='state']" position="attributes">
+                <attribute name="statusbar_visible">draft,sale</attribute>
+            </xpath>
+            <xpath expr="//field[@name='document_tax_mode']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//sheet/div[@name='button_box']" position="before">
+                <field name="easy_invoice_before_delivery" invisible="1"/>
+                <field name="easy_has_open_invoice" invisible="1"/>
+                <field name="thai_easy_enable_pricelist" invisible="1"/>
+                <div class="o_tso_hero">
+                    <div class="o_tso_identity">
+                        <span class="o_tso_doc_icon"><i class="fa fa-file-text-o"/></span>
+                        <div><small>รายการขาย</small><h1><field name="name" readonly="1"/></h1><p>จัดการใบเสนอราคา สต็อก เอกสาร และรับเงินจากหน้าจอนี้</p></div>
+                    </div>
+                    <div class="o_tso_parties">
+                        <section class="o_tso_customer_master">
+                            <span><i class="fa fa-building-o"/> ข้อมูลลูกค้า</span>
+                            <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode':'customer','show_address':False,'show_vat':False}" placeholder="เลือกลูกค้า" readonly="state in ['sale','cancel']"/>
+                            <button name="action_easy_open_customer" type="object" class="btn btn-link p-1 ms-1" invisible="not partner_id" title="ดู / แก้ไขข้อมูลหลัก" aria-label="ดู / แก้ไขข้อมูลหลัก"><i class="fa fa-external-link"/></button>
+                            <div class="o_tso_customer_pricelist" invisible="not thai_easy_enable_pricelist">
+                                <label for="pricelist_id"><i class="fa fa-tags"/> รายการราคา</label>
+                                <field name="pricelist_id" readonly="state in ['sale','cancel']" options="{'no_open': True}"/>
+                            </div>
+                        </section>
+                        <section class="o_tso_shipping_editor">
+                            <span><i class="fa fa-map-marker"/> ที่อยู่จัดส่ง <small>ดึงจากข้อมูลหลักและแก้ไขเฉพาะรายการนี้ได้</small></span>
+                            <field name="easy_shipping_address" invisible="1"/>
+                            <div class="thai_address_editor">
+                                <div class="thai_address_line thai_address_line_full"><i class="fa fa-home" title="ที่อยู่"/><field name="easy_shipping_street" placeholder="บ้านเลขที่ หมู่ ซอย ถนน..." readonly="state == 'cancel'"/></div>
+                                <div class="thai_address_line thai_address_line_full"><i class="fa fa-building-o" title="รายละเอียดเพิ่มเติม"/><field name="easy_shipping_street2" placeholder="อาคาร ชั้น ห้อง หรือรายละเอียดเพิ่มเติม..." readonly="state == 'cancel'"/></div>
+                                <div class="thai_address_grid">
+                                    <div class="thai_address_line"><i class="fa fa-map-marker" title="จังหวัด"/><field name="easy_shipping_province_id" placeholder="เลือกจังหวัด" options="{'no_create': True, 'no_open': True}" readonly="state == 'cancel'"/></div>
+                                    <div class="thai_address_line"><i class="fa fa-map" title="อำเภอ / เขต"/><field name="easy_shipping_amphur_id" domain="[('province_id', '=', easy_shipping_province_id)]" placeholder="เลือกอำเภอ / เขต" options="{'no_create': True, 'no_open': True}" readonly="state == 'cancel'"/></div>
+                                    <div class="thai_address_line"><i class="fa fa-location-arrow" title="ตำบล / แขวง"/><field name="easy_shipping_tambon_id" domain="[('amphur_id', '=', easy_shipping_amphur_id)]" placeholder="เลือกตำบล / แขวง" options="{'no_create': True, 'no_open': True}" readonly="state == 'cancel'"/></div>
+                                    <div class="thai_address_line"><i class="fa fa-envelope" title="รหัสไปรษณีย์"/><field name="easy_shipping_postcode_id" domain="[('tambon_id', '=', easy_shipping_tambon_id)]" placeholder="รหัสไปรษณีย์" options="{'no_create': True, 'no_open': True}" readonly="state == 'cancel'"/></div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="o_tso_summary">
+                        <label for="date_order"><i class="fa fa-calendar"/> วันที่สั่งซื้อ</label>
+                        <div class="o_tso_dates_inline"><field name="date_order" readonly="state in ['sale','cancel']"/><span>สิ้นสุด</span><field name="validity_date" readonly="state in ['sale','cancel']"/></div>
+                        <label for="payment_term_id"><i class="fa fa-credit-card"/> เงื่อนไขการชำระเงิน</label>
+                        <field name="payment_term_id" options="{'no_open':True,'no_create':True}" placeholder="ชำระทันที"/>
+                        <label for="easy_tracking_number"><i class="fa fa-barcode"/> เลข Tracking</label>
+                        <field name="easy_tracking_number" placeholder="กรอกเลขพัสดุ" readonly="state == 'cancel'"/>
+                        <label for="origin"><i class="fa fa-link"/> ที่มา (Origin)</label>
+                        <field name="origin" placeholder="เลขที่เอกสารต้นทาง" readonly="state == 'cancel'"/>
+                        <label for="easy_internal_note"><i class="fa fa-sticky-note-o"/> หมายเหตุ</label>
+                        <field name="easy_internal_note" placeholder="รายละเอียดเพิ่มเติม" readonly="state == 'cancel'"/>
+                    </div>
+                </div>
+                <div class="o_tso_next_action">
+                    <section class="o_tso_price_summary">
+                        <h3><i class="fa fa-calculator"/> สรุปยอดใบเสนอราคา</h3>
+                        <div class="o_tso_price_row"><span>จำนวนรายการ</span><div class="o_tso_line_count"><field name="easy_line_count" readonly="1"/> <span>รายการ</span></div></div>
+                        <div class="o_tso_price_row"><span>ยอดก่อนภาษี</span><field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/></div>
+                        <div class="o_tso_price_row"><span>ภาษีมูลค่าเพิ่ม (7%)</span><field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/></div>
+                        <div class="o_tso_price_row is-total"><strong>ยอดรวมทั้งหมด</strong><field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}" readonly="1"/></div>
+                    </section>
+                    <button name="action_easy_print_sale_document" type="object" class="o_tso_side_button"><i class="fa fa-print"/><span><b invisible="state not in ['draft','sent']">พิมพ์ใบเสนอราคา</b><b invisible="state in ['draft','sent']">พิมพ์ใบสั่งขาย</b><small>ดาวน์โหลดเอกสาร PDF</small></span></button>
+                    <button name="action_confirm" type="object" class="o_tso_side_button is-primary" invisible="state not in ['draft','sent']"><i class="fa fa-thumbs-up"/><span><b>ยืนยันการขาย</b><small>สร้างใบสั่งขาย (Sale Order)</small></span></button>
+                    <button name="action_easy_create_and_post_invoice" type="object" class="o_tso_side_button is-primary" invisible="not easy_invoice_before_delivery or invoice_status != 'to invoice'"><i class="fa fa-file-text"/><span><b>สร้างใบแจ้งหนี้</b><small>ขั้นตอนถัดไปตาม Workflow</small></span></button>
+                    <button name="action_easy_confirm_stock_delivery" type="object" class="o_tso_side_button is-primary" invisible="state not in ['sale','done'] or easy_delivery_datetime or (easy_invoice_before_delivery and not easy_invoice_datetime)"><i class="fa fa-check-square-o"/><span><b>ยืนยันตัดสต็อก</b><small>จองสินค้าและยืนยันการจัดส่งอัตโนมัติ</small></span></button>
+                    <div class="o_tso_side_button is-disabled" invisible="state not in ['sale','done'] or not easy_invoice_before_delivery or easy_invoice_datetime"><i class="fa fa-clock-o"/><span><b>รอตัดสต็อก</b><small>Workflow กำหนดให้ออกใบแจ้งหนี้ก่อน</small></span></div>
+                    <button name="action_easy_create_and_post_invoice" type="object" class="o_tso_side_button is-primary" invisible="easy_invoice_before_delivery or invoice_status != 'to invoice' or not easy_delivery_datetime"><i class="fa fa-file-text"/><span><b>สร้างใบแจ้งหนี้</b><small>ขั้นตอนถัดไปตาม Workflow</small></span></button>
+                    <div class="o_tso_side_button is-disabled" invisible="invoice_count or (invoice_status == 'to invoice' and (easy_invoice_before_delivery or easy_delivery_datetime))"><i class="fa fa-file-text"/><span><b>สร้างใบแจ้งหนี้</b><small invisible="easy_invoice_before_delivery">รอยืนยันตัดสต็อกก่อน</small><small invisible="not easy_invoice_before_delivery">ตรวจสอบนโยบายการออกใบแจ้งหนี้ของสินค้า</small></span></div>
+                    <div class="o_tso_side_button" invisible="not invoice_count"><i class="fa fa-lock"/><span><b>ยืนยันใบแจ้งหนี้แล้ว</b><small>ล็อกรายการสินค้าและราคาแล้ว</small></span></div>
+                    <button name="action_easy_register_payment" type="object" class="o_tso_side_button" invisible="not easy_has_open_invoice"><i class="fa fa-money"/><span><b>บันทึกรับเงิน</b><small>เปิดหน้าต่างรับชำระเงิน</small></span></button>
+                    <div class="o_tso_side_button is-disabled" invisible="easy_has_open_invoice"><i class="fa fa-money"/><span><b invisible="invoice_count != 0">บันทึกรับเงิน</b><b invisible="invoice_count == 0">ไม่มีรายการค้างชำระ</b><small invisible="invoice_count != 0">ใช้ได้เมื่อมีใบแจ้งหนี้</small><small invisible="invoice_count == 0">ไม่มีใบแจ้งหนี้ที่พร้อมรับชำระ</small></span></div>
+                    <button name="action_easy_print_delivery" type="object" class="o_tso_side_button" invisible="not easy_delivery_datetime"><i class="fa fa-truck"/><span><b>พิมพ์ใบประจำลัง</b></span></button>
+                    <button name="action_easy_print_invoice" type="object" class="o_tso_side_button" invisible="not invoice_count"><i class="fa fa-print"/><span><b>พิมพ์เอกสารการเงิน</b><small>ใบแจ้งหนี้ / เอกสารรับเงิน</small></span></button>
+                </div>
+            </xpath>
+            <xpath expr="//group[@name='sale_header']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/notebook" position="inside">
+                <page string="ลายเซ็นลูกค้า" name="customer_signature">
+                    <group class="o_tso_customer_signature">
+                        <field name="signed_by" string="ลงนามโดย" readonly="1"/>
+                        <field name="signed_on" string="วันเวลาที่ลงนาม" readonly="1"/>
+                        <field name="signature" string="ลายเซ็น" widget="image" readonly="1"/>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//page[@name='other_information']" position="replace"/>
+            <xpath expr="//group[@name='note_group']/group[@name='sale_total']" position="replace"/>
+            <xpath expr="//field[@name='document_tax_mode' and @id='document_tax_mode']" position="after">
+                <div class="o_tso_order_toolbar">
+                    <button name="action_preview_sale_order" type="object" class="btn btn-secondary">
+                        <i class="fa fa-external-link me-1"/> ดูใบเสนอราคาหน้าเว็บ
+                    </button>
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="readonly">state not in ['draft', 'sent']</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list/column[@name='product_and_description']" position="before">
+                <field name="product_image" widget="image" options="{'size': [44, 44], 'img_class': 'object-fit-contain'}" class="o_thai_sol_image" string="รูปสินค้า" width="72px" optional="show" readonly="1" invisible="display_type"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list//field[@name='product_template_id']" position="attributes">
+                <attribute name="optional"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list//column[@name='product_and_description']/field[@name='name']" position="attributes">
+                <attribute name="invisible">not display_type</attribute>
+                <attribute name="class">o_thai_sol_description</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list//column[@name='product_and_description']/field[@name='product_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list//column[@name='product_and_description']/field[@name='label']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list//field[@name='tax_ids']" position="attributes">
+                <attribute name="column_invisible">0</attribute>
+                <attribute name="width">110px</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list//column[@name='sol_uom']" position="after">
+                <field name="easy_stock_level" column_invisible="1"/>
+                <field name="easy_stock_tracked" column_invisible="1"/>
+                <column name="easy_stock" string="สถานะสต็อก" width="190px">
+                    <field name="easy_stock_label" widget="badge" readonly="1" invisible="display_type or not product_id"
+                           decoration-success="easy_stock_level == 'enough'"
+                           decoration-danger="easy_stock_level == 'short'"
+                           decoration-muted="easy_stock_level == 'untracked'"/>
+                    <button name="action_easy_view_stock_locations" type="object" icon="fa-map-marker"
+                            title="ดูคงเหลือตามคลัง" class="btn btn-link o_thai_stock_location_button"
+                            invisible="display_type or not easy_stock_tracked"/>
+                </column>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list//field[@widget='labeled_monetary_field']" position="replace"/>
+            <xpath expr="//field[@name='order_line']/list//field[@name='discount']" position="attributes">
+                <attribute name="string">ส่วนลด (%)</attribute>
+                <attribute name="optional">show</attribute>
+                <attribute name="width">100px</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list//field[@name='qty_delivered']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list//widget[@name='qty_at_date_widget']" position="replace"/>
+            <xpath expr="//field[@name='order_line']/list//field[@name='qty_invoiced']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
+

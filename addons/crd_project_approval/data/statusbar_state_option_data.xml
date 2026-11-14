@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="state_option_draft" model="statusbar.state.option">
+        <field name="sequence">10</field>
+        <field name="code">draft</field>
+        <field name="label">New</field>
+    </record>
+
+    <record id="state_option_in_review" model="statusbar.state.option">
+        <field name="sequence">20</field>
+        <field name="code">in_review</field>
+        <field name="label">Waiting IT Review</field>
+    </record>
+
+    <record id="state_option_wait_for_approval" model="statusbar.state.option">
+        <field name="sequence">30</field>
+        <field name="code">wait_for_approval</field>
+        <field name="label">Waiting for Biz Sponsor Approval</field>
+    </record>
+
+    <record id="state_option_wait_it_head_approval" model="statusbar.state.option">
+        <field name="sequence">40</field>
+        <field name="code">wait_it_head_approval</field>
+        <field name="label">Waiting IT Head Approval</field>
+    </record>
+
+    <record id="state_option_approved" model="statusbar.state.option">
+        <field name="sequence">50</field>
+        <field name="code">approved</field>
+        <field name="label">Project Registered</field>
+    </record>
+
+    <record id="state_option_rejected" model="statusbar.state.option">
+        <field name="sequence">60</field>
+        <field name="code">rejected</field>
+        <field name="label">Rejected</field>
+    </record>
+
+    <record id="state_option_cancelled" model="statusbar.state.option">
+        <field name="sequence">70</field>
+        <field name="code">cancelled</field>
+        <field name="label">Cancelled</field>
+    </record>
+
+</odoo>

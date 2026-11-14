@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_mcp_token" model="ir.actions.act_window">
+        <field name="name">API Tokens</field>
+        <field name="res_model">mcp.api.token</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No API tokens created yet.</p>
+            <p>
+                Create a token for each AI agent or developer environment.
+                Copy the token value and set it as the <code>X-MCP-API-Key</code>
+                header in your AI client configuration.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_mcp_token_tree" model="ir.ui.view">
+        <field name="name">mcp.api.token.tree</field>
+        <field name="model">mcp.api.token</field>
+        <field name="arch" type="xml">
+            <list string="API Tokens"
+                  decoration-muted="not active"
+                  decoration-danger="expires_at and expires_at &lt; current_date">
+                <field name="name" string="Label"/>
+                <field name="mcp_client" string="AI Client"/>
+                <field name="user_id" widget="many2one_avatar_user"
+                       string="Authenticates As"/>
+                <field name="client_id" optional="hide" string="OAuth Client ID"/>
+                <field name="scope" optional="hide" string="Granted Scope"/>
+                <field name="audience" optional="hide" string="Audience"/>
+                <field name="token" readonly="1" optional="show" string="Bearer Token"/>
+                <field name="expires_at" optional="show" string="Expires"/>
+                <field name="refresh_expires_at" optional="hide" string="Refresh Expires"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mcp_token_form" model="ir.ui.view">
+        <field name="name">mcp.api.token.form</field>
+        <field name="model">mcp.api.token</field>
+        <field name="arch" type="xml">
+            <form string="API Token">
+                <sheet>
+                    <div class="oe_title">
+                        <label class="o_form_label" for="name">Token Label</label>
+                        <h1>
+                            <field name="name" id="name"
+                                   placeholder="e.g. Claude Desktop — Production Server"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Token Configuration">
+                            <field name="user_id" widget="many2one_avatar_user"
+                                   string="Authenticates As"/>
+                            <field name="mcp_client" string="AI Client"/>
+                            <field name="active" widget="boolean_toggle" string="Active"/>
+                            <field name="expires_at" string="Expiry Date"/>
+                            <field name="refresh_expires_at" string="Refresh Expiry"/>
+                        </group>
+                        <group string="Connection Details">
+                            <field name="connector_url" readonly="1"
+                                   widget="CopyClipboardChar"
+                                   string="MCP Server URL (Claude Desktop)"
+                                   invisible="mcp_client != 'claude_desktop'"/>
+                            <field name="token" readonly="1" widget="CopyClipboardChar"
+                                   string="Bearer Token (X-MCP-API-Key)"/>
+                        </group>
+                    </group>
+                    <group string="OAuth Metadata">
+                        <group>
+                            <field name="client_id" readonly="1" string="OAuth Client ID"/>
+                            <field name="scope" readonly="1" string="Granted Scope"/>
+                        </group>
+                        <group>
+                            <field name="audience" readonly="1" string="Audience / Resource"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning mt-3" role="alert">
+                        <i class="fa fa-shield me-2" title="mcp token"/>
+                        <strong>Security:</strong> Treat this token like a password.
+                        It grants access to Odoo as the user above.
+                        Rotate regularly and deactivate unused tokens immediately.
+                    </div>
+                    <div class="alert alert-info mt-2" role="alert">
+                        <i class="fa fa-lock me-2" title="oauth metadata"/>
+                        <strong>OAuth Metadata:</strong>
+                        <strong>OAuth Client ID</strong> shows which registered MCP client received this token.
+                        <strong>Granted Scope</strong> shows what this token may do.
+                        <strong>Audience / Resource</strong> binds the token to the intended MCP server URL.
+                        <strong>Refresh Expiry</strong> controls how long token rotation remains possible.
+                    </div>
+                    <div class="alert alert-info mt-2" role="alert">
+                        <i class="fa fa-info-circle me-2" title="mcp token"/>
+                        <strong>How to use in AI client config:</strong>
+                        <div class="bg-dark text-light p-2 mt-2 rounded"
+                             style="font-family:monospace;font-size:12px;white-space:pre;">{"mcpServers":{"odoo":{"url":"https://YOUR_DOMAIN/mcp/v1/","headers":{"X-MCP-API-Key":"paste_token_here"}}}}</div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

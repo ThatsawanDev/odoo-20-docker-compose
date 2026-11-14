@@ -1,0 +1,30 @@
+<odoo>
+    <record id="view_easy_outbound_picking_form" model="ir.ui.view">
+        <field name="name">easy.outbound.picking.form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes"><attribute name="class" add="o_easy_outbound_form" separator=" "/></xpath>
+            <xpath expr="//form/sheet/div[@class='oe_title']" position="attributes"><attribute name="invisible">picking_type_code == 'outgoing'</attribute></xpath>
+            <xpath expr="//form/sheet/group[1]" position="attributes"><attribute name="invisible">picking_type_code == 'outgoing'</attribute></xpath>
+            <xpath expr="//form/sheet/div[@name='button_box']" position="before">
+                <div class="o_easy_outbound" invisible="picking_type_code != 'outgoing'">
+                    <div class="o_easy_outbound_main">
+                        <div class="o_easy_outbound_heading">
+                            <div class="o_easy_outbound_icon"><i class="fa fa-cube"/></div>
+                            <div><small>ใบส่งสินค้า (Outbound)</small><h2><field name="name" readonly="1"/></h2><span>เอกสารอ้างอิง: <field name="origin" readonly="1"/> · กำหนดจัดส่ง: <field name="scheduled_date" readonly="1"/></span></div>
+                            <strong class="o_easy_outbound_badge" invisible="state != 'assigned'"><i class="fa fa-check-circle"/> พร้อมหยิบสินค้า</strong>
+                            <strong class="o_easy_outbound_badge is-waiting" invisible="state == 'assigned' or state in ('done', 'cancel')"><i class="fa fa-clock-o"/> รอสินค้า</strong>
+                        </div>
+                        <div class="o_easy_outbound_stats">
+                            <div><small>ลูกค้า</small><strong><field name="partner_id" readonly="1"/></strong></div>
+                            <div><small>ประเภทการปฏิบัติการ</small><strong><field name="picking_type_id" readonly="1"/></strong></div>
+                            <div><small>รายการสินค้า</small><strong><field name="easy_outbound_line_count" readonly="1"/> รายการ</strong></div>
+                            <div><small>จำนวนที่ต้องหยิบ</small><strong><field name="easy_outbound_total_qty" readonly="1"/></strong></div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

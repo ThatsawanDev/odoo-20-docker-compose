@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_thai_address" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.thai.address</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="ที่อยู่ประเทศไทย" name="thai_address_master" groups="base.group_system">
+                    <block title="ข้อมูลหลักที่อยู่ประเทศไทย" help="แก้ไขข้อมูลที่ใช้ในฟอร์มผู้ติดต่อ ข้อมูลจะเชื่อมโยงกันตามลำดับจังหวัด อำเภอ ตำบล และรหัสไปรษณีย์">
+                        <setting string="จังหวัด" help="จัดการรายชื่อและรหัสจังหวัด"><button name="%(action_province)d" type="action" string="จัดการจังหวัด" class="btn-primary" icon="fa-map-marker"/></setting>
+                        <setting string="อำเภอ / เขต" help="จัดการอำเภอและเขตภายใต้จังหวัด"><button name="%(action_amphur)d" type="action" string="จัดการอำเภอ / เขต" class="btn-secondary" icon="fa-map"/></setting>
+                        <setting string="ตำบล / แขวง" help="จัดการตำบลและแขวงภายใต้อำเภอ"><button name="%(action_tambon)d" type="action" string="จัดการตำบล / แขวง" class="btn-secondary" icon="fa-location-arrow"/></setting>
+                        <setting string="รหัสไปรษณีย์" help="จัดการรหัสไปรษณีย์ของแต่ละตำบล"><button name="%(action_zip)d" type="action" string="จัดการรหัสไปรษณีย์" class="btn-secondary" icon="fa-envelope"/></setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

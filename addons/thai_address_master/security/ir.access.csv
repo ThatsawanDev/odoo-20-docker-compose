@@ -1,0 +1,9 @@
+id,name,model_id,group_id/id,operation,domain
+access_province_user,province user,province,base.group_user,r,
+access_amphur_user,amphur user,amphur,base.group_user,r,
+access_tambon_user,tambon user,tambon,base.group_user,r,
+access_zip_user,zip user,zip,base.group_user,r,
+access_province_system,province settings,province,base.group_system,crud,
+access_amphur_system,amphur settings,amphur,base.group_system,crud,
+access_tambon_system,tambon settings,tambon,base.group_system,crud,
+access_zip_system,zip settings,zip,base.group_system,crud,

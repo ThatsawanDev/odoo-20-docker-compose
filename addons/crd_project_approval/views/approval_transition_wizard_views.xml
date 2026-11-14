@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_approval_transition_wizard_form" model="ir.ui.view">
+        <field name="name">project.approval.transition.wizard.form</field>
+        <field name="model">project.approval.transition.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="approval_id" invisible="1"/>
+                <field name="action" invisible="1"/>
+                <group>
+                    <field name="reason" widget="text"
+                        placeholder="Reason (optional)..."
+                        style="min-height: 80px;"
+                        />
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

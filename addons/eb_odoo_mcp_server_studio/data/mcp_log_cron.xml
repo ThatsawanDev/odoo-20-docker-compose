@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         CRON: Auto-cleanup MCP logs older than 30 days
+         Runs daily at 03:00 AM server time.
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="ir_cron_mcp_log_cleanup" model="ir.cron" forcecreate="true">
+        <field name="name">MCP Log Cleanup (30-day retention)</field>
+        <field name="model_id" ref="model_mcp_log"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_cleanup_logs(days=30)</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+</odoo>

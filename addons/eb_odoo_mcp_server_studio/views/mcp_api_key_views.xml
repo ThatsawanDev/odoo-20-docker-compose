@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Standalone list/form for OAuth Clients (used by smart button) -->
+    <record id="action_mcp_oauth_client_standalone" model="ir.actions.act_window">
+        <field name="name">OAuth Clients</field>
+        <field name="res_model">mcp.oauth.client</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No OAuth clients connected yet.</p>
+            <p>
+                OAuth clients appear here when an AI agent connects via the OAuth 2.1 flow.
+                Revoke access by setting a client to inactive.
+            </p>
+        </field>
+    </record>
+
+    <!-- Standalone list/form for API Tokens (used by smart button) -->
+    <record id="action_mcp_api_token_standalone" model="ir.actions.act_window">
+        <field name="name">API Tokens</field>
+        <field name="res_model">mcp.api.token</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No API tokens yet.</p>
+            <p>
+                Create an API token and paste it into your AI agent's MCP server config
+                as the <code>X-MCP-API-Key</code> header value.
+            </p>
+        </field>
+    </record>
+
+</odoo>

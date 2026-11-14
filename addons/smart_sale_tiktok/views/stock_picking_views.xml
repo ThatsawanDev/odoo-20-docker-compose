@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_picking_form_inherit_tiktok" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.tiktok</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_tiktok_rts" string="TikTok: Set Ready to Ship" type="object" class="btn-primary" invisible="not tiktok_order_id or state in ['draft', 'cancel', 'done']"/>
+            </xpath>
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="tiktok_order_id" invisible="not tiktok_order_id"/>
+                <field name="tiktok_shipping_provider" invisible="not tiktok_order_id"/>
+                <field name="tiktok_tracking_number" invisible="not tiktok_order_id"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

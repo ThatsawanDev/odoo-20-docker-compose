@@ -1,0 +1,991 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_mcp_config" model="ir.actions.server">
+        <field name="name">MCP Configuration</field>
+        <field name="model_id" ref="model_mcp_config"/>
+        <field name="state">code</field>
+        <field name="code">action = model.get_config().action_open_config()</field>
+    </record>
+
+    <record id="action_mcp_oauth_client" model="ir.actions.act_window">
+        <field name="name">OAuth Clients</field>
+        <field name="res_model">mcp.oauth.client</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No OAuth clients registered yet.</p>
+            <p>OAuth clients appear here when an AI agent connects via OAuth 2.1. Deactivate a record to revoke
+                access.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_mcp_api_token" model="ir.actions.act_window">
+        <field name="name">API Tokens</field>
+        <field name="res_model">mcp.api.token</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No API tokens created yet.</p>
+            <p>Create a token and set it as the <code>X-MCP-API-Key</code> header in your AI client config.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_mcp_prompt_template" model="ir.actions.act_window">
+        <field name="name">Prompt Templates</field>
+        <field name="res_model">mcp.prompt.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No prompt templates configured.</p>
+            <p>Templates appear as <strong>/commands</strong> in Claude, Windsurf, and other MCP clients. Use <code>
+                {{variable}}
+            </code> placeholders.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_mcp_tool_allowlist" model="ir.actions.act_window">
+        <field name="name">Tool Allowlists</field>
+        <field name="res_model">mcp.tool.allowlist</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No tool allowlists configured.</p>
+            <p>Read tools are auto-enabled for all MCP users. Write and Execute tools require explicit allowlist
+                membership.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_mcp_model_group" model="ir.actions.act_window">
+        <field name="name">Model Restriction Groups</field>
+        <field name="res_model">mcp.model.group</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No model restriction groups configured.</p>
+            <p>Restriction groups block AI access to specific Odoo models and fields. Works on top of native Odoo
+                ACLs.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══ OAUTH CLIENT — LIST + FORM ═══════════════════════════════════ -->
+
+    <record id="view_mcp_oauth_client_list" model="ir.ui.view">
+        <field name="name">mcp.oauth.client.list</field>
+        <field name="model">mcp.oauth.client</field>
+        <field name="arch" type="xml">
+            <list string="OAuth Clients" decoration-muted="not active">
+                <field name="client_name" string="Client Name"/>
+                <field name="client_id" string="Client ID" optional="show"/>
+                <field name="grant_types" string="Grant Types" optional="show"/>
+                <field name="scope" string="Scopes" optional="show"/>
+                <field name="active" widget="boolean_toggle" string="Active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mcp_oauth_client_form" model="ir.ui.view">
+        <field name="name">mcp.oauth.client.form</field>
+        <field name="model">mcp.oauth.client</field>
+        <field name="arch" type="xml">
+            <form string="OAuth Client">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="client_name" placeholder="Client name…"/>
+                        </h1>
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                        <i class="fa fa-plug me-2" title="mcp config"/>
+                        <strong>OAuth 2.1 Dynamic Registration (RFC 7591).</strong>
+                        Auto-created when an AI agent connected. Deactivate to revoke access.
+                    </div>
+                    <group>
+                        <group string="Identity">
+                            <field name="client_id" readonly="1" string="Client ID"/>
+                            <field name="grant_types" string="Grant Types"/>
+                            <field name="scope" string="Permitted Scopes"/>
+                            <field name="active" widget="boolean_toggle"/>
+                        </group>
+                    </group>
+                    <group string="Allowed Redirect URIs">
+                        <field name="redirect_uris" widget="text" nolabel="1"
+                               placeholder="https://example.com/callback&#10;https://another.com/callback"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══ API TOKEN — LIST + FORM ══════════════════════════════════════ -->
+
+    <record id="view_mcp_api_token_list" model="ir.ui.view">
+        <field name="name">mcp.api.token.list</field>
+        <field name="model">mcp.api.token</field>
+        <field name="arch" type="xml">
+            <list string="API Tokens"
+                  decoration-muted="not active"
+                  decoration-danger="expires_at and expires_at &lt; current_date">
+                <field name="name" string="Label"/>
+                <field name="user_id" widget="many2one_avatar_user" string="Authenticates As"/>
+                <field name="mcp_client" string="AI Client"/>
+                <field name="client_id" optional="hide" string="OAuth Client ID"/>
+                <field name="scope" optional="hide" string="Granted Scope"/>
+                <field name="audience" optional="hide" string="Audience"/>
+                <field name="token" readonly="1" optional="show" string="Bearer Token"/>
+                <field name="expires_at" optional="show" string="Expires"/>
+                <field name="refresh_expires_at" optional="hide" string="Refresh Expires"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mcp_api_token_form" model="ir.ui.view">
+        <field name="name">mcp.api.token.form</field>
+        <field name="model">mcp.api.token</field>
+        <field name="arch" type="xml">
+            <form string="API Token">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"
+                                   placeholder="e.g. Claude Desktop — Production Server"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Token Configuration">
+                            <field name="user_id" widget="many2one_avatar_user"
+                                   string="Authenticates As"/>
+                            <field name="mcp_client" string="AI Client"/>
+                            <field name="active" widget="boolean_toggle" string="Active"/>
+                            <field name="expires_at" string="Expiry Date"/>
+                            <field name="refresh_expires_at" string="Refresh Expiry"/>
+                        </group>
+                        <group string="Connection Details">
+                            <field name="connector_url" readonly="1"
+                                   widget="CopyClipboardChar"
+                                   string="MCP Server URL (Claude Desktop)"
+                                   invisible="mcp_client != 'claude_desktop'"/>
+                            <field name="token" readonly="1"
+                                   widget="CopyClipboardChar"
+                                   string="Bearer Token (X-MCP-API-Key)"/>
+                        </group>
+                    </group>
+                    <group string="OAuth Metadata">
+                        <group>
+                            <field name="client_id" readonly="1" string="OAuth Client ID"/>
+                            <field name="scope" readonly="1" string="Granted Scope"/>
+                        </group>
+                        <group>
+                            <field name="audience" readonly="1" string="Audience / Resource"/>
+                        </group>
+                    </group>
+                    <div class="alert alert-warning mt-3" role="alert">
+                        <i class="fa fa-shield me-2" title="mcp config"/>
+                        <strong>Security:</strong>
+                        Treat this token like a password.
+                        Anyone with it can call MCP tools as the user above.
+                        Rotate regularly and deactivate unused tokens immediately.
+                    </div>
+                    <div class="alert alert-info mt-2" role="alert">
+                        <i class="fa fa-lock me-2" title="oauth metadata"/>
+                        <strong>OAuth Metadata:</strong>
+                        <strong>OAuth Client ID</strong>
+                        shows which registered MCP client received this token.
+                        <strong>Granted Scope</strong>
+                        shows what this token may do.
+                        <strong>Audience / Resource</strong>
+                        binds the token to the intended MCP server URL.
+                        <strong>Refresh Expiry</strong>
+                        controls how long token rotation remains possible.
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- ═══ MAIN CONFIGURATION FORM ══════════════════════════════════════ -->
+
+    <record id="view_mcp_config_form" model="ir.ui.view">
+        <field name="name">mcp.config.form</field>
+        <field name="model">mcp.config</field>
+        <field name="arch" type="xml">
+            <form string="MCP Studio — Configuration">
+                <sheet>
+
+                    <!-- ── Stat Buttons ──────────────────────────────────── -->
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="action"
+                                name="%(action_mcp_oauth_client)d" icon="fa-plug">
+                            <field name="oauth_client_count" widget="statinfo" string="OAuth Clients"/>
+                        </button>
+                        <button class="oe_stat_button" type="action"
+                                name="%(action_mcp_api_token)d" icon="fa-key">
+                            <field name="api_token_count" widget="statinfo" string="API Tokens"/>
+                        </button>
+                        <button class="oe_stat_button" type="action"
+                                name="%(action_mcp_prompt_template)d" icon="fa-comment-o">
+                            <field name="prompt_template_count" widget="statinfo" string="Prompts"/>
+                        </button>
+                        <button class="oe_stat_button" type="action"
+                                name="%(action_mcp_tool_allowlist)d" icon="fa-check-square-o">
+                            <field name="tool_allowlist_count" widget="statinfo" string="Tool Rules"/>
+                        </button>
+                        <button class="oe_stat_button" type="action"
+                                name="%(action_mcp_model_group)d" icon="fa-shield">
+                            <field name="model_restriction_count" widget="statinfo" string="Model Rules"/>
+                        </button>
+                    </div>
+
+                    <!-- ── Title ─────────────────────────────────────────── -->
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="MCP Studio Configuration"/>
+                        </h1>
+                    </div>
+
+                    <!-- ── Status banners ─────────────────────────────────── -->
+                    <div class="alert alert-success d-flex gap-2 align-items-center"
+                         role="alert" invisible="not server_enabled">
+                        <i class="fa fa-check-circle fa-lg" title="fa-check-circle fa-lg"/>
+                        <span>
+                            <strong>MCP Server is Active.</strong>
+                            AI clients connect at <code>/mcp/v1/</code> — see the
+                            <strong>Connection</strong>
+                            tab for client-specific setup.
+                        </span>
+                    </div>
+                    <div class="alert alert-danger d-flex gap-2 align-items-center"
+                         role="alert" invisible="server_enabled">
+                        <i class="fa fa-times-circle fa-lg" title="fa-times-circle fa-lg"/>
+                        <span>
+                            <strong>MCP Server is Disabled.</strong>
+                            All AI client requests are being rejected. Enable the server below.
+                        </span>
+                    </div>
+
+                    <!-- ── Master toggle ─────────────────────────────────── -->
+                    <group>
+                        <group string="Server Status">
+                            <field name="server_enabled" widget="boolean_toggle"
+                                   string="MCP Server Enabled"
+                                   help="Master switch. When OFF, every incoming MCP request is immediately rejected with an error — no tool calls are executed."/>
+                        </group>
+                    </group>
+
+                    <notebook>
+
+                        <!-- ══ TAB 1: Connection ══════════════════════════ -->
+                        <page string="Connection" name="connection">
+
+                            <!-- Live endpoint card -->
+                            <div class="card mb-4 border-0 shadow-sm">
+                                <div class="card-body bg-light rounded-3">
+                                    <h5 class="card-title mb-1">
+                                        <i class="fa fa-server text-primary me-2" title="fa-server text-primary me-2"/>
+                                        Your MCP Server Endpoint
+                                    </h5>
+                                    <p class="text-muted small mb-3">
+                                        Share this URL with any MCP-compatible AI client.
+                                        Click the copy icon to copy it to your clipboard.
+                                    </p>
+                                    <field name="connector_url" readonly="1"
+                                           widget="CopyClipboardChar"
+                                           string="Live Endpoint URL"
+                                           help="The full MCP endpoint URL read from your Odoo system parameter 'web.base.url'. Update that parameter if the URL is wrong."/>
+                                </div>
+                            </div>
+
+                            <!-- Auth methods -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="mb-2">
+                                                <i class="fa fa-lock text-muted me-2" title="fa-lock text-muted me-2"/>
+                                                OAuth 2.1 + PKCE
+                                                <span class="badge text-bg-success ms-2">Recommended</span>
+                                            </h6>
+                                            <p class="small mb-0">
+                                                Used by <strong>Claude.ai Web</strong> and <strong>ChatGPT Web</strong>.
+                                                The AI client opens an Odoo consent page automatically —
+                                                no manual token setup needed. Tokens auto-rotate and are
+                                                revoked by deactivating the OAuth Client record.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="mb-2">
+                                                <i class="fa fa-key text-muted me-2" title="fa-key text-muted me-2"/>
+                                                Bearer Token (API Key)
+                                                <span class="badge text-bg-secondary ms-2">Manual Setup</span>
+                                            </h6>
+                                            <p class="small mb-0">
+                                                Used by <strong>Claude Desktop</strong>, <strong>Claude CLI</strong>,
+                                                <strong>ChatGPT Codex CLI</strong>, <strong>Gemini CLI</strong>.
+                                                Create a token in the <strong>API Tokens</strong> tab, then set it
+                                                as the <code>Authorization: Bearer</code> header or
+                                                <code>X-MCP-API-Key</code>
+                                                header in your client config.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <h5 class="mb-3">
+                                <i class="fa fa-plug text-primary me-2" title="fa-plug text-primary me-2"/>Client Setup
+                                Instructions
+                            </h5>
+
+                            <!-- Row 1: Claude clients -->
+                            <div class="row g-3 mb-3">
+
+                                <div class="col-md-4">
+                                    <div class="card h-100">
+                                        <div class="card-header d-flex align-items-center gap-2 bg-light">
+                                            <i class="fa fa-globe text-muted" title="fa-globe text-muted"/>
+                                            <strong>Claude.ai Web</strong>
+                                            <span class="badge text-bg-success ms-auto">OAuth 2.1</span>
+                                        </div>
+                                        <div class="card-body small">
+                                            <ol class="ps-3 mb-0">
+                                                <li class="mb-1">Open <strong>claude.ai</strong> → profile icon
+                                                </li>
+                                                <li class="mb-1">
+                                                    <strong>Settings → Integrations</strong>
+                                                </li>
+                                                <li class="mb-1">Click
+                                                    <strong>Add Integration</strong>
+                                                </li>
+                                                <li class="mb-1">Paste your <strong>Live Endpoint URL</strong> above
+                                                </li>
+                                                <li>Log in to Odoo → click
+                                                    <strong>Allow Access</strong>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="card h-100">
+                                        <div class="card-header d-flex align-items-center gap-2 bg-light">
+                                            <i class="fa fa-desktop text-muted" title="fa-desktop text-muted"/>
+                                            <strong>Claude Desktop</strong>
+                                            <span class="badge text-bg-success ms-auto">OAuth 2.1</span>
+                                        </div>
+                                        <div class="card-body small">
+                                            <ol class="ps-3 mb-0">
+                                                <li class="mb-1">Open <strong>Claude Desktop</strong> → profile icon
+                                                </li>
+                                                <li class="mb-1">
+                                                    <strong>Settings → Integrations</strong>
+                                                </li>
+                                                <li class="mb-1">Click
+                                                    <strong>Add Integration</strong>
+                                                </li>
+                                                <li class="mb-1">Paste your <strong>Live Endpoint URL</strong> above
+                                                </li>
+                                                <li>Log in to Odoo → click
+                                                    <strong>Allow Access</strong>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="card h-100">
+                                        <div class="card-header d-flex align-items-center gap-2 bg-light">
+                                            <i class="fa fa-terminal text-muted" title="fa-terminal"/>
+                                            <strong>Anthropic Claude Code</strong>
+                                            <span class="badge text-bg-success ms-auto">OAuth 2.1</span>
+                                        </div>
+                                        <div class="card-body small">
+                                            <p class="mb-2 text-muted">Open cmd. Run the following commands:</p>
+                                            <ol class="ps-3 mb-0">
+                                                <li class="mb-1">
+                                                    <strong>npm i -g @anthropic-ai/claude-code</strong>
+                                                </li>
+                                                <li class="mb-1">
+                                                    <strong>npm i -g @anthropic-ai/claude-code@latest</strong>
+                                                </li>
+                                                <li class="mb-1">
+                                                    <strong>claude</strong>
+                                                </li>
+                                                <li class="mb-1">
+                                                    <strong>claude mcp add odoo --url YOUR_INSTANCE_URL/mcp/v1</strong>
+                                                </li>
+                                                <li class="mb-1">
+                                                    <strong>/mcp</strong>
+                                                    (inside Claude Code to verify connection)
+                                                </li>
+                                                <li>
+                                                    <strong>Create a contact "Test Contact" with City "Gandhinagar"
+                                                    </strong>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: ChatGPT + Gemini -->
+                            <div class="row g-3 mb-3">
+
+                                <div class="col-md-4">
+                                    <div class="card h-100">
+                                        <div class="card-header d-flex align-items-center gap-2 bg-light">
+                                            <i class="fa fa-globe text-muted" title="fa-globe text-muted"/>
+                                            <strong>ChatGPT Web</strong>
+                                            <span class="badge text-bg-success ms-auto">OAuth 2.1</span>
+                                        </div>
+                                        <div class="card-body small">
+                                            <ol class="ps-3 mb-0">
+                                                <li class="mb-1">Open <strong>chatgpt.com</strong> → profile icon
+                                                </li>
+                                                <li class="mb-1">
+                                                    <strong>Settings → Connectors</strong>
+                                                </li>
+                                                <li class="mb-1">Click
+                                                    <strong>Add Custom Connector</strong>
+                                                </li>
+                                                <li class="mb-1">Paste your <strong>Live Endpoint URL</strong> above
+                                                </li>
+                                                <li>Log in to Odoo → click
+                                                    <strong>Authorize</strong>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="card h-100">
+                                        <div class="card-header d-flex align-items-center gap-2 bg-light">
+                                            <i class="fa fa-terminal text-muted" title="fa-terminal"/>
+                                            <strong>ChatGPT Codex CLI</strong>
+                                            <span class="badge text-bg-success ms-auto">OAuth 2.1</span>
+                                        </div>
+                                        <div class="card-body small">
+                                            <p class="mb-2 text-muted">Open cmd Run the following commands:</p>
+                                            <ol class="ps-3 mb-0">
+                                                <li class="mb-1">
+                                                    <strong>npm i -g @openai/codex</strong>
+                                                </li>
+                                                <li class="mb-1">
+                                                    <strong>npm i -g @openai/codex@latest</strong>
+                                                </li>
+                                                <li class="mb-1">
+                                                    <strong>codex</strong>
+                                                </li>
+                                                <li>
+                                                    <strong>codex mcp add odoo --url YOUR_INSTANCE_URL/mcp/v1</strong>
+                                                </li>
+                                                <li>
+                                                    <strong>codex mcp login odoo</strong>
+                                                </li>
+                                                <li>
+                                                    <strong>Create a contact "Test Contact" with City "Gandhinagar"
+                                                    </strong>
+                                                </li>
+                                            </ol>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="card h-100">
+                                        <div class="card-header d-flex align-items-center gap-2 bg-light">
+                                            <i class="fa fa-terminal text-muted" title="fa-terminal"/>
+                                            <strong>Google Gemini CLI</strong>
+                                            <span class="badge text-bg-success ms-auto">OAuth 2.1</span>
+                                        </div>
+                                        <div class="card-body small">
+                                            <p class="mb-2 text-muted">Open cmd. Run the following commands:</p>
+                                            <ol class="ps-3 mb-0">
+                                                <li class="mb-1">
+                                                    <strong>npm i -g @google/gemini-cli</strong>
+                                                </li>
+                                                <li class="mb-1">
+                                                    <strong>npm i -g @google/gemini-cli@latest</strong>
+                                                </li>
+                                                <li class="mb-1">
+                                                    <strong>gemini</strong>
+                                                </li>
+                                                <li class="mb-1">Open <strong>~/.gemini/settings.json</strong> and add:
+                                                    <br/>
+                                                    <code>
+                                                        {"mcpServers":{"odoo":{"httpUrl":"YOUR_INSTANCE_URL/mcp/v1"}}}
+                                                    </code>
+                                                </li>
+                                                <li class="mb-1">Inside Gemini CLI, type <strong>/mcp</strong> to verify
+                                                    connection
+                                                </li>
+                                                <li>
+                                                    <strong>Create a contact "Test Contact" with City "Gandhinagar"
+                                                    </strong>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Health check tip -->
+                            <div class="alert alert-secondary py-2 px-3 small mt-2" role="alert">
+                                <i class="fa fa-heartbeat text-success me-2" title="fa-heartbeat text-success me-2"/>
+                                <strong>Health check:</strong>
+                                Visit
+                                <code>/mcp/v1/health</code>
+                                to confirm the server is reachable.
+                                Returns <code>{"status":"ok"}</code> when online.
+                                Replace <code>YOUR_DOMAIN</code> everywhere above with your actual domain
+                                and <code>YOUR_TOKEN</code> with a token from the <strong>API Tokens</strong> tab.
+                            </div>
+                        </page>
+
+                        <!-- ══ TAB 2: Token Settings ═══════════════════ -->
+                        <page string="Token Settings" name="tokens_config">
+                            <div class="alert alert-info py-2 px-3 mb-3" role="alert">
+                                <i class="fa fa-clock-o me-1" title="fa-clock-o me-1"/>
+                                These settings control how long OAuth tokens remain valid before
+                                AI clients must re-authenticate. Shorter lifetimes improve security;
+                                longer lifetimes reduce interruptions for unattended CLI workflows.
+                            </div>
+                            <group string="OAuth 2.1 Token Lifetimes">
+                                <group>
+                                    <field name="access_token_timeout_hours"
+                                           string="Access Token Lifetime (hours)"
+                                           help="How long an OAuth access token is valid after it is issued. After this period, the AI client must exchange its refresh token for a new access token. Default: 24 hours."/>
+                                    <field name="refresh_token_timeout_days"
+                                           string="Refresh Token Lifetime (days)"
+                                           help="How long the refresh token remains valid. After this period, the user must go through the full OAuth consent flow again. Only applies when 'offline_access' scope is granted. Default: 30 days."/>
+                                </group>
+                            </group>
+                            <div class="alert alert-secondary mt-3 small" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                <strong>Bearer tokens (API Keys)</strong>
+                                created manually in the
+                                <strong>API Tokens</strong>
+                                tab do not have a forced expiry by default.
+                                Set an <strong>Expiry Date</strong> on individual token records
+                                to rotate them automatically.
+                            </div>
+                        </page>
+
+                        <!-- ══ TAB 3: Tool Limits ══════════════════════ -->
+                        <page string="Tool Limits" name="limits">
+                            <div class="alert alert-secondary py-2 px-3 mb-3" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                These limits prevent runaway AI scripts from consuming excessive
+                                server resources or extracting too much data in a single call.
+                            </div>
+                            <group string="Code Execution">
+                                <group>
+                                    <field name="code_execute_limit"
+                                           string="Max Lines in execute_orm"
+                                           help="Maximum lines of Python code allowed in a single odoo_execute_orm call. Prevents runaway code. Default: 10000."/>
+                                    <field name="code_search_limit"
+                                           string="Max Code Search Results"
+                                           help="Maximum results returned by odoo_code_search per call. Prevents AI from extracting your entire codebase. Default: 5000."/>
+                                </group>
+                            </group>
+                            <group string="EChart Data Exposure">
+                                <group>
+                                    <field name="expose_echart_data_in_response"
+                                           widget="boolean_toggle"
+                                           string="Return Live Chart Data to AI"
+                                           help="If ON, live Odoo data fetched for EChart dashboards is included in the MCP tool response, allowing AI to verify chart accuracy. If OFF, data stays on the server — only the chart configuration is returned. Disable for sensitive data environments."/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- ══ TAB 4: Logging ══════════════════════════ -->
+                        <page string="Logging" name="logging">
+                            <div class="alert alert-secondary py-2 px-3 mb-3" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                Every MCP tool call is logged with timing, user, tool name, and status.
+                                View logs via <strong>MCP Studio → Execution Logs</strong>.
+                            </div>
+                            <group string="Log Retention">
+                                <group>
+                                    <field name="log_retention_days"
+                                           string="Retention Period (days)"
+                                           help="Execution logs older than this many days are deleted by a daily scheduled job. Set 0 to keep logs forever (not recommended for production). Default: 90 days."/>
+                                </group>
+                            </group>
+                            <group string="Log Content">
+                                <group>
+                                    <field name="log_full_payload"
+                                           widget="boolean_toggle"
+                                           string="Store Full Request &amp; Response Payload"
+                                           help="When ON, the complete JSON input and output for every tool call is stored in the log record. Useful for debugging AI agent behavior, but may expose sensitive data. Turn OFF after debugging. Default: OFF."/>
+                                </group>
+                            </group>
+                            <div class="alert alert-danger mt-3" role="alert"
+                                 invisible="not log_full_payload">
+                                <i class="fa fa-exclamation-triangle me-2" title="fa-exclamation-triangle me-2"/>
+                                <strong>Full Payload Logging is ON.</strong>
+                                Tool inputs and outputs — which may contain passwords, tokens, and
+                                customer data — are stored in every log record.
+                                Turn this OFF after debugging is complete.
+                            </div>
+                        </page>
+
+                        <!-- ══ TAB 5: Security ══════════════════════════ -->
+                        <page string="Security" name="security">
+
+                            <!-- KPI cards -->
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <div class="card text-center border-primary h-100">
+                                        <div class="card-body">
+                                            <i class="fa fa-check-square-o fa-2x text-primary mb-2 d-block"
+                                               title="fa-check-square-o fa-2x text-primary mb-2 d-block"/>
+                                            <h3 class="mb-0">
+                                                <field name="tool_allowlist_count" nolabel="1"/>
+                                            </h3>
+                                            <small class="text-muted d-block">Tool Allowlist Rules</small>
+                                            <p class="small text-muted mt-1 mb-0">
+                                                Write &amp; Execute tools require an allowlist entry per user.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card text-center border-warning h-100">
+                                        <div class="card-body">
+                                            <i class="fa fa-database fa-2x text-warning mb-2 d-block"
+                                               title="fa-database fa-2x text-warning mb-2 d-block"/>
+                                            <h3 class="mb-0">
+                                                <field name="model_restriction_count" nolabel="1"/>
+                                            </h3>
+                                            <small class="text-muted d-block">Model Restriction Groups</small>
+                                            <p class="small text-muted mt-1 mb-0">
+                                                Block AI access to specific Odoo models entirely.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card text-center border-danger h-100">
+                                        <div class="card-body">
+                                            <i class="fa fa-eye-slash fa-2x text-danger mb-2 d-block"
+                                               title="fa-eye-slash fa-2x text-danger mb-2 d-block"/>
+                                            <h3 class="mb-0">
+                                                <field name="field_restriction_count" nolabel="1"/>
+                                            </h3>
+                                            <small class="text-muted d-block">Field Restrictions</small>
+                                            <p class="small text-muted mt-1 mb-0">
+                                                Strip or mask sensitive fields before AI receives data.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 5-Layer architecture -->
+                            <div class="alert alert-info py-3 px-3 mb-4" role="alert">
+                                <strong><i class="fa fa-shield me-1" title="fa-shield me-1"/>5-Layer Security
+                                    Architecture
+                                </strong>
+                                <ul class="mb-0 ps-3 mt-2 small">
+                                    <li>
+                                        <strong>Layer 1 — Authentication:</strong>
+                                        OAuth 2.1 + PKCE or Bearer token required on every request.
+                                    </li>
+                                    <li>
+                                        <strong>Layer 2 — Tool Access:</strong>
+                                        Read auto-allowed. Write/Execute require explicit tool allowlist membership.
+                                    </li>
+                                    <li>
+                                        <strong>Layer 3 — Model Restrictions:</strong>
+                                        Block entire Odoo models per user group.
+                                    </li>
+                                    <li>
+                                        <strong>Layer 4 — Field Restrictions:</strong>
+                                        Strip or mask individual fields before AI sees the data.
+                                    </li>
+                                    <li>
+                                        <strong>Layer 5 — Odoo ACLs:</strong>
+                                        Native <code>ir.model.access</code> rules always enforced underneath MCP.
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <notebook>
+                                <page string="IP Restrictions" name="ip">
+                                    <div class="alert alert-secondary py-2 px-3 mb-3" role="alert">
+                                        <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                        <strong>Evaluation order:</strong>
+                                        Blacklist is checked first.
+                                        If the IP matches, access is denied. Whitelist is checked next —
+                                        if set and the IP is not listed, access is denied too.
+                                        Both empty = all IPs allowed.
+                                    </div>
+                                    <group string="IP Blacklist — always denied">
+                                        <field name="ip_blacklist" widget="text" nolabel="1"
+                                               placeholder="1.2.3.4, 5.6.7.0/24 (comma or newline separated)"
+                                               help="IP addresses or CIDR ranges unconditionally blocked from all MCP endpoints. Takes priority over whitelist."/>
+                                    </group>
+                                    <group string="IP Whitelist — leave empty to allow all IPs">
+                                        <field name="ip_whitelist" widget="text" nolabel="1"
+                                               placeholder="192.168.1.0/24, 10.0.0.5"
+                                               help="If set, only IPs in this list can access MCP. Leave empty to allow all IPs. Common use: restrict to your office or VPN CIDR range."/>
+                                    </group>
+                                </page>
+
+                                <page string="Rate Limiting" name="rate">
+                                    <div class="alert alert-secondary py-2 px-3 mb-3" role="alert">
+                                        <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                        Rate limiting is applied per Odoo user per minute.
+                                        AI agent loops that call tools rapidly will receive a
+                                        rate-limit error and are expected to back off and retry.
+                                    </div>
+                                    <group string="Per-User Request Limits">
+                                        <group>
+                                            <field name="rate_limit_enabled"
+                                                   widget="boolean_toggle"
+                                                   string="Enable Rate Limiting"
+                                                   help="When ON, tool calls exceeding the per-minute limit return an error. The AI client should retry with exponential backoff."/>
+                                            <field name="rate_limit_per_minute"
+                                                   string="Max Tool Calls / Minute"
+                                                   invisible="not rate_limit_enabled"
+                                                   help="Maximum odoo_tool_call requests per user per minute. Requests beyond this are rejected. Default: 60. Set lower for stricter control."/>
+                                        </group>
+                                    </group>
+                                </page>
+
+                                <page string="Data Protection" name="data">
+                                    <group string="Audit Log Masking">
+                                        <group>
+                                            <field name="mask_sensitive_in_logs"
+                                                   widget="boolean_toggle"
+                                                   string="Mask Restricted Fields in Audit Logs"
+                                                   help="When ON, fields marked as 'restricted' in Model Restriction Groups appear as [RESTRICTED] in audit logs instead of showing the real value. Protects sensitive data (passwords, salaries, tokens) from appearing in log records."/>
+                                        </group>
+                                    </group>
+                                    <div class="alert alert-info mt-3" role="alert">
+                                        <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                        Field restrictions only affect MCP access.
+                                        Odoo web UI users retain their normal field permissions
+                                        regardless of MCP field restriction settings.
+                                    </div>
+                                </page>
+                            </notebook>
+                        </page>
+
+                        <!-- ══ TAB 6: OAuth Clients ════════════════════ -->
+                        <page string="OAuth Clients" name="oauth">
+                            <p class="text-muted mb-3">
+                                AI agents that connected via OAuth 2.1 appear here. Each record
+                                represents one AI client application that completed the consent flow.
+                                <strong>Deactivate a record to revoke that client's access immediately.</strong>
+                            </p>
+                            <field name="oauth_client_ids" nolabel="1" mode="list"
+                                   context="{'default_active': True}">
+                                <list create="0" delete="0" decoration-muted="not active">
+                                    <field name="client_name" string="AI Client Name"/>
+                                    <field name="client_id" optional="show" string="Client ID"/>
+                                    <field name="grant_types" optional="show" string="Grant Types"/>
+                                    <field name="scope" optional="show" string="Scopes"/>
+                                    <field name="active" widget="boolean_toggle" string="Active"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- ══ TAB 7: API Tokens ═══════════════════════ -->
+                        <page string="API Tokens" name="tokens">
+                            <p class="text-muted mb-3">
+                                Bearer tokens for
+                                <code>Authorization: Bearer YOUR_TOKEN</code>
+                                or <code>X-MCP-API-Key</code> header authentication.
+                                Each token authenticates as one Odoo user.
+                                <strong>Deactivate a record to revoke access immediately.</strong>
+                                <span class="text-danger ms-1">Rows in red are expired.</span>
+                            </p>
+                            <field name="api_token_ids" nolabel="1" mode="list"
+                                   context="{'default_active': True}">
+                                <list create="0"
+                                      decoration-muted="not active"
+                                      decoration-danger="expires_at and expires_at &lt; current_date">
+                                    <field name="name" string="Label"/>
+                                    <field name="user_id" widget="many2one_avatar_user" string="Odoo User"/>
+                                    <field name="mcp_client" string="AI Client"/>
+                                    <field name="token" readonly="1"
+                                           widget="CopyClipboardChar" optional="show"
+                                           string="Bearer Token"/>
+                                    <field name="expires_at" optional="show" string="Expires"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- ══ TAB 8: Reference ════════════════════════ -->
+                        <page string="Reference" name="docs">
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-header">
+                                            <i class="fa fa-bolt text-warning me-2" title="fa-bolt text-warning me-2"/>
+                                            <strong>Quick Start (6 steps)</strong>
+                                        </div>
+                                        <div class="card-body small">
+                                            <ol class="ps-3 mb-0">
+                                                <li class="mb-2">Install this module on Odoo 19.</li>
+                                                <li class="mb-2">
+                                                    Assign <strong>MCP Admin</strong> to yourself,
+                                                    <strong>MCP User</strong>
+                                                    to team members
+                                                    (Settings → Users → Groups).
+                                                </li>
+                                                <li class="mb-2">
+                                                    Create an <strong>API Token</strong> (API Tokens tab above)
+                                                    <em>or</em>
+                                                    connect via
+                                                    <strong>OAuth 2.1</strong>
+                                                    from a web AI client.
+                                                </li>
+                                                <li class="mb-2">
+                                                    Configure
+                                                    <strong>Tool Allowlists</strong>
+                                                    (Tool Rules button above) to unlock
+                                                    Write and Execute tools for your users.
+                                                </li>
+                                                <li class="mb-2">
+                                                    Follow the <strong>Connection</strong> tab instructions
+                                                    for your specific AI client.
+                                                </li>
+                                                <li>
+                                                    Test: Ask your AI —
+                                                    <em>"List all Odoo models available to me."</em>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="card h-100">
+                                        <div class="card-header">
+                                            <i class="fa fa-lock text-danger me-2" title="fa-lock text-danger me-2"/>
+                                            <strong>Access Control Summary</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            <table class="table table-sm table-bordered small mb-0">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Category</th>
+                                                        <th>Default</th>
+                                                        <th>Override via</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <span class="badge text-bg-info">Read</span>
+                                                        </td>
+                                                        <td>Auto-allowed</td>
+                                                        <td>Model / Field Restrictions</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <span class="badge text-bg-warning">Write</span>
+                                                        </td>
+                                                        <td>Blocked</td>
+                                                        <td>Tool Allowlist</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <span class="badge text-bg-danger">Execute</span>
+                                                        </td>
+                                                        <td>Blocked</td>
+                                                        <td>Tool Allowlist (trusted only)</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <span class="badge text-bg-secondary">Builder</span>
+                                                        </td>
+                                                        <td>Blocked</td>
+                                                        <td>Tool Allowlist (admin only)</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <i class="fa fa-wrench text-success me-2"
+                                               title="fa-wrench text-success me-2"/>
+                                            <strong>All 26 MCP Tools</strong>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row g-2 small">
+                                                <div class="col-md-3">
+                                                    <strong class="d-block text-muted mb-1">🔍 Read (auto)</strong>
+                                                    <code class="d-block">odoo_list_models</code>
+                                                    <code class="d-block">odoo_get_model_info</code>
+                                                    <code class="d-block">odoo_get_fields</code>
+                                                    <code class="d-block">odoo_search_read</code>
+                                                    <code class="d-block">odoo_get_record</code>
+                                                    <code class="d-block">odoo_aggregate</code>
+                                                    <code class="d-block">odoo_read_group</code>
+                                                    <code class="d-block">odoo_code_search</code>
+                                                    <code class="d-block">odoo_code_read</code>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong class="d-block text-muted mb-1">✏️ Write (allowlist)
+                                                    </strong>
+                                                    <code class="d-block">odoo_create</code>
+                                                    <code class="d-block">odoo_write</code>
+                                                    <code class="d-block">odoo_unlink</code>
+                                                    <code class="d-block">odoo_import_data</code>
+                                                    <code class="d-block">odoo_call_method</code>
+                                                    <code class="d-block">odoo_execute_action</code>
+                                                    <code class="d-block">odoo_add_custom_field</code>
+                                                    <code class="d-block">odoo_email_template</code>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong class="d-block text-muted mb-1">⚡ Execute (allowlist)
+                                                    </strong>
+                                                    <code class="d-block">odoo_execute_orm</code>
+                                                    <code class="d-block">odoo_search_webapp_code</code>
+                                                    <code class="d-block">odoo_search_module_code</code>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <strong class="d-block text-muted mb-1">🎨 Builder (allowlist)
+                                                    </strong>
+                                                    <code class="d-block">odoo_manage_echart</code>
+                                                    <code class="d-block">odoo_manage_webapp</code>
+                                                    <code class="d-block">odoo_manage_module</code>
+                                                    <code class="d-block">odoo_manage_snippet</code>
+                                                    <code class="d-block">odoo_manage_report</code>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </page>
+
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

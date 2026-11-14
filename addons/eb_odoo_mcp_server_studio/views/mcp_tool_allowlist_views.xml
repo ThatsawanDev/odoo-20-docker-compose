@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_mcp_tool_allowlist" model="ir.actions.act_window">
+        <field name="name">Tool Allowlists</field>
+        <field name="res_model">mcp.tool.allowlist</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No tool allowlists configured.</p>
+            <p>
+                <strong>Read tools</strong> are auto-enabled for all MCP users — no entry needed.<br/>
+                <strong>Write and Execute tools</strong> require the user to be listed here.<br/>
+                <strong>MCP Admin</strong> bypasses all allowlists.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_mcp_tool_allowlist_list" model="ir.ui.view">
+        <field name="name">mcp.tool.allowlist.list</field>
+        <field name="model">mcp.tool.allowlist</field>
+        <field name="arch" type="xml">
+            <list string="Tool Allowlists">
+                <field name="tool_name" string="Tool Name"/>
+                <field name="tool_category" widget="badge" string="Risk Category"
+                       decoration-info="tool_category == 'read'"
+                       decoration-warning="tool_category == 'write'"
+                       decoration-danger="tool_category == 'execute'"
+                       optional="show"/>
+                <field name="user_ids" widget="many2many_tags"
+                       string="Users With Access"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mcp_tool_allowlist_form" model="ir.ui.view">
+        <field name="name">mcp.tool.allowlist.form</field>
+        <field name="model">mcp.tool.allowlist</field>
+        <field name="arch" type="xml">
+            <form string="Tool Allowlist">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="tool_name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <div class="alert alert-info d-flex gap-2 align-items-center"
+                         role="alert" invisible="tool_category != 'read'">
+                        <i class="fa fa-info-circle fa-lg" title="tool allowlist"/>
+                        <span>
+                            <strong>Read tool.</strong>
+                            Auto-enabled for all MCP users. This allowlist entry is informational only.
+                        </span>
+                    </div>
+                    <div class="alert alert-warning d-flex gap-2 align-items-center"
+                         role="alert" invisible="tool_category != 'write'">
+                        <i class="fa fa-exclamation-triangle fa-lg" title="tool allowlist"/>
+                        <span>
+                            <strong>Write tool.</strong>
+                            Can create, update, or delete Odoo records. Only add trusted users.
+                            MCP Admin always has access regardless of this list.
+                        </span>
+                    </div>
+                    <div class="alert alert-danger d-flex gap-2 align-items-center"
+                         role="alert" invisible="tool_category != 'execute'">
+                        <i class="fa fa-exclamation-triangle fa-lg" title="tool allowlist"/>
+                        <span>
+                            <strong>Execute tool — high risk.</strong>
+                            Can run Python code or build entire Odoo modules.
+                            Restrict to trusted developers only.
+                        </span>
+                    </div>
+
+                    <group>
+                        <group string="Tool Information">
+                            <field name="tool_name" readonly="1" string="Tool Identifier"/>
+                            <field name="tool_category" readonly="1" widget="badge"
+                                   string="Risk Category"
+                                   decoration-info="tool_category == 'read'"
+                                   decoration-warning="tool_category == 'write'"
+                                   decoration-danger="tool_category == 'execute'"/>
+                        </group>
+                    </group>
+
+                    <group string="Users Allowed to Call This Tool">
+                        <field name="user_ids" widget="many2many_tags" nolabel="1"
+                               placeholder="Leave empty to allow all MCP users"/>
+                    </group>
+
+                    <div class="alert alert-secondary mt-3" role="alert">
+                        <i class="fa fa-info-circle me-2" title="tool allowlist"/>
+                        <strong>How allowlists work:</strong>
+                        <ul class="mb-0 ps-3 mt-1 small">
+                            <li><strong>MCP Admin</strong> bypasses ALL allowlists.</li>
+                            <li><strong>Empty list</strong> = all MCP users can call this tool.</li>
+                            <li><strong>Named users</strong> = only those users can call it.</li>
+                            <li><strong>Read tools</strong> = always enabled, allowlist has no effect.</li>
+                        </ul>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

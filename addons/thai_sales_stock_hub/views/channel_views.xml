@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hub_channel_list" model="ir.ui.view">
+        <field name="name">thai.sales.stock.channel.list</field>
+        <field name="model">thai.sales.stock.channel</field>
+        <field name="arch" type="xml">
+            <list string="ช่องทางการขาย" create="0" delete="0" default_order="sequence,id">
+                <field name="sequence" widget="handle"/>
+                <field name="icon_128" widget="image" string="ไอคอน" options="{'size': [40, 40]}"/>
+                <field name="name" string="ชื่อช่องทาง"/>
+                <field name="code" string="รหัส"/>
+                <field name="active" string="เปิดใช้"/>
+                <field name="description" optional="hide"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_hub_channel_form" model="ir.ui.view">
+        <field name="name">thai.sales.stock.channel.form</field>
+        <field name="model">thai.sales.stock.channel</field>
+        <field name="arch" type="xml">
+            <form string="ตั้งค่าช่องทางการขาย" create="0" delete="0">
+                <sheet>
+                    <group>
+                        <group><field name="name"/><field name="code" readonly="1"/><field name="active"/><field name="sequence"/></group>
+                        <group><field name="icon_128" widget="image" class="oe_avatar"/><field name="description"/></group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_hub_channels" model="ir.actions.act_window">
+        <field name="name">ตั้งค่าช่องทางการขายและไอคอน</field>
+        <field name="res_model">thai.sales.stock.channel</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_hub_channel_list"/>
+        <field name="context">{'active_test': False}</field>
+    </record>
+</odoo>

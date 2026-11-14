@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_order_form_inherit_tiktok" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.tiktok</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_tiktok_order" invisible="1"/>
+                <field name="tiktok_order_id" invisible="not is_tiktok_order"/>
+                <field name="tiktok_shop_id" invisible="not is_tiktok_order"/>
+                <field name="tiktok_order_status" invisible="not is_tiktok_order"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_tiktok_sale_order_list" model="ir.actions.act_window">
+        <field name="name">TikTok Shop Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('tiktok_order_id', '!=', False)]</field>
+    </record>
+
+</odoo>

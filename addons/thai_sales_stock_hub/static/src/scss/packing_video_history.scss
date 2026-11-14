@@ -1,0 +1,114 @@
+.o_hub_video_form {
+    background: #f1f6ff;
+    color: #11234a;
+    font-family: inherit;
+
+    .o_form_sheet_bg { background: #f1f6ff !important; }
+    .o_hub_video_sheet {
+        width: calc(100% - 36px) !important;
+        max-width: 1900px !important;
+        margin: 18px auto 28px !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+    .o_hub_video_hero, .o_hub_video_card, .o_hub_video_steps {
+        background: #fff;
+        border: 1px solid #dce8fa;
+        border-radius: 17px;
+        box-shadow: 0 5px 18px rgba(29, 75, 135, .07);
+    }
+    .o_hub_video_hero {
+        min-height: 120px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px 30px;
+        margin-bottom: 14px;
+        background: linear-gradient(105deg, #fff 0%, #f8fbff 70%, #dceaff 100%);
+    }
+    .o_hub_video_hero_icon {
+        display: grid;
+        place-items: center;
+        flex: none;
+        width: 72px;
+        height: 72px;
+        border-radius: 15px;
+        background: #1673ef;
+        color: white;
+        font-size: 38px;
+        box-shadow: 0 7px 15px rgba(22, 115, 239, .22);
+    }
+    .o_hub_video_eyebrow { font-size: 16px; font-weight: 700; }
+    h1 { margin: 0; font-size: 32px; line-height: 1.15; font-weight: 800; }
+    h1 .o_field_widget { font-size: inherit; font-weight: inherit; }
+    .o_hub_video_hero > .o_field_widget { margin-left: 10px; flex: none; }
+    .o_hub_video_demo {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 16px;
+        margin-bottom: 14px;
+        border-radius: 10px;
+        background: #fff2d9;
+        color: #815000;
+    }
+    .o_hub_video_layout { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(390px, 1fr); gap: 16px; }
+    .o_hub_video_left { display: grid; gap: 16px; align-content: start; min-width: 0; }
+    .o_hub_video_card { padding: 20px 22px; min-width: 0; }
+    h2 { display: flex; align-items: center; gap: 9px; margin: 0 0 16px; font-size: 20px; font-weight: 800; }
+    h2 > i { color: #1673ef; font-size: 22px; }
+    h2 small { font-size: 14px; font-weight: 600; }
+    h2 small .o_field_widget { display: inline !important; width: auto !important; }
+    .o_hub_video_info_grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+    .o_hub_video_info_col + .o_hub_video_info_col { border-left: 1px solid #dce5f2; padding-left: 28px; }
+    .o_hub_video_info_row { display: grid; grid-template-columns: 180px minmax(0, 1fr); align-items: center; gap: 12px; min-height: 40px; }
+    .o_hub_video_info_row > span { color: #536787; white-space: nowrap; }
+    .o_hub_video_info_row > span i { width: 25px; color: #315f9e; font-size: 18px; }
+    .o_hub_video_info_row .o_field_widget { min-width: 0; width: 100%; font-weight: 650; color: #11234a; }
+    .o_hub_video_info_row .o_field_widget a { color: #0866d8; font-weight: 750; }
+    .o_hub_video_info_row .o_field_badge .badge, .o_hub_video_hero .o_field_badge .badge { color: #087e33; background: #dcf8e4; border-radius: 18px; padding: 7px 12px; font-weight: 750; }
+    .o_hub_video_channel { display: flex; align-items: center; gap: 6px; }
+    .o_hub_video_channel .o_field_image { width: 30px !important; height: 30px !important; flex: none; }
+    .o_hub_video_channel img { width: 26px !important; height: 26px !important; object-fit: contain; }
+    .o_hub_video_products .o_field_html, .o_hub_video_player_card .o_field_html { display: block; width: 100%; max-width: none; }
+    .o_hub_video_products .o_readonly { width: 100%; }
+    .o_hub_video_products_table { width: 100%; border-collapse: collapse; }
+    .o_hub_video_products_table th { background: #e9f1ff; color: #213b68; font-weight: 750; }
+    .o_hub_video_products_table th, .o_hub_video_products_table td { border-bottom: 1px solid #e2ebf8; padding: 10px 12px; }
+    .o_hub_video_products_table td:first-child { text-align: center; width: 45px; }
+    .o_hub_video_products_table td:nth-child(2) { display: flex; align-items: center; gap: 8px; }
+    .o_hub_video_products_table img { width: 40px; height: 40px; object-fit: contain; border-radius: 7px; }
+    .o_hub_video_player_card { align-self: start; text-align: center; }
+    .o_hub_video_player_card h2 { text-align: left; }
+    .o_hub_video_player_card video { width: 100% !important; height: auto; aspect-ratio: 16 / 9; object-fit: contain; }
+    .o_hub_video_download { margin: 16px auto 0; padding: 9px 18px; border-radius: 9px; }
+    .o_hub_video_hero .o_hub_video_steps { display: flex; justify-content: flex-end; align-items: center; gap: 8px; min-width: 0; margin: 0 0 0 auto; padding: 0; background: transparent; border: 0; box-shadow: none; }
+    .o_hub_video_steps > span { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #d6e3f6; border-radius: 28px; padding: 8px 11px; font-weight: 750; white-space: nowrap; }
+    .o_hub_video_steps > span > i:first-child { color: #426caa; font-size: 21px; }
+    .o_hub_video_steps > span > i:last-child { color: #0cad49; }
+    .o_hub_video_steps > span.is-current { color: white; background: #116df4; border-color: #116df4; }
+    .o_hub_video_steps > span.is-current i { color: white; }
+    .o_hub_video_steps > i { color: #204576; }
+    @media (max-width: 1200px) {
+        .o_hub_video_layout { grid-template-columns: 1fr; }
+        .o_hub_video_player_card { width: 100%; }
+        .o_hub_video_hero { flex-wrap: wrap; }
+        .o_hub_video_hero .o_hub_video_steps { width: 100%; justify-content: flex-start; margin-left: 0; }
+    }
+    @media (max-width: 850px) {
+        .o_hub_video_sheet { width: calc(100% - 20px) !important; }
+        .o_hub_video_info_grid { grid-template-columns: 1fr; gap: 4px; }
+        .o_hub_video_info_col + .o_hub_video_info_col { border: 0; padding: 0; }
+        .o_hub_video_hero .o_hub_video_steps { overflow-x: auto; justify-content: flex-start; }
+    }
+    @media (max-width: 550px) {
+        .o_hub_video_hero { padding: 15px; }
+        .o_hub_video_hero_icon { width: 52px; height: 52px; font-size: 27px; }
+        h1 { font-size: 23px; }
+        .o_hub_video_info_row { grid-template-columns: 135px minmax(0, 1fr); }
+        .o_hub_video_card { padding: 15px; }
+        .o_hub_video_products { overflow-x: auto; }
+    }
+}

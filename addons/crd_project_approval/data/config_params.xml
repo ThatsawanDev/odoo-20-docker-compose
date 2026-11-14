@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="param_myproject_url" model="ir.config_parameter">
+            <field name="key">crd_project_approval.myproject_url</field>
+            <field name="value">https://dev-myproject.ofm.co.th/api/project.project/execute_kw</field>
+        </record>
+        <record id="param_myproject_api_key" model="ir.config_parameter">
+            <field name="key">crd_project_approval.myproject_api_key</field>
+            <field name="value">PSR8M0I9LF9N60OC17IDOJYDNIDD38OU</field>
+        </record>
+    </data>
+</odoo>

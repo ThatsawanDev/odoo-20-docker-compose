@@ -1,0 +1,5 @@
+id,name,model_id,group_id/id,operation,domain
+access_thai_quick_stock_issue_user,เบิกสินค้าออกแบบง่าย,thai.quick.stock.issue,stock.group_stock_user,crud,
+access_thai_product_image_user,อ่านรูปสินค้าเพิ่มเติม,thai.product.image,base.group_user,r,
+access_thai_product_image_manager,จัดการรูปสินค้าเพิ่มเติม,thai.product.image,product.group_product_manager,crud,
+rule_thai_product_image_company,รูปสินค้าเพิ่มเติมตามบริษัท,thai.product.image,,crud,"['|', ('product_tmpl_id.company_id', 'parent_of', company_ids), ('product_tmpl_id.company_id', '=', False)]"

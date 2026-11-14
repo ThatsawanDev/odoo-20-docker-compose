@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_saleorder_totals_and_signatures" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@name='so_total_summary']" position="replace">
+            <div class="clearfix" name="so_total_summary">
+                <div class="row mt-3" name="total">
+                    <div t-attf-class="#{'col-6' if report_type != 'html' else 'col-sm-7 col-md-6'} ms-auto">
+                        <table class="table table-borderless" style="font-size: 15px;">
+                            <tbody>
+                                <tr>
+                                    <td class="text-start py-2">ยอดก่อนภาษี</td>
+                                    <td class="text-end py-2 text-nowrap">
+                                        <span t-field="doc.amount_untaxed" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-start py-2">ภาษีมูลค่าเพิ่ม (7%)</td>
+                                    <td class="text-end py-2 text-nowrap">
+                                        <span t-field="doc.amount_tax" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr style="border-top: 2px solid #695071; font-size: 18px; font-weight: 700;">
+                                    <td class="text-start py-2">ยอดรวมทั้งหมด</td>
+                                    <td class="text-end py-2 text-nowrap">
+                                        <span t-field="doc.amount_total" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="row mt-5 justify-content-end" style="page-break-inside: avoid;">
+                    <div class="col-5 text-center ms-auto">
+                        <div style="height: 55px; border-bottom: 1px solid #333;"/>
+                        <div class="mt-2"><strong>ลูกค้า / ผู้อนุมัติ</strong></div>
+                        <div class="mt-1">วันที่ ______ / ______ / ______</div>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[@name='signature']" position="replace"/>
+    </template>
+</odoo>

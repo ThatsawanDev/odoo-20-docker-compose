@@ -1,0 +1,182 @@
+.o_crd_gantt_toolbar {
+	white-space: nowrap;
+}
+
+.o_crd_gantt_toolbar .btn {
+	padding-left: 0.45rem;
+	padding-right: 0.45rem;
+}
+
+/* Keep the Gantt controls on one compact row without forcing the breadcrumb
+   to consume the full line or pushing the search box off-screen. */
+body.o_web_client .o_gantt_view .o_control_panel_main {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem 0.75rem;
+}
+
+body.o_web_client .o_gantt_view .o_control_panel_breadcrumbs {
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+    max-width: 100%;
+}
+
+body.o_web_client .o_gantt_view .o_control_panel_actions {
+    flex: 0 1 auto !important;
+    width: auto !important;
+    min-width: 0 !important;
+}
+
+body.o_web_client .o_gantt_view .o_crd_gantt_toolbar {
+    flex-wrap: wrap !important;
+    white-space: normal;
+}
+
+body.o_web_client .o_gantt_view .o_cp_searchview {
+    flex: 1 1 18rem !important;
+    width: auto !important;
+    min-width: min(18rem, 100%) !important;
+}
+
+body.o_web_client .o_gantt_view .o_control_panel_navigation {
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
+}
+
+@media (max-width: 767.98px) {
+    body.o_web_client .o_gantt_view .o_crd_gantt_toolbar {
+        flex-wrap: wrap !important;
+        white-space: normal;
+    }
+}
+
+.weekend_scale {
+	background: #f4f7f4;
+}
+
+.weekend_task {
+	background: #f4f7f4;
+}
+
+.gantt_task_cell.week_end {
+	background-color: #EFF5FD;
+}
+
+.gantt_selected .gantt_task_cell.week_end {
+	background-color: #f0e493;
+}
+
+.o_gantt_button_dates {
+	display: inline-block;
+}
+
+.gantt_task_link.start_to_start .gantt_line_wrapper div {
+	background-color: #dd5640;
+}
+
+.gantt_task_link.start_to_start:hover .gantt_line_wrapper div {
+	box-shadow: 0 0 5px 0px #dd5640;
+}
+
+.gantt_task_link.start_to_start .gantt_link_arrow_right {
+	border-left-color: #dd5640;
+}
+
+.gantt_task_link.finish_to_start .gantt_line_wrapper div {
+	background-color: #7576ba;
+}
+
+.gantt_task_link.finish_to_start:hover .gantt_line_wrapper div {
+	box-shadow: 0 0 5px 0px #7576ba;
+}
+
+.gantt_task_link.finish_to_start .gantt_link_arrow_right {
+	border-left-color: #7576ba;
+}
+
+.gantt_task_link.finish_to_finish .gantt_line_wrapper div {
+	background-color: #55d822;
+}
+
+.gantt_task_link.finish_to_finish:hover .gantt_line_wrapper div {
+	box-shadow: 0 0 5px 0px #55d822;
+}
+
+.gantt_task_link.finish_to_finish .gantt_link_arrow_left {
+	border-right-color: #55d822;
+}
+
+.gantt_task_line {
+	border-radius: 10px !important;
+}
+
+.gantt_bar_milestone {
+	border-radius: 2px !important;
+}
+
+.gantt_task_progress {
+	text-align: right !important;
+	padding-left: 0px;
+	font-weight: normal;
+	font-size: 10px;
+	color: black !important;
+	height: 5px !important;
+}
+
+.deadline_alert {
+	width: 20px;
+	display: inline-table;
+	-moz-box-sizing: border-box;
+	line-height: 20px;
+	text-align: center;
+	position: relative;
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	color: #ff0000;
+}
+
+.progress_alert {
+	width: 20px;
+	display: inline-table;
+	-moz-box-sizing: border-box;
+	line-height: 20px;
+	text-align: center;
+	position: relative;
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	color: #28a745;
+}
+
+.priority_high {
+	border-left: #e71d07 3px solid;
+}
+
+.priority_low {
+	border-left: #feb92e 3px solid;
+}
+
+.priority_normal {
+	border-left: #b1d43a 3px solid;
+}
+
+.oe-base-gantt-scale.active{
+	color: #FFFFFF;
+    background-color: #71639e;
+    border-color: #71639e;
+}
+.oe-gantt-title-header{
+	padding: 8px 16px 16px;
+}
+
+/* A task-bar glyph makes the Gantt view switcher distinct from document actions. */
+.o_cp_switch_buttons .o_switch_view.o_ganttview .oi::before {
+    content: "" !important;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    background-color: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M3 3h1v18H3zM3 20h18v1H3zM6 5h10a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm5 5h9a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1Zm-4 5h9a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1Z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M3 3h1v18H3zM3 20h18v1H3zM6 5h10a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm5 5h9a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-9a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1Zm-4 5h9a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}

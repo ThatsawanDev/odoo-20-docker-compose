@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-inherit="thai_sales_stock_easy.Dashboard" t-inherit-mode="extension">
+        <xpath expr="//section[@class='o_thai_main_actions']" position="before">
+            <section class="o_hub_overview" t-if="state.data.hub">
+                <div class="o_hub_overview_head">
+                    <div><span class="o_hub_eyebrow">ศูนย์ออเดอร์</span><h2>ออเดอร์ทุกช่องทางในจอเดียว</h2><p>จากใบขายถึงแพ็กส่งและออกบิล ใช้ข้อมูลเดียวกันทั้งระบบ</p></div>
+                    <button class="o_hub_primary" t-on-click="() => this.open('thai_sales_stock_hub.action_hub_orders')">เปิดศูนย์ออเดอร์ <i class="fa fa-arrow-right"/></button>
+                </div>
+                <div class="o_hub_overview_grid">
+                    <button t-on-click="() => this.open('thai_sales_stock_hub.action_hub_orders')"><i class="fa fa-shopping-bag"/><span>ออเดอร์ทั้งหมด</span><strong t-esc="state.data.hub.all_orders"/></button>
+                    <button t-on-click="() => this.open('thai_sales_stock_hub.action_hub_marketplace')"><i class="fa fa-shopping-cart"/><span>ออเดอร์ Marketplace</span><strong t-esc="state.data.hub.marketplace_orders"/></button>
+                    <div class="o_hub_channels"><span>ร้านค้า Marketplace</span><div><span t-foreach="state.data.hub.channels" t-as="channel" t-key="channel.name" t-att-class="channel.shop_count ? 'is-enabled' : ''"><t t-esc="channel.name"/> <small><t t-esc="channel.shop_count"/> ร้านค้า</small></span></div><small>ตั้งค่าบัญชีและร้านค้าในเมนูของตัวเชื่อมต่อ</small></div>
+                </div>
+            </section>
+        </xpath>
+    </t>
+</templates>

@@ -1,0 +1,821 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="paperformat_saleorder_clean" model="report.paperformat">
+            <field name="name">Clean Thai Sale Order A4</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">15</field>
+            <field name="margin_bottom">15</field>
+            <field name="margin_left">15</field>
+            <field name="margin_right">15</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">0</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <record id="action_report_saleorder_clean" model="ir.actions.report">
+            <field name="name">ใบเสนอราคา / ใบสั่งขาย</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">thai_sales_stock_easy.report_saleorder_clean</field>
+            <field name="print_report_name">('Quotation - %s' if object.state in ('draft', 'sent') else 'Order - %s') % object.name</field>
+            <field name="paperformat_id" ref="paperformat_saleorder_clean"/>
+        </record>
+
+        <template id="report_saleorder_clean">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-set="lang" t-value="doc.partner_id.lang"/>
+                    <t t-call="web.basic_layout">
+                        
+        <div class="page kjtax-report">
+            <style>
+                .kjtax-report {
+                    width: 100%;
+                    margin: 0;
+                    padding: 0;
+                    background: #ffffff !important;
+                    color: #263747;
+                    font-size: 14px;
+                    line-height: 1.45;
+                    font-family: 'Noto Sans Thai', 'DejaVu Sans', sans-serif !important;
+                }
+
+                .kjtax-report * {
+                    box-sizing: border-box;
+                }
+
+                .kjtax-report table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    border-spacing: 0;
+                    border: 0 !important;
+                }
+
+                .kjtax-report table tr,
+                .kjtax-report table th,
+                .kjtax-report table td {
+                    border-left: 0 !important;
+                    border-right: 0 !important;
+                    border-top: 0 !important;
+                }
+
+                .kjtax-report td,
+                .kjtax-report th {
+                    vertical-align: top;
+                }
+
+                .kjtax-header {
+                    width: 100%;
+                    table-layout: fixed;
+                    margin: 0 0 14px 0;
+                    border: 0;
+                    border-bottom: 2px solid #2e9cc5 !important;
+                    background: #ffffff !important;
+                }
+
+                .kjtax-header > tbody > tr > td {
+                    border: 0 !important;
+                    background: #ffffff !important;
+                }
+
+                .kjtax-company {
+                    width: 52%;
+                    padding: 0 25px 14px 0 !important;
+                }
+
+                .kjtax-document {
+                    width: 48%;
+                    padding: 0 0 14px 25px !important;
+                }
+
+                .kjtax-brand {
+                    margin: 0 0 8px 0;
+                    color: #1685b1;
+                    font-size: 23px;
+                    font-weight: 700;
+                    line-height: 1.2;
+                }
+
+                .kjtax-company-detail {
+                    color: #536273;
+                    font-size: 13px;
+                    line-height: 1.55;
+                }
+
+                .kjtax-title {
+                    margin: 0;
+                    text-align: right;
+                    color: #164e6d;
+                    font-size: 22px;
+                    font-weight: 700;
+                    line-height: 1.25;
+                }
+
+                .kjtax-title-sub {
+                    margin: 3px 0 10px 0;
+                    text-align: right;
+                    color: #3195bd;
+                    font-size: 11px;
+                    letter-spacing: 1px;
+                }
+
+                .kjtax-doc-info {
+                    width: 100%;
+                    table-layout: fixed;
+                }
+
+                .kjtax-doc-info tr,
+                .kjtax-doc-info td {
+                    background: #ffffff !important;
+                }
+
+                .kjtax-doc-info td {
+                    padding: 4px 0;
+                    border: 0 !important;
+                    border-bottom: 1px solid #e1e8ec !important;
+                    font-size: 13px;
+                }
+
+                .kjtax-doc-label {
+                    width: 38%;
+                    color: #2885aa;
+                }
+
+                .kjtax-doc-colon {
+                    width: 5%;
+                    text-align: center;
+                }
+
+                .kjtax-doc-value {
+                    width: 57%;
+                }
+
+                .kjtax-two-col {
+                    width: 100%;
+                    table-layout: fixed;
+                    border-collapse: separate !important;
+                    border-spacing: 8px 0 !important;
+                    margin: 0 0 16px 0;
+                }
+
+                .kjtax-two-col > tbody > tr > td {
+                    width: 50%;
+                    padding: 0 !important;
+                    border: 0 !important;
+                    background: #ffffff !important;
+                }
+
+                .kjtax-card {
+                    width: 100%;
+                    border: 1px solid #c5dfe9;
+                    border-radius: 6px;
+                    overflow: hidden;
+                    background: #ffffff !important;
+                }
+
+                .kjtax-card-title {
+                    padding: 8px 12px;
+                    background: #e4f3f8 !important;
+                    color: #176487;
+                    font-size: 14px;
+                    font-weight: 700;
+                }
+
+                .kjtax-card-body {
+                    min-height: 125px;
+                    padding: 10px 12px;
+                    background: #ffffff !important;
+                    font-size: 14px;
+                    line-height: 1.55;
+                }
+
+                .kjtax-customer-name {
+                    margin-bottom: 4px;
+                    font-weight: 700;
+                }
+
+                .kjtax-info {
+                    width: 100%;
+                    table-layout: fixed;
+                }
+
+                .kjtax-info tr,
+                .kjtax-info td {
+                    background: #ffffff !important;
+                }
+
+                .kjtax-info td {
+                    padding: 3px 2px;
+                    border: 0 !important;
+                    font-size: 13px;
+                }
+
+                .kjtax-info-label {
+                    width: 28%;
+                    color: #657482;
+                }
+
+                .kjtax-info-colon {
+                    width: 5%;
+                    text-align: center;
+                }
+
+                .kjtax-info-value {
+                    width: 67%;
+                }
+
+                .kjtax-items {
+                    width: 100%;
+                    table-layout: fixed;
+                    margin: 0 0 12px 0;
+                }
+
+                .kjtax-items thead th {
+                    padding: 8px 6px;
+                    background: #e4f3f8 !important;
+                    color: #155b7c;
+                    border: 0 !important;
+                    border-top: 0 !important;
+                    border-bottom: 1px solid #a9d8e8 !important;
+                    font-size: 13px;
+                    font-weight: 700;
+                }
+
+                .kjtax-items tbody td {
+                    padding: 9px 6px;
+                    background: #ffffff !important;
+                    border: 0 !important;
+                    border-bottom: 1px solid #dce8ed !important;
+                    font-size: 13px;
+                }
+
+                .kjtax-col-no {
+                    width: 5%;
+                    text-align: center;
+                }
+
+                .kjtax-col-description {
+                    width: 49%;
+                }
+
+                .kjtax-col-qty {
+                    width: 11%;
+                    text-align: right;
+                }
+
+                .kjtax-col-price {
+                    width: 13%;
+                    text-align: right;
+                }
+
+                .kjtax-col-discount {
+                    width: 10%;
+                    text-align: right;
+                }
+
+                .kjtax-col-amount {
+                    width: 12%;
+                    text-align: right;
+                }
+
+                .kjtax-summary {
+                    width: 100%;
+                    table-layout: fixed;
+                    margin-bottom: 16px;
+                }
+
+                .kjtax-summary > tbody > tr > td {
+                    border: 0 !important;
+                    background: #ffffff !important;
+                }
+
+                .kjtax-summary-note {
+                    width: 55%;
+                    padding: 8px 20px 8px 0 !important;
+                }
+
+                .kjtax-summary-total {
+                    width: 45%;
+                    padding: 0 !important;
+                }
+
+                .kjtax-note-title {
+                    margin-bottom: 5px;
+                    color: #176487;
+                    font-weight: 700;
+                }
+
+                .kjtax-note-body {
+                    color: #647381;
+                    font-size: 13px;
+                }
+
+                .kjtax-total td {
+                    padding: 7px 9px;
+                    background: #ffffff !important;
+                    border: 0 !important;
+                    border-bottom: 1px solid #dce7ec !important;
+                    font-size: 13px;
+                }
+
+                .kjtax-total-label {
+                    width: 65%;
+                }
+
+                .kjtax-total-value {
+                    width: 35%;
+                    text-align: right;
+                    white-space: nowrap;
+                }
+
+                .kjtax-grand-total td {
+                    background: #e4f3f8 !important;
+                    color: #154e6b;
+                    font-size: 15px;
+                    font-weight: 700;
+                }
+
+                .kjtax-bottom {
+                    width: 100%;
+                    table-layout: fixed;
+                    border-collapse: separate !important;
+                    border-spacing: 8px 0 !important;
+                    margin-top: 16px;
+                    page-break-inside: avoid;
+                }
+
+                .kjtax-bottom > tbody > tr > td {
+                    width: 50%;
+                    padding: 0 !important;
+                    border: 0 !important;
+                    background: #ffffff !important;
+                }
+
+                .kjtax-bottom-box {
+                    width: 100%;
+                    border: 1px solid #c5dfe9;
+                    border-radius: 6px;
+                    overflow: hidden;
+                    background: #ffffff !important;
+                }
+
+                .kjtax-bottom-title {
+                    padding: 8px 12px;
+                    background: #e4f3f8 !important;
+                    color: #176487;
+                    font-weight: 700;
+                }
+
+                .kjtax-bottom-body {
+                    min-height: 145px;
+                    padding: 10px 12px;
+                    background: #ffffff !important;
+                    font-size: 13px;
+                    line-height: 1.6;
+                }
+
+                .kjtax-terms {
+                    margin: 0;
+                    padding-left: 20px;
+                }
+
+                .kjtax-signature {
+                    margin-top: 35px;
+                    page-break-inside: avoid;
+                }
+
+                .kjtax-signature-company {
+                    margin-bottom: 30px;
+                    color: #536273;
+                    font-size: 13px;
+                }
+
+                .kjtax-signature-table {
+                    width: 100%;
+                    table-layout: fixed;
+                    border-collapse: separate !important;
+                    border-spacing: 24px 0 !important;
+                }
+
+                .kjtax-signature-table td {
+                    width: 33.333%;
+                    padding: 0 10px !important;
+                    border: 0 !important;
+                    text-align: center;
+                    background: #ffffff !important;
+                }
+
+                .kjtax-sign-line {
+                    width: 80%;
+                    height: 35px;
+                    margin: 0 auto 7px auto;
+                    border-bottom: 1px solid #74818b;
+                }
+
+                .kjtax-sign-role {
+                    font-size: 13px;
+                    font-weight: 700;
+                }
+
+                .kjtax-sign-name,
+                .kjtax-sign-date {
+                    margin-top: 5px;
+                    color: #697986;
+                    font-size: 12px;
+                }
+            </style>
+
+            <table class="kjtax-header">
+                <tbody>
+                    <tr>
+                        <td class="kjtax-company">
+                            <div class="kjtax-brand">
+                                <span t-field="doc.company_id.name"/>
+                            </div>
+                            <div class="kjtax-company-detail">
+                                <t t-if="doc.company_id.street">
+                                    <div><span t-field="doc.company_id.street"/></div>
+                                </t>
+                                <t t-if="doc.company_id.street2">
+                                    <div><span t-field="doc.company_id.street2"/></div>
+                                </t>
+                                <div>
+                                    <t t-if="doc.company_id.city"><span t-field="doc.company_id.city"/><span> </span></t>
+                                    <t t-if="doc.company_id.state_id"><span t-field="doc.company_id.state_id.name"/><span> </span></t>
+                                    <t t-if="doc.company_id.zip"><span t-field="doc.company_id.zip"/></t>
+                                </div>
+                                <t t-if="doc.company_id.country_id">
+                                    <div><span t-field="doc.company_id.country_id.name"/></div>
+                                </t>
+                                <t t-if="doc.company_id.vat">
+                                    <div>เลขประจำตัวผู้เสียภาษี <span t-field="doc.company_id.vat"/></div>
+                                </t>
+                                <t t-if="doc.company_id.phone">
+                                    <div>โทร. <span t-field="doc.company_id.phone"/></div>
+                                </t>
+                                <t t-if="doc.company_id.email">
+                                    <div>อีเมล <span t-field="doc.company_id.email"/></div>
+                                </t>
+                            </div>
+                        </td>
+                        <td class="kjtax-document">
+
+                                <div class="kjtax-title">
+                                    <t t-if="doc.state in ['draft','sent']">
+                                        ใบเสนอราคา
+                                    </t>
+                                    <t t-else="">
+                                        ใบสั่งขาย
+                                    </t>
+                                </div>
+                                <div class="kjtax-title-sub">
+                                    <t t-if="doc.state in ['draft','sent']">
+                                        QUOTATION
+                                    </t>
+                                    <t t-else="">
+                                        SALE ORDER
+                                    </t>
+                                </div>
+        
+                            <table class="kjtax-doc-info">
+                                <tbody>
+                                    <tr>
+                                        <td class="kjtax-doc-label">เลขที่เอกสาร</td>
+                                        <td class="kjtax-doc-colon">:</td>
+                                        <td class="kjtax-doc-value">
+                                            <strong><span t-field="doc.name"/></strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kjtax-doc-label">วันที่เอกสาร</td>
+                                        <td class="kjtax-doc-colon">:</td>
+                                        <td class="kjtax-doc-value">
+                                            <t t-if="doc.date_order">
+                                                <span t-field="doc.date_order" t-options="{'widget': 'date'}"/>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kjtax-doc-label">ยืนยันราคา</td>
+                                        <td class="kjtax-doc-colon">:</td>
+                                        <td class="kjtax-doc-value">
+                                            <t t-if="doc.validity_date">
+                                                <span t-field="doc.validity_date"/>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kjtax-doc-label">เครดิต</td>
+                                        <td class="kjtax-doc-colon">:</td>
+                                        <td class="kjtax-doc-value">
+                                            <t t-if="doc.payment_term_id">
+                                                <span t-field="doc.payment_term_id.name"/>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kjtax-doc-label">อ้างอิง</td>
+                                        <td class="kjtax-doc-colon">:</td>
+                                        <td class="kjtax-doc-value">
+                                             <t t-if="doc.client_order_ref">
+                                                 <span t-field="doc.client_order_ref"/>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kjtax-doc-label">แหล่งที่มา</td>
+                                        <td class="kjtax-doc-colon">:</td>
+                                        <td class="kjtax-doc-value">
+                                             <t t-if="doc.origin">
+                                                 <span t-field="doc.origin"/>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="kjtax-two-col">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="kjtax-card">
+                                <div class="kjtax-card-title">ลูกค้า</div>
+                                <div class="kjtax-card-body">
+                                    <div class="kjtax-customer-name">
+                                        <span t-field="doc.partner_id.name"/>
+                                    </div>
+                                    <t t-if="doc.partner_id.street">
+                                        <div><span t-field="doc.partner_id.street"/></div>
+                                    </t>
+                                    <t t-if="doc.partner_id.street2">
+                                        <div><span t-field="doc.partner_id.street2"/></div>
+                                    </t>
+                                    <div>
+                                        <t t-if="doc.partner_id.city"><span t-field="doc.partner_id.city"/><span> </span></t>
+                                        <t t-if="doc.partner_id.state_id"><span t-field="doc.partner_id.state_id.name"/><span> </span></t>
+                                        <t t-if="doc.partner_id.zip"><span t-field="doc.partner_id.zip"/></t>
+                                    </div>
+                                    <t t-if="doc.partner_id.country_id">
+                                        <div><span t-field="doc.partner_id.country_id.name"/></div>
+                                    </t>
+                                    <t t-if="doc.partner_id.vat">
+                                        <div>เลขประจำตัวผู้เสียภาษี <span t-field="doc.partner_id.vat"/></div>
+                                    </t>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="kjtax-card">
+                                <div class="kjtax-card-title">ข้อมูลผู้ติดต่อ</div>
+                                <div class="kjtax-card-body">
+                                    <table class="kjtax-info">
+                                        <tbody>
+                                            <tr>
+                                                <td class="kjtax-info-label">ผู้ติดต่อ</td>
+                                                <td class="kjtax-info-colon">:</td>
+                                                <td class="kjtax-info-value">
+                                                    <span t-field="doc.partner_id.name"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="kjtax-info-label">เบอร์โทร</td>
+                                                <td class="kjtax-info-colon">:</td>
+                                                <td class="kjtax-info-value">
+                                                    <t t-if="doc.partner_id.phone">
+                                                        <span t-field="doc.partner_id.phone"/>
+                                                    </t>
+                                                    <t t-else="">-</t>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="kjtax-info-label">อีเมล</td>
+                                                <td class="kjtax-info-colon">:</td>
+                                                <td class="kjtax-info-value">
+                                                    <t t-if="doc.partner_id.email">
+                                                        <span t-field="doc.partner_id.email"/>
+                                                    </t>
+                                                    <t t-else="">-</t>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="kjtax-info-label">เลขที่ PO</td>
+                                                <td class="kjtax-info-colon">:</td>
+                                                <td class="kjtax-info-value">
+                                                    <t t-if="doc.client_order_ref">
+                                                        <span t-field="doc.client_order_ref"/>
+                                                    </t>
+                                                    <t t-else="">-</t>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="kjtax-items">
+                <thead>
+                    <tr>
+                        <th class="kjtax-col-no">#</th>
+                        <th class="kjtax-col-description">รายการสินค้า / รายละเอียด</th>
+                        <th class="kjtax-col-qty">จำนวน</th>
+                        <th class="kjtax-col-price">ราคา/หน่วย</th>
+                        <th class="kjtax-col-discount">ส่วนลด</th>
+                        <th class="kjtax-col-amount">มูลค่า</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-set="line_no" t-value="0"/>
+                    <t t-set="total_discount" t-value="0"/>
+                    <t t-foreach="doc.order_line" t-as="line">
+                        <t t-if="line.display_type == 'product' or not line.display_type">
+                            <t t-set="line_no" t-value="line_no + 1"/>
+                            <tr>
+                                <td class="kjtax-col-no"><span t-out="line_no"/></td>
+                                <td class="kjtax-col-description"><span t-field="line.name"/></td>
+                                <td class="kjtax-col-qty">
+                                    <span t-field="line.product_uom_qty"/>
+                                    <t t-if="line.product_uom_id">
+                                        <span> </span><span t-field="line.product_uom_id.name"/>
+                                    </t>
+                                </td>
+                                <td class="kjtax-col-price"><span t-field="line.price_unit"/></td>
+                                <td class="kjtax-col-discount">
+                                    <t t-if="line.discount">
+                                        <span t-field="line.discount"/>%
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                <td class="kjtax-col-amount"><span t-field="line.price_subtotal"/></td>
+                            </tr>
+                        </t>
+                        <t t-elif="line.display_type == 'line_section'">
+                            <tr><td colspan="6"><strong><span t-field="line.name"/></strong></td></tr>
+                        </t>
+                        <t t-elif="line.display_type == 'line_note'">
+                            <tr><td colspan="6"><em><span t-field="line.name"/></em></td></tr>
+                        </t>
+                    </t>
+                </tbody>
+            </table>
+
+            <table class="kjtax-summary">
+                <tbody>
+                    <tr>
+                        <td class="kjtax-summary-note">
+                            <div class="kjtax-note-title">หมายเหตุ</div>
+                            <div class="kjtax-note-body">
+                                <t t-if="not is_html_empty(doc.note)">
+                                    <span t-field="doc.note"/>
+                                </t>
+                                <t t-else="">
+                                    กรุณาตรวจสอบรายละเอียดสินค้าและยอดเงินก่อนดำเนินการชำระเงิน
+                                </t>
+                            </div>
+                        </td>
+                        <td class="kjtax-summary-total">
+                            <table class="kjtax-total">
+                                <tbody>
+                                    <tr>
+                                        <td class="kjtax-total-label">รวมเป็นเงิน</td>
+                                        <td class="kjtax-total-value">
+                                            <span t-field="doc.amount_untaxed"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kjtax-total-label">ส่วนลด</td>
+                                        <td class="kjtax-total-value">
+                                            0.00
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kjtax-total-label">จำนวนเงินหลังหักส่วนลด</td>
+                                        <td class="kjtax-total-value">
+                                            <span t-field="doc.amount_untaxed"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kjtax-total-label">ภาษีมูลค่าเพิ่ม</td>
+                                        <td class="kjtax-total-value">
+                                            <span t-field="doc.amount_tax"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="kjtax-grand-total">
+                                        <td class="kjtax-total-label">จำนวนเงินรวมทั้งสิ้น</td>
+                                        <td class="kjtax-total-value">
+                                            <span t-field="doc.amount_total"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="kjtax-bottom">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="kjtax-bottom-box">
+                                <div class="kjtax-bottom-title">ข้อมูลการชำระเงิน</div>
+                                <div class="kjtax-bottom-body">
+                                    <t t-set="company_bank" t-value="doc.company_id.partner_id.bank_ids[:1]"/>
+                                    <table class="kjtax-info">
+                                        <tbody>
+                                            <tr>
+                                                <td class="kjtax-info-label">ธนาคาร</td>
+                                                <td class="kjtax-info-colon">:</td>
+                                                <td class="kjtax-info-value"><span t-if="company_bank" t-field="company_bank.bank_id.name"/><span t-else="">-</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="kjtax-info-label">เลขที่บัญชี</td>
+                                                <td class="kjtax-info-colon">:</td>
+                                                <td class="kjtax-info-value"><strong t-if="company_bank"><span t-field="company_bank.acc_number"/></strong><span t-else="">-</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="kjtax-info-label">ชื่อบัญชี</td>
+                                                <td class="kjtax-info-colon">:</td>
+                                                <td class="kjtax-info-value"><span t-field="doc.company_id.name"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="kjtax-info-label">อ้างอิงชำระเงิน</td>
+                                                <td class="kjtax-info-colon">:</td>
+                                                <td class="kjtax-info-value">
+                                                    <strong><span t-field="doc.name"/></strong>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="kjtax-bottom-box">
+                                <div class="kjtax-bottom-title">เงื่อนไขการชำระเงิน</div>
+                                <div class="kjtax-bottom-body">
+                                    <ol class="kjtax-terms">
+                                        <li>กรุณาชำระเงินภายในวันที่กำหนด</li>
+                                        <li>กรุณาระบุเลขที่เอกสารในการชำระเงิน</li>
+                                        <li>กรุณาส่งหลักฐานการชำระเงินให้เจ้าหน้าที่หลังโอนเงิน</li>
+                                        <li>เอกสารฉบับนี้ใช้เป็นหลักฐานประกอบการเรียกเก็บเงิน</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="kjtax-signature">
+                <div class="kjtax-signature-company">
+                    ในนาม <span t-field="doc.company_id.name"/>
+                </div>
+                <table class="kjtax-signature-table">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="kjtax-sign-line"/>
+                                <div class="kjtax-sign-role">ผู้รับสินค้า / บริการ</div>
+                                <div class="kjtax-sign-name">( ........................................ )</div>
+                                <div class="kjtax-sign-date">วันที่ ........../........../..........</div>
+                            </td>
+                            <td>
+                                <div class="kjtax-sign-line"/>
+                                <div class="kjtax-sign-role">ผู้จัดทำเอกสาร</div>
+                                <div class="kjtax-sign-name">( ........................................ )</div>
+                                <div class="kjtax-sign-date">วันที่ ........../........../..........</div>
+                            </td>
+                            <td>
+                                <div class="kjtax-sign-line"/>
+                                <div class="kjtax-sign-role">ผู้มีอำนาจลงนาม</div>
+                                <div class="kjtax-sign-name">( ........................................ )</div>
+                                <div class="kjtax-sign-date">วันที่ ........../........../..........</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

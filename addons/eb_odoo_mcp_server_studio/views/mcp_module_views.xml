@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ACTION
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="action_mcp_module" model="ir.actions.act_window">
+        <field name="name">Generated Modules</field>
+        <field name="res_model">mcp.module</field>
+        <field name="view_mode">kanban,list,form</field>
+<!--        <field name="search_view_id" ref="view_mcp_module_search"/>-->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No modules yet — ask AI to build one!
+            </p>
+            <p>
+                Connect an AI agent and say
+                <em>"Create a library management module"</em>.
+                It will generate views, models, security, and install it automatically.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SEARCH VIEW
+    ═══════════════════════════════════════════════════════════ -->
+<!--    <record id="view_mcp_module_search" model="ir.ui.view">-->
+<!--        <field name="name">mcp.module.search</field>-->
+<!--        <field name="model">mcp.module</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <search string="Generated Modules">-->
+<!--                <field name="name" string="Name / Technical"-->
+<!--                       filter_domain="['|',('name','ilike',self),('technical_name','ilike',self)]"/>-->
+<!--                <field name="user_id"/>-->
+<!--                <separator/>-->
+<!--                <filter name="draft"     string="Draft"     domain="[('state','=','draft')]"/>-->
+<!--                <filter name="generated" string="Generated" domain="[('state','=','generated')]"/>-->
+<!--                <filter name="installed" string="Installed" domain="[('state','=','installed')]"/>-->
+<!--                <filter name="error"     string="Error"     domain="[('state','=','error')]"/>-->
+<!--                <separator/>-->
+<!--                <filter name="archived"  string="Archived"  domain="[('active','=',False)]"/>-->
+<!--                <group expand="0" string="Group By">-->
+<!--                    <filter name="grp_state" string="State"      context="{'group_by':'state'}"/>-->
+<!--                    <filter name="grp_user"  string="Created By" context="{'group_by':'user_id'}"/>-->
+<!--                </group>-->
+<!--            </search>-->
+<!--        </field>-->
+<!--    </record>-->
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LIST VIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_module_tree" model="ir.ui.view">
+        <field name="name">mcp.module.list</field>
+        <field name="model">mcp.module</field>
+        <field name="arch" type="xml">
+            <list string="Generated Modules"
+                  default_order="create_date desc"
+                  decoration-success="state == 'installed'"
+                  decoration-warning="state == 'generated'"
+                  decoration-danger="state == 'error'"
+                  decoration-muted="active == False"
+                  multi_edit="1">
+                <field name="name"/>
+                <field name="technical_name" optional="show"/>
+                <field name="version" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'installed'"
+                       decoration-warning="state == 'generated'"
+                       decoration-danger="state == 'error'"
+                       decoration-info="state == 'draft'"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="write_date" string="Updated" optional="show"/>
+                <field name="active" column_invisible="1"/>
+                <button name="action_install_module" string="Install" type="object"
+                        icon="fa-download" class="btn-sm btn-primary"
+                        invisible="state == 'installed'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         KANBAN VIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_module_kanban" model="ir.ui.view">
+        <field name="name">mcp.module.kanban</field>
+        <field name="model">mcp.module</field>
+        <field name="arch" type="xml">
+            <kanban sample="1" default_order="create_date desc">
+                <field name="name"/>
+                <field name="technical_name"/>
+                <field name="state"/>
+                <field name="version"/>
+                <field name="description"/>
+                <field name="user_id"/>
+                <field name="write_date"/>
+                <field name="active"/>
+                <templates>
+                    <t t-name="card">
+                        <!-- State colour strip -->
+                        <div t-attf-style="
+                            height:5px;margin:-12px -12px 12px;
+                            background:#{
+                                record.state.raw_value == 'installed' ? '#10b981' :
+                                record.state.raw_value == 'error'     ? '#ef4444' :
+                                record.state.raw_value == 'generated' ? '#f59e0b' : '#6b7280'
+                            };border-radius:8px 8px 0 0;"/>
+
+                        <div class="d-flex align-items-start justify-content-between mb-1">
+                            <strong class="fs-6 text-truncate" style="max-width:75%;">
+                                <field name="name"/>
+                            </strong>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'installed'"
+                                   decoration-warning="state == 'generated'"
+                                   decoration-danger="state == 'error'"
+                                   decoration-info="state == 'draft'"
+                                   class="ms-2 flex-shrink-0"/>
+                        </div>
+
+                        <div class="text-muted small mb-2">
+                            <code><field name="technical_name"/></code>
+                            <span class="ms-2 text-muted">v<field name="version"/></span>
+                        </div>
+
+                        <div t-if="record.description.value"
+                             class="text-muted small mb-2"
+                             style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                            <field name="description"/>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between border-top pt-2 mt-auto">
+                            <field name="user_id" widget="many2one_avatar_user" readonly="1"/>
+                            <button name="action_install_module" type="object"
+                                    t-if="record.state.raw_value != 'installed'"
+                                    class="btn btn-sm btn-outline-primary"
+                                    onclick="event.stopPropagation()">
+                                <i class="fa fa-download me-1" title="fa-download me-1"/>Install
+                            </button>
+                            <span t-else="" class="text-success small fw-semibold">
+                                <i class="fa fa-check-circle me-1" title="fa-check-circle me-1"/>Installed
+                            </span>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         FORM VIEW  (10-tab notebook)
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_module_form" model="ir.ui.view">
+        <field name="name">mcp.module.form</field>
+        <field name="model">mcp.module</field>
+        <field name="arch" type="xml">
+            <form string="Generated Module">
+                <header>
+                    <button name="action_generate_zip" string="Generate ZIP"
+                            type="object" class="btn-secondary" icon="fa-archive"/>
+                    <button name="action_install_module" string="Install Module"
+                            type="object" class="btn-primary" icon="fa-download"
+                            invisible="state == 'installed'"
+                            confirm="Generate a ZIP and attempt to install. Continue?"/>
+<!--                    <button name="action_reinstall" string="Re-Install"-->
+<!--                            type="object" class="btn-secondary" icon="fa-refresh"-->
+<!--                            invisible="state != 'installed'"/>-->
+                    <button name="action_download_zip" string="Download ZIP"
+                            type="object" class="btn-secondary" icon="fa-cloud-download"
+                            invisible="not attachment_id"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,generated,installed"/>
+                </header>
+                <sheet>
+                    <!-- State banners -->
+                    <div class="alert alert-success d-flex gap-2 align-items-center mb-3" role="alert"
+                         invisible="state != 'installed'">
+                        <i class="fa fa-check-circle fa-lg" title="Success"/>
+                        <strong>Module installed successfully.</strong>
+                    </div>
+                    <div class="alert alert-danger d-flex gap-2 align-items-center mb-3" role="alert"
+                         invisible="state != 'error'">
+                        <i class="fa fa-exclamation-triangle fa-lg" title="fa-exclamation-triangle fa-lg"/>
+                        <span>Installation failed — see the <strong>Install Log</strong> tab for details.</span>
+                    </div>
+
+                    <div class="oe_title mb-3">
+                        <label class="o_form_label" for="name">Module Name</label>
+                        <h1>
+                            <field name="name" id="name" placeholder="My Library System…"/>
+                        </h1>
+                        <div class="d-flex align-items-center gap-2 mt-1">
+                            <code class="text-muted">
+                                <field name="technical_name" placeholder="my_library"/>
+                            </code>
+                            <span class="text-muted">v</span>
+                            <field name="version" placeholder="19.0.1.0.0"
+                                   style="font-size:.9rem;width:120px;"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Module Info">
+                            <field name="description" placeholder="What does this module do?"/>
+                            <field name="user_id" readonly="1" widget="many2one_avatar_user"/>
+                            <field name="attachment_id" readonly="1" string="ZIP Archive"/>
+                        </group>
+                        <group string="Status">
+                            <field name="state" readonly="1"/>
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="write_date" string="Last Updated" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <!-- Tab 1: Views XML -->
+                        <page string="Views XML" name="views">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                Odoo 19 view XML — form, list, kanban, search views + window actions + menus.
+                                Root element must be <code>&lt;odoo&gt;</code>.
+                            </div>
+                            <field name="views_code" nolabel="1"
+                                   widget="ace" options="{'mode': 'xml', 'theme': 'monokai'}"
+                                   style="min-height:360px;"
+                                   placeholder="&lt;odoo&gt;&#10;  &lt;!-- form, list, kanban views, actions, menus --&gt;&#10;&lt;/odoo&gt;"/>
+                        </page>
+
+                        <!-- Tab 2: Models -->
+                        <page string="Models (Data XML)" name="models">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                Define models via <code>ir.model</code> and <code>ir.model.fields</code>
+                                XML records — no Python required. Or provide a JSON dict of XML files.
+                            </div>
+                            <field name="models_code" nolabel="1"
+                                   widget="ace" options="{'mode': 'xml', 'theme': 'monokai'}"
+                                   style="min-height:360px;"/>
+                        </page>
+
+                        <!-- Tab 3: Security CSV -->
+                        <page string="Security CSV" name="security">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                Format: <code>id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink</code>
+                            </div>
+                            <field name="security_code" nolabel="1"
+                                   widget="ace"
+                                   style="min-height:200px;"
+                                   placeholder="id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink&#10;access_my_model_user,my.model user,model_my_model,base.group_user,1,1,1,0"/>
+                        </page>
+
+<!--                        &lt;!&ndash; Tab 4: Reports XML &ndash;&gt;-->
+<!--                        <page string="Reports XML" name="reports">-->
+<!--                            <div class="alert alert-secondary py-2 px-3 mb-2">-->
+<!--                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>-->
+<!--                                QWeb report templates — report action + paper format + QWeb template.-->
+<!--                            </div>-->
+<!--                            <field name="report_code" nolabel="1"-->
+<!--                                   widget="ace" options="{'mode': 'xml', 'theme': 'monokai'}"-->
+<!--                                   style="min-height:360px;"/>-->
+<!--                        </page>-->
+
+                        <!-- Tab 5: Data Files JSON -->
+                        <page string="Data Files (JSON)" name="data_files">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                JSON dict of extra data files:
+                                <code>{{"data/filename.xml": "xml content…"}}</code>
+                            </div>
+                            <field name="data_files_code" nolabel="1"
+                                   style="min-height:280px;"/>
+                        </page>
+
+                        <!-- Tab 6: Demo Data -->
+                        <page string="Demo Data" name="demo">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                Demo XML records loaded when the module is installed in demo mode.
+                            </div>
+                            <field name="demo_data_code" nolabel="1"
+                                   widget="ace" options="{'mode': 'xml', 'theme': 'monokai'}"
+                                   style="min-height:280px;"/>
+                        </page>
+
+                        <!-- Tab 7: JavaScript (OWL) -->
+                        <page string="JavaScript (OWL)" name="js">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                JSON dict: <code>{{"widget.js": "/** @odoo-module */ …"}}</code>
+                                → placed in <code>static/src/js/</code>
+                            </div>
+                            <field name="js_code" nolabel="1"
+                                   widget="ace"
+                                   style="min-height:280px;"/>
+                        </page>
+
+                        <!-- Tab 8: SCSS -->
+                        <page string="SCSS" name="scss">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                JSON dict: <code>{{"style.scss": ".my-class {{ color: red; }}"}}</code>
+                                → placed in <code>static/src/scss/</code>
+                            </div>
+                            <field name="scss_code" nolabel="1"
+                                   widget="ace"
+                                   style="min-height:200px;"/>
+                        </page>
+
+                        <!-- Tab 9: Manifest -->
+                        <page string="__manifest__.py" name="manifest">
+                            <div class="alert alert-warning py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-exclamation-triangle me-1" title="Warning"/>
+                                <strong>Optional</strong> — leave empty to auto-generate from the tabs above.
+                                Fill only if you need custom <code>depends</code> or non-standard settings.
+                            </div>
+                            <field name="manifest_code" nolabel="1"
+                                   widget="ace" options="{'mode': 'python', 'theme': 'monokai'}"
+                                   style="min-height:280px;"/>
+                        </page>
+
+                        <!-- Tab 10: Install Log (shown only on error or when populated) -->
+                        <page string="Install Log" name="install_log"
+                              invisible="not install_log">
+                            <field name="install_log" nolabel="1" readonly="1"
+                                   widget="ace"
+                                   style="min-height:300px;"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Sent to requester on every state transition -->
+    <record id="email_template_requester_notification" model="mail.template">
+        <field name="name">IT Project Approval: Requester Status Notification</field>
+        <field name="model_id" ref="crd_project_approval.model_project_approval_signoff"/>
+        <field name="email_to">{{ object.requester_id.email or '' }}</field>
+        <field name="subject">[IT Project Approval] {{ {'in_review': 'คำขอของคุณอยู่ระหว่าง IT Review', 'wait_for_approval': 'ผ่าน IT Review แล้ว รอ Business Sponsor อนุมัติ', 'wait_it_head_approval': 'Business Sponsor อนุมัติแล้ว รอ IT Head', 'approved': '✓ คำขอได้รับการอนุมัติแล้ว', 'rejected': 'คำขอไม่ผ่านการอนุมัติ', 'draft': 'คำขอถูกส่งกลับเพื่อแก้ไข', 'cancelled': 'คำขอถูกยกเลิก'}.get(object.state, 'อัปเดตสถานะ') }} — {{ object.name or '' }}</field>
+        <field name="body_html" type="html">
+<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; max-width: 600px;">
+    <p>เรียน คุณ <t t-out="object.requester_id.name or 'ท่าน'">ท่าน</t>,</p>
+    <p>คำขอโครงการของคุณมีการอัปเดตสถานะใหม่</p>
+
+    <t t-if="object.state == 'in_review'">
+        <p style="background: #e8f4fd; border-left: 4px solid #2196F3; padding: 10px 14px; margin: 12px 0;">
+            คำขอของคุณได้รับการส่งเข้าระบบแล้ว และอยู่ระหว่างการรีวิวโดยทีม IT กรุณารอการติดตามผลในขั้นตอนถัดไป
+        </p>
+    </t>
+    <t t-elif="object.state == 'wait_for_approval'">
+        <p style="background: #e8f4fd; border-left: 4px solid #2196F3; padding: 10px 14px; margin: 12px 0;">
+            ทีม IT ได้รีวิวคำขอของคุณเรียบร้อยแล้ว และได้ส่งต่อให้ Business Sponsor พิจารณาอนุมัติ
+        </p>
+    </t>
+    <t t-elif="object.state == 'wait_it_head_approval'">
+        <p style="background: #e8f4fd; border-left: 4px solid #2196F3; padding: 10px 14px; margin: 12px 0;">
+            Business Sponsor ได้อนุมัติคำขอของคุณแล้ว และได้ส่งต่อให้ IT Head พิจารณาขั้นสุดท้าย
+        </p>
+    </t>
+    <t t-elif="object.state == 'approved'">
+        <p style="background: #e8f5e9; border-left: 4px solid #4CAF50; padding: 10px 14px; margin: 12px 0;">
+            ยินดีด้วย! คำขอโครงการของคุณได้รับการอนุมัติเรียบร้อยแล้ว ทีม IT จะติดต่อเพื่อดำเนินการในขั้นตอนต่อไป
+        </p>
+    </t>
+    <t t-elif="object.state == 'rejected'">
+        <p style="background: #fdecea; border-left: 4px solid #f44336; padding: 10px 14px; margin: 12px 0;">
+            ขออภัย คำขอโครงการของคุณไม่ผ่านการอนุมัติในขั้นตอนนี้ หากต้องการข้อมูลเพิ่มเติม กรุณาติดต่อผู้รับผิดชอบ
+        </p>
+    </t>
+    <t t-elif="object.state == 'draft'">
+        <p style="background: #fff8e1; border-left: 4px solid #FF9800; padding: 10px 14px; margin: 12px 0;">
+            คำขอโครงการของคุณถูกส่งกลับมาเพื่อให้ดำเนินการแก้ไขก่อนส่งใหม่อีกครั้ง
+        </p>
+    </t>
+    <t t-elif="object.state == 'cancelled'">
+        <p style="background: #fdecea; border-left: 4px solid #f44336; padding: 10px 14px; margin: 12px 0;">
+            คำขอโครงการของคุณถูกยกเลิกแล้ว
+        </p>
+    </t>
+
+    <table style="border-collapse: collapse; width: 100%; margin: 16px 0; border: 1px solid #ddd;">
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; width: 160px; background: #f9f9f9;">เลขที่คำขอ</td>
+            <td style="padding: 8px 12px;"><t t-out="object.name or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">ชื่อโปรเจกต์</td>
+            <td style="padding: 8px 12px;"><t t-out="object.project_name or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">วันที่ยื่น</td>
+            <td style="padding: 8px 12px;">
+                <t t-if="object.date_request"><t t-out="object.date_request.strftime('%d/%m/%Y')">-</t></t>
+                <t t-else="">-</t>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">สถานะปัจจุบัน</td>
+            <td style="padding: 8px 12px; font-weight: bold;">
+                <t t-if="object.state == 'in_review'">รอ IT Review</t>
+                <t t-elif="object.state == 'wait_for_approval'">รออนุมัติจาก Business Sponsor</t>
+                <t t-elif="object.state == 'wait_it_head_approval'">รออนุมัติจาก IT Head</t>
+                <t t-elif="object.state == 'approved'" style="color: #2e7d32;">อนุมัติแล้ว ✓</t>
+                <t t-elif="object.state == 'rejected'" style="color: #c62828;">ไม่ผ่านการอนุมัติ</t>
+                <t t-elif="object.state == 'draft'">ส่งกลับเพื่อแก้ไข</t>
+                <t t-elif="object.state == 'cancelled'" style="color: #c62828;">ยกเลิกคำขอ</t>
+            </td>
+        </tr>
+    </table>
+
+    <t t-if="object.state in ('rejected', 'draft', 'cancelled') and object.history_ids and object.history_ids[0].reason">
+        <table style="border-collapse: collapse; width: 100%; margin: 0 0 16px; border: 1px solid #ddd;">
+            <tr>
+                <td style="padding: 8px 12px; font-weight: bold; width: 160px; background: #f9f9f9;">เหตุผล</td>
+                <td style="padding: 8px 12px; white-space: pre-wrap;"><t t-out="object.history_ids[0].reason">-</t></td>
+            </tr>
+        </table>
+    </t>
+
+    <p style="margin: 24px 0;">
+        <a t-att-href="object.get_base_url() + '/web#model=project.approval.signoff&amp;id=' + str(object.id)"
+           style="background-color: #875A7B; color: #fff; padding: 10px 24px; text-decoration: none; border-radius: 4px; font-size: 14px;">
+            เปิดคำขอ
+        </a>
+    </p>
+    <p style="color: #999; font-size: 12px; margin-top: 32px;">ระบบ OFM IT Project Approval</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+</odoo>

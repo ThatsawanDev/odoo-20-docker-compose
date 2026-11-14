@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ACTION
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="action_mcp_webapp" model="ir.actions.act_window">
+        <field name="name">Web Applications</field>
+        <field name="res_model">mcp.webapp</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No apps yet — ask AI to build one!
+            </p>
+            <p>
+                Connect an AI agent and say
+                <em>"Create a React app showing open sales orders"</em>.
+                It will write the JSX and Python data handler automatically.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LIST VIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_webapp_tree" model="ir.ui.view">
+        <field name="name">mcp.webapp.list</field>
+        <field name="model">mcp.webapp</field>
+        <field name="arch" type="xml">
+            <list string="Web Applications"
+                  default_order="write_date desc"
+                  decoration-muted="active == False"
+                  multi_edit="1">
+                <field name="name"/>
+                <field name="slug" optional="show"/>
+                <field name="description" optional="show"/>
+                <field name="is_public" widget="boolean_toggle" optional="show"/>
+                <field name="share_url" optional="hide"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="write_date" string="Updated" optional="show"/>
+                <field name="active" column_invisible="1"/>
+                <button name="action_open_app" string="Open" type="object"
+                        icon="fa-rocket" class="btn-sm btn-secondary"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         KANBAN VIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_webapp_kanban" model="ir.ui.view">
+        <field name="name">mcp.webapp.kanban</field>
+        <field name="model">mcp.webapp</field>
+        <field name="arch" type="xml">
+            <kanban sample="1" default_order="write_date desc">
+                <field name="name"/>
+                <field name="slug"/>
+                <field name="description"/>
+                <field name="is_public"/>
+                <field name="app_url"/>
+                <field name="share_url"/>
+                <field name="user_id"/>
+                <field name="write_date"/>
+                <field name="active"/>
+                <templates>
+                    <t t-name="card">
+                        <!-- Colour strip: public=amber, private=violet -->
+                        <div t-attf-style="
+                            height:5px;margin:-12px -12px 12px;
+                            background:#{record.is_public.raw_value ? '#f59e0b' : '#8b5cf6'};
+                            border-radius:8px 8px 0 0;"/>
+
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <strong class="fs-6 text-truncate" style="max-width:80%;">
+                                <field name="name"/>
+                            </strong>
+                            <span t-if="record.is_public.raw_value"
+                                  class="badge text-bg-warning ms-2 flex-shrink-0">Shared
+                            </span>
+                            <span t-else=""
+                                  class="badge text-bg-secondary ms-2 flex-shrink-0">Private
+                            </span>
+                        </div>
+
+                        <div t-if="record.description.value"
+                             class="text-muted small mb-2"
+                             style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                            <field name="description"/>
+                        </div>
+
+                        <div class="text-muted small mb-3">
+                            <i class="fa fa-link me-1" title="fa-link me-1"/>
+                            /mcp/app/
+                            <field name="slug"/>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between border-top pt-2 mt-auto">
+                            <field name="user_id" widget="many2one_avatar_user" readonly="1"/>
+                            <a t-if="record.app_url.raw_value"
+                               t-attf-href="#{record.app_url.raw_value}"
+                               target="_blank" role="button"
+                               class="btn btn-sm btn-outline-warning"
+                               onclick="event.stopPropagation()">
+                                <i class="fa fa-rocket me-1" title="fa-rocket me-1"/>Launch
+                            </a>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         PAGE FORM VIEW (dialog)
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_webapp_page_form" model="ir.ui.view">
+        <field name="name">mcp.webapp.page.form</field>
+        <field name="model">mcp.webapp.page</field>
+        <field name="arch" type="xml">
+            <form string="Page">
+                <sheet>
+                    <div class="oe_title mb-2">
+                        <label class="o_form_label" for="name">Page Name</label>
+                        <h1>
+                            <field name="name" id="name" placeholder="Dashboard, Orders, …"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Routing">
+                            <field name="route_path" string="Route Path"
+                                   placeholder="/orders, /orders/:id"/>
+                            <field name="page_title" string="Page Title"/>
+                            <field name="sequence" string="Sequence"/>
+                        </group>
+                    </group>
+                    <separator string="Page JSX Code"/>
+                    <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                        <i class="fa fa-info-circle me-1"/>
+                        Define <code>function App() { … }</code> or a named component for this route.
+                        React 18 is global — no imports needed.
+                        Use <code>window.odoo.fetch(params)</code> to call the data handler.
+                    </div>
+                    <field name="jsx_code" nolabel="1"
+                           widget="ace"
+                           options="{'mode': 'javascript', 'theme': 'monokai'}"
+                           style="min-height:460px;"
+                           placeholder="function App() {
+  const [data, setData] = React.useState(null);
+  React.useEffect(() => { window.odoo.fetch().then(setData); }, []);
+  if (!data) return &lt;div className='mcp-loading'&gt;&lt;div className='mcp-spin'/&gt;Loading…&lt;/div&gt;;
+  return &lt;div className='p-6'&gt;&lt;pre&gt;{JSON.stringify(data,null,2)}&lt;/pre&gt;&lt;/div&gt;;
+}"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         API ENDPOINT FORM VIEW (dialog)
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_webapp_endpoint_form" model="ir.ui.view">
+        <field name="name">mcp.webapp.endpoint.form</field>
+        <field name="model">mcp.webapp.endpoint</field>
+        <field name="arch" type="xml">
+            <form string="API Endpoint">
+                <sheet>
+                    <div class="oe_title mb-2">
+                        <label class="o_form_label" for="name">Endpoint Name</label>
+                        <h1>
+                            <field name="name" id="name" placeholder="Get Orders, Create Customer, …"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Endpoint">
+                            <field name="method" string="HTTP Method"/>
+                            <field name="path" string="Path"
+                                   placeholder="/api/orders, /api/customers/:id"/>
+                            <field name="sequence" string="Sequence"/>
+                        </group>
+                        <group string="Description">
+                            <field name="description" string="Description" nolabel="1"
+                                   placeholder="What this endpoint does…"/>
+                        </group>
+                    </group>
+                    <separator string="Python Handler Code"/>
+                    <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                        <i class="fa fa-info-circle me-1"/>
+                        Runs server-side. Set <code>result = { … }</code> — returned as JSON.
+                        Available: <code>env</code>, <code>params</code>,
+                        <code>portal_uid</code>, <code>portal_partner_id</code>,
+                        <code>datetime</code>, <code>json</code>, <code>math</code>.
+                        Use <code>env['model']._read_group(…)</code> for aggregations (Odoo 19).
+                    </div>
+                    <field name="handler_code" nolabel="1"
+                           widget="ace"
+                           options="{'mode': 'python', 'theme': 'monokai'}"
+                           style="min-height:460px;"
+                           placeholder="# Example — return filtered sale orders
+orders = env['sale.order'].search_read(
+    [('state', 'in', ['sale', 'done'])],
+    ['name', 'partner_id', 'amount_total', 'date_order'],
+    limit=params.get('limit', 50),
+)
+result = {'orders': orders}"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         FORM VIEW — 9 tabs
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_webapp_form" model="ir.ui.view">
+        <field name="name">mcp.webapp.form</field>
+        <field name="model">mcp.webapp</field>
+        <field name="arch" type="xml">
+            <form string="Web Application">
+                <header>
+                    <button name="action_open_app" string="Open App"
+                            type="object" class="btn-primary" icon="fa-rocket"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-success d-flex align-items-center gap-3 mb-3"
+                         invisible="not app_url" role="alert">
+                        <i class="fa fa-globe fa-lg text-info"/>
+                        <span class="fw-semibold">App URL:</span>
+                        <field name="app_url" readonly="1" widget="CopyClipboardChar"/>
+                    </div>
+
+
+                    <div class="oe_title mb-3">
+                        <label class="o_form_label" for="name">App Name</label>
+                        <h1>
+                            <field name="name" id="name" placeholder="My React App…"/>
+                        </h1>
+                        <div class="d-flex align-items-center gap-1 mt-1 text-muted small">
+                            <span>/mcp/app/</span>
+                            <field name="slug" placeholder="url-slug"/>
+                        </div>
+                    </div>
+
+                    <!-- Two-column metadata -->
+                    <group>
+                        <group string="Configuration">
+                            <field name="slug" string="URL Slug"/>
+                            <field name="app_url" string="App URL" readonly="1" widget="CopyClipboardChar"
+                                   invisible="not app_url"/>
+                        </group>
+                        <group string="METADATA">
+                            <field name="user_id" string="Created By" readonly="1"
+                                   widget="many2one_avatar_user"/>
+                            <field name="mcp_client" string="MCP Client" readonly="1"/>
+                            <field name="create_date" string="Created on" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-info d-flex align-items-center gap-3 mb-3"
+                         invisible="not description" role="alert">
+                        <i class="fa fa-info fa-lg text-info" title="Information"/>
+                        <field name="description" placeholder="Full sales portal with orders, customers, analytics"
+                           nolabel="1"/>
+                    </div>
+
+                    <notebook>
+                        <!-- ── Tab 1: React JSX ── -->
+                        <page string="React JSX Code" name="jsx">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                Define <code>function App() {{ ... }}</code> at the top level.
+                                Use <code>window.odoo.fetch(params)</code> to call the Python data handler.
+                                React 18 + Tailwind CSS available. For charts use inline SVG or
+                                <code>&lt;canvas&gt;</code>
+                                — do <strong>not</strong> import external chart libraries.
+                            </div>
+                            <field name="jsx_code" nolabel="1"
+                                   widget="ace" options="{'mode': 'javascript', 'theme': 'monokai'}"
+                                   style="min-height:420px;"
+                                   placeholder="function App() {&#10;  const [data, setData] = React.useState(null);&#10;  React.useEffect(() => { window.odoo.fetch().then(setData); }, []);&#10;  if (!data) return &lt;div className='mcp-loading'&gt;&lt;div className='mcp-spin'/&gt;Loading...&lt;/div&gt;;&#10;  return &lt;div className='p-6'&gt;&lt;pre&gt;{JSON.stringify(data,null,2)}&lt;/pre&gt;&lt;/div&gt;;&#10;}"/>
+                        </page>
+
+                        <!-- ── Tab 2: Data Handler Python ── -->
+                        <page string="Data Handler (Python)" name="data_code">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="fa-info-circle me-1"/>
+                                Runs server-side. Set <code>result = {{ ... }}</code> — returned as JSON
+                                to the React app via <code>window.odoo.fetch()</code>.
+                                Available: <code>env</code>, <code>datetime</code>, <code>relativedelta</code>,
+                                <code>params</code>
+                                (from fetch call), <code>json</code>, <code>math</code>.
+                                Use <code>env['model']._read_group(...)</code> for aggregations (Odoo 19).
+                            </div>
+                            <field name="data_code" nolabel="1"
+                                   widget="ace" options="{'mode': 'python', 'theme': 'monokai'}"
+                                   style="min-height:420px;"
+                                   placeholder="# Example&#10;partners = env['res.partner'].search_read(&#10;    [('customer_rank','&gt;',0)], ['name','email','phone'], limit=20&#10;)&#10;result = {'partners': partners}"/>
+                        </page>
+
+                        <!-- ── Tab 3: Pages ── -->
+                        <page string="Pages" name="pages">
+                            <field name="page_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name" string="Name"/>
+                                    <field name="route_path" string="Route Path"/>
+                                    <field name="page_title" string="Page Title"/>
+                                    <button name="action_open_form_view"
+                                            string="View"
+                                            type="object"
+                                            icon="fa-pencil"
+                                            class="btn-sm btn-outline-secondary"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- ── Tab 4: API Endpoints ── -->
+                        <page string="API Endpoints" name="api_endpoints">
+                            <field name="endpoint_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name" string="Endpoint Name"/>
+                                    <field name="method" string="Method"
+                                           decoration-success="method == 'GET'"
+                                           decoration-warning="method == 'PUT'"
+                                           decoration-danger="method == 'DELETE'"
+                                           decoration-info="method == 'POST'"/>
+                                    <field name="path" string="Path"/>
+                                    <field name="description" string="Description"/>
+                                    <button name="action_open_form_view"
+                                            string="View"
+                                            type="object"
+                                            icon="fa-code"
+                                            class="btn-sm btn-outline-secondary"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- ── Tab 5: Sharing ── -->
+                        <page string="Sharing" name="sharing">
+                            <group>
+                                <group string="Access Control">
+                                    <field name="sharing_mode" string="Sharing Mode"/>
+                                    <field name="is_public" widget="boolean_toggle" string="Public Access"/>
+                                    <field name="allowed_group_ids" widget="many2many_tags"
+                                           invisible="sharing_mode != 'group'"
+                                           string="Allowed Groups"/>
+                                    <field name="active" widget="boolean_toggle" string="Active"/>
+                                </group>
+                                <group string="Share Link">
+                                    <field name="share_token" readonly="1" widget="CopyClipboardChar"
+                                           invisible="not is_public"/>
+                                    <field name="share_url" readonly="1" widget="CopyClipboardChar"
+                                           invisible="not share_url"/>
+                                </group>
+                            </group>
+                            <div class="d-flex gap-2 mt-2" invisible="not is_public">
+                                <button name="action_regenerate_token"
+                                        string="Regenerate Share Token"
+                                        type="object" class="btn btn-secondary" icon="fa-refresh"/>
+                            </div>
+                            <div class="alert alert-success mt-3" invisible="not is_public" role="alert">
+                                <i class="fa fa-check-circle me-1"/>
+                                Public access uses the signed share URL above.
+                                The internal slug URL remains accessible to the owner and admins.
+                            </div>
+                            <div class="alert alert-warning mt-3" invisible="sharing_mode != 'group'" role="alert">
+                                <i class="fa fa-exclamation-triangle me-1"/>
+                                Group-based access control requires your app to check
+                                <code>window.odoo.portal</code>
+                                and enforce permissions in the data handler.
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+</odoo>

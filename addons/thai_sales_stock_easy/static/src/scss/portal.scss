@@ -1,0 +1,51 @@
+.o_thai_sale_portal { max-width: 1180px; margin: 0 auto; color: #17345f; font-family: inherit; }
+.o_thai_sale_portal #quote_content { width: 100%; }
+.o_thai_sale_portal #portal_sale_content { padding: 0 !important; }
+.o_thai_portal_heading { display:flex; justify-content:space-between; gap:20px; align-items:center; margin-bottom:16px; }
+.o_thai_portal_heading > div:first-child { display:flex; align-items:center; gap:12px; }
+.o_thai_portal_title_icon { width:42px; height:42px; display:grid; place-items:center; border-radius:12px; color:#176bd5; background:#eaf3ff; font-size:21px; }
+.o_thai_portal_heading h1 { margin:0; color:#163766; font-size:27px; font-weight:800; }
+.o_thai_portal_heading p { margin:3px 0 0; color:#73849b; font-size:13px; }
+.o_thai_portal_actions { display:flex; gap:9px; align-items:center; }
+.o_thai_portal-actions .btn,.o_thai_portal_actions .btn { padding:9px 15px; border-radius:8px; font-weight:700; }
+.o_thai_signed_badge { padding:9px 14px; border-radius:999px; color:#087a54; background:#dcf7eb; font-weight:700; }
+.o_thai_portal_timeline { position:relative; display:grid; grid-template-columns:repeat(5,1fr); margin-bottom:16px; padding:20px 28px; border:1px solid #dbe6f4; border-radius:12px; background:#fff; box-shadow:0 4px 15px #15375e0c; }
+.o_thai_portal_timeline::before { content:""; position:absolute; top:36px; left:10%; right:10%; height:3px; background:#dfe8f3; }
+.o_thai_portal_timeline > div { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:5px; text-align:center; color:#647895; }
+.o_thai_portal_timeline > div > i { width:34px; height:34px; display:grid; place-items:center; border:3px solid #fff; border-radius:50%; color:#7188a6; background:#e9eff7; box-shadow:0 0 0 2px #d6e2f0; }
+.o_thai_portal_timeline .is-current > i { color:#fff; background:#2479df; box-shadow:0 0 0 2px #91c0fa; }
+.o_thai_portal_timeline .is-done > i { color:#fff; background:#15ad78; box-shadow:0 0 0 2px #15ad78; }
+.o_thai_portal_timeline b { font-size:13px; }.o_thai_portal_timeline small { color:#8a99ad; font-size:11px; }
+.o_thai_portal_info_grid { display:grid; grid-template-columns:.9fr 1.25fr 1.1fr; gap:12px; margin-bottom:16px; padding:12px; border:1px solid #dbe6f4; border-radius:12px; background:#fff; }
+.o_thai_portal_info_grid section { min-height:145px; padding:17px 18px; border:1px solid #dce6f2; border-radius:9px; background:#fbfdff; }
+.o_thai_portal_info_grid section.is-document { display:flex; gap:14px; align-items:flex-start; background:linear-gradient(135deg,#edf5ff,#fbfdff); }
+.o_thai_portal_info_grid section.is-document > i { width:42px; height:42px; display:grid; place-items:center; border-radius:9px; color:#2479df; background:#dcecff; font-size:22px; }
+.o_thai_portal_info_grid h3 { margin:0 0 10px; color:#24446e; font-size:15px; font-weight:800; }.o_thai_portal_info_grid strong { display:block; color:#17345f; font-size:16px; }.o_thai_portal_info_grid .is-document strong { margin:3px 0 10px; font-size:25px; }.o_thai_portal_info_grid p,.o_thai_portal_info_grid span { margin:5px 0 0; color:#5f718b; font-size:13px; }
+.o_thai_sale_portal #content > section { margin-top:0; padding:14px; border:1px solid #dbe6f4; border-radius:12px; background:#fff; }
+.o_thai_sale_portal #sales_order_table { margin:0; overflow:hidden; border:1px solid #dce6f2; border-radius:9px; }.o_thai_sale_portal #sales_order_table thead { color:#294567; background:#edf3fa; }.o_thai_sale_portal #sales_order_table th { padding:11px 10px; border:0; font-size:13px; }.o_thai_sale_portal #sales_order_table td { padding:11px 10px; vertical-align:middle; border-color:#e7edf5; font-size:13px; }
+.o_thai_portal_product_img { width:48px; height:48px; margin-right:10px; border:1px solid #dbe5f1; border-radius:7px; object-fit:contain; background:#fff; vertical-align:middle; }
+.o_thai_sale_portal #total { margin-top:10px; }.o_thai_sale_portal #total > div { padding:10px 14px; border-radius:9px; background:#f7faff; }
+.o_thai_portal_totals { margin:0 !important; color:#5f718b; }
+.o_thai_portal_totals td { padding:10px 8px !important; border-bottom:1px solid #dfe8f3 !important; vertical-align:middle; }
+.o_thai_portal_totals td:last-child { color:#203a60; white-space:nowrap; }
+.o_thai_portal_totals .is-total td { padding:14px 12px !important; border:0 !important; color:#17345f; background:#e2efff; font-size:16px; }
+.o_thai_portal_totals .is-total td:first-child { border-radius:8px 0 0 8px; }
+.o_thai_portal_totals .is-total td:last-child { border-radius:0 8px 8px 0; color:#176bd5; font-size:23px; }
+.o_thai_portal_acceptance { display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:center; margin-top:16px; padding:18px 20px; border:1px solid #dfd7f5; border-radius:12px; background:linear-gradient(135deg,#f7f2ff,#fcfbff); }
+.o_thai_portal_acceptance h3 { margin:0; color:#3f326c; font-size:17px; font-weight:800; }.o_thai_portal_acceptance p { margin:5px 0 0; color:#766c91; font-size:12px; }.o_thai_portal_accept_buttons { display:flex; justify-content:flex-end; gap:10px; }.o_thai_portal_accept_buttons .btn { padding:10px 16px; border-radius:8px; font-weight:700; }
+.o_thai_portal_inline_signature { min-width:0; padding:14px; border:1px solid #e1daf3; border-radius:10px; background:#fff; }
+.o_thai_portal-inline-signature form,.o_thai_portal_inline_signature form { margin:0; }
+.o_thai_portal_inline_signature .o_web_sign_name_and_signature { width:100%; }
+.o_thai_portal_inline_signature .o_web_sign_signature { min-height:125px; border:1px dashed #b7c8df; border-radius:8px; background:#fbfdff; }
+.o_thai_portal_inline_signature .o_thai_portal_decline { margin-top:9px; }
+.o_thai_portal_signature_done { display:flex; justify-content:flex-end; gap:12px; align-items:center; }.o_thai_portal_signature_done img { max-width:190px; max-height:70px; object-fit:contain; }.o_thai_portal_signature_done span { display:flex; flex-direction:column; }
+.o_thai_sale_portal #terms,.o_thai_sale_portal #signature { margin-top:16px !important; padding:17px 20px; border:1px solid #dbe6f4; border-radius:10px; background:#fff; }
+.o_thai_sale_portal #sale_order_communication { margin-top:22px; padding:18px; border:1px solid #dbe6f4; border-radius:12px; background:#fff; }
+@media(max-width:900px){.o_thai_portal_heading{align-items:flex-start;flex-direction:column}.o_thai_portal_timeline{overflow-x:auto;grid-template-columns:repeat(5,150px)}.o_thai_portal_info_grid{grid-template-columns:1fr}.o_thai_portal_acceptance{grid-template-columns:1fr}.o_thai_portal_accept_buttons{justify-content:flex-start}}
+
+body:has(.o_thai_sale_portal) header .navbar-brand {
+    color: #17345f;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+}

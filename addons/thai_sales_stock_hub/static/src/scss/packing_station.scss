@@ -1,0 +1,94 @@
+.o_hub_station {
+    height: 100%; overflow: auto; background: #f1f6ff; color: #102149; font-family: inherit;
+    button, input, select { font: inherit; } button, select { cursor: pointer; }
+    main { max-width: 1920px; margin: 0 auto; padding: 18px 24px 34px; }
+    .o_hub_station_header, .o_hub_station_heading, .o_hub_station_controls, .o_hub_station_card_title, .o_hub_station_card_title > div { display: flex; align-items: center; gap: 14px; }
+    .o_hub_station_header { justify-content: space-between; flex-wrap: wrap; margin-bottom: 18px; }
+    .o_hub_station_heading > i { color: #0877f6; font-size: 48px; }
+    h1 { font-size: 30px; margin: 0; font-weight: 800; } h2 { font-size: 20px; margin: 0; font-weight: 800; }
+    p { margin: 2px 0; color: #557098; }
+    .o_hub_station_controls label, .o_hub_station_controls > span, .o_hub_station_ready { background: white; border: 1px solid #d3e1f6; border-radius: 11px; padding: 10px 14px; white-space: nowrap; }
+    .o_hub_station_controls label { display: inline-flex; align-items: center; gap: 6px; min-width: 260px; }
+    .o_hub_station_controls select { border: 0; color: #102149; font-weight: 700; width: 170px; min-width: 0; background: transparent; }
+    .o_hub_station_ready { color: #087c2a; background: #e7f9ec; } .o_hub_station_ready i { margin-right: 6px; }
+    .o_hub_station_grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .o_hub_station_left, .o_hub_station_right { display: grid; gap: 16px; align-content: start; min-width: 0; }
+    .o_hub_station_camera, .o_hub_station_scan, .o_hub_station_card, .o_hub_station_actions { background: white; border: 1px solid #d6e5fa; border-radius: 17px; box-shadow: 0 7px 19px rgba(21, 68, 125, .08); overflow: hidden; }
+    .o_hub_station_camera { height: 53vw; max-height: 515px; min-height: 310px; position: relative; background: #0b1c35; }
+    .o_hub_station_camera video { width: 100%; height: 100%; object-fit: cover; }
+    .o_hub_station_camera_placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; color: white; background: linear-gradient(135deg, #10264b, #071428); }
+    .o_hub_station_camera_placeholder > i { font-size: 65px; color: #76b6ff; } .o_hub_station_camera_placeholder strong { font-size: 24px; }
+    .o_hub_station_camera_placeholder button { border: 0; border-radius: 9px; padding: 9px 17px; color: white; background: #0877f6; font-weight: 700; }
+    .o_hub_station_rec { position: absolute; left: 20px; top: 18px; color: #ff3c44; background: rgba(7, 17, 33, .82); padding: 7px 13px; border-radius: 8px; font-weight: 800; }
+    .o_hub_station_rec i { animation: hub-rec 1s infinite; } @keyframes hub-rec { 50% { opacity: .25; } }
+    .o_hub_station_camera_footer { position: absolute; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-between; padding: 14px 20px; color: #dfffe4; background: rgba(7, 17, 33, .82); font-weight: 700; }
+    .o_hub_station_scan form { display: flex; align-items: center; gap: 11px; padding: 15px 18px; background: #edf5ff; }
+    .o_hub_station_scan label { font-size: 19px; font-weight: 800; white-space: nowrap; } .o_hub_station_scan label i { color: #0877f6; font-size: 24px; }
+    .o_hub_station_scan input { flex: 1; min-width: 0; border: 1px solid #b9d3f7; border-radius: 9px; padding: 10px 13px; }
+    .o_hub_station_scan form button { color: white; background: #0877f6; border: 0; border-radius: 9px; padding: 11px 14px; font-weight: 700; }
+    .o_hub_station_scan_summary { display: grid; grid-template-columns: repeat(3, 1fr); padding: 21px 14px; }
+    .o_hub_station_scan_summary span { display: flex; flex-direction: column; padding: 0 14px; border-right: 1px solid #dce8f8; font-weight: 700; }
+    .o_hub_station_scan_summary span:last-child { border-right: 0; } .o_hub_station_scan_summary i { color: #0877f6; font-size: 22px; } .o_hub_station_scan_summary b { font-size: 24px; }
+    .o_hub_station_card { padding: 16px 19px; }
+    .o_hub_station_card_title { justify-content: space-between; margin-bottom: 13px; }
+    .o_hub_station_card_title h2 i { color: #0877f6; margin-right: 6px; }
+    .o_hub_station_card_title button { background: white; border: 1px solid #cbdcf5; color: #0b62cd; border-radius: 8px; padding: 5px 9px; }
+    .o_hub_station_order_identity { display: flex; align-items: center; gap: 13px; padding: 14px; background: #edf5ff; border-radius: 11px; flex-wrap: wrap; }
+    .o_hub_station_order_identity select { font-size: 21px; font-weight: 800; border: 0; background: transparent; color: #102149; max-width: 45%; }
+    .o_hub_station_order_identity img { width: 27px; height: 27px; object-fit: contain; vertical-align: middle; }
+    .o_hub_station_order_identity b { color: #0877f6; background: #dcecff; border-radius: 7px; padding: 5px 10px; }
+    .o_hub_station_customer { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 13px; }
+    .o_hub_station_customer span { padding: 9px; background: #f4f8ff; border-radius: 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .o_hub_station_customer span:last-child { grid-column: 1 / -1; }
+    .o_hub_station_customer i { color: #1275e9; margin-right: 5px; }
+    .o_hub_station_link { color: #0877f6; background: transparent; border: 0; padding: 8px 0 0; font-weight: 700; }
+    .o_hub_station_meter { width: 130px; height: 13px; background: #e0e8f2; border-radius: 8px; overflow: hidden; }
+    .o_hub_station_meter i { display: block; height: 100%; background: #10b636; }
+    .o_hub_station_table { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; } th { text-align: left; background: #eaf2ff; } th, td { padding: 9px; border-bottom: 1px solid #e4ecf8; white-space: nowrap; }
+    td img { width: 42px; height: 42px; object-fit: contain; vertical-align: middle; margin-right: 6px; }
+    td span.done, td span.pending { display: inline-block; padding: 6px 9px; border-radius: 9px; font-weight: 700; }
+    td span.done { color: #087e28; background: #e2f8e7; } td span.pending { color: #955b00; background: #fff2de; }
+    .o_hub_station_actions { padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; }
+    .o_hub_station_actions button, .o_hub_station_upload { border: 1px solid #cbdcf5; background: white; border-radius: 10px; padding: 11px 14px; color: #102149; font-weight: 700; cursor: pointer; }
+    .o_hub_station_actions button.confirm, .o_hub_station_actions button.primary { background: #05a71e; color: white; border-color: #05a71e; margin-left: auto; font-size: 18px; }
+    .o_hub_station_actions button:disabled { opacity: .48; cursor: not-allowed; }
+    .o_hub_station_upload input { display: none; } .o_hub_station_hint { text-align: right; font-size: 13px; }
+    .o_hub_station_empty { padding: 70px 20px; text-align: center; background: white; border: 1px solid #d6e5fa; border-radius: 17px; }
+    .o_hub_station_empty > i { font-size: 54px; color: #0877f6; } .o_hub_station_empty button { color: white; background: #0877f6; border: 0; border-radius: 9px; padding: 9px 15px; margin-top: 12px; }
+    .o_hub_station_grid { grid-template-columns: minmax(320px, 1.12fr) minmax(420px, 1.55fr) minmax(260px, .78fr); grid-template-areas: "camera products sidebar" "order products sidebar" "actions actions actions"; gap: 12px; align-items: start; }
+    .o_hub_station_left, .o_hub_station_right { display: contents; }
+    .o_hub_station_camera { grid-area: camera; height: 290px; min-height: 290px; }
+    .o_hub_station_order { grid-area: order; }
+    .o_hub_station_products { grid-area: products; height: 100%; min-height: 620px; display: flex; flex-direction: column; }
+    .o_hub_station_products .o_hub_station_table { flex: 1; max-height: 570px; overflow: auto; }
+    .o_hub_station_sidebar { grid-area: sidebar; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .o_hub_station_product_main { display: flex; align-items: center; gap: 9px; min-width: 0; }
+    .o_hub_station_product_main img { flex: none; margin: 0; }
+    .o_hub_station_product_main > div { display: flex; flex-direction: column; min-width: 0; }
+    .o_hub_station_product_main span { white-space: normal; overflow-wrap: anywhere; color: #526b8e; }
+    .o_hub_station_product_qty { display: flex; flex-wrap: wrap; gap: 7px 16px; margin: 6px 0 0 51px; font-size: 12px; color: #607899; }
+    .o_hub_station_product_qty span { white-space: nowrap; }
+    .o_hub_station_product_qty b { color: #102149; margin-left: 3px; }
+    .o_hub_station_table th:first-child, .o_hub_station_table td:first-child { width: 35px; }
+    .o_hub_station_table th:last-child, .o_hub_station_table td:last-child { width: 95px; }
+    .o_hub_station_scan { grid-area: scan; }
+    .o_hub_station_scan form { flex-direction: column; align-items: stretch; background: #fff; }
+    .o_hub_station_scan form button { display: none; }
+    .o_hub_station_scan_summary { display: none; }
+    .o_hub_station_progress { grid-area: progress; }
+    .o_hub_station_progress h2, .o_hub_station_boxes h2 { margin-bottom: 14px; }
+    .o_hub_station_progress_count { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .o_hub_station_progress_count b { color: #099b45; }
+    .o_hub_station_progress .o_hub_station_meter { width: 100%; }
+    .o_hub_station_progress_stats { display: grid; gap: 9px; margin-top: 15px; }
+    .o_hub_station_progress_stats span { display: flex; justify-content: space-between; border-bottom: 1px solid #e6edf7; padding-bottom: 7px; }
+    .o_hub_station_boxes { grid-area: boxes; }
+    .o_hub_station_box_number { margin: 10px 0; }
+    .o_hub_station_boxes button { width: 100%; padding: 10px; border: 1px solid #147cf4; border-radius: 9px; color: #1468d1; background: #fff; font-weight: 700; }
+    .o_hub_station_actions { grid-area: actions; justify-content: space-between; position: sticky; bottom: 0; z-index: 20; min-height: 66px; box-shadow: 0 -6px 22px rgba(21, 68, 125, .16); }
+    .o_hub_station_hint { display: none; }
+    @media (max-width: 1200px) { .o_hub_station_grid { grid-template-columns: 1fr 1fr; grid-template-areas: "camera products" "order products" "sidebar products" "actions actions"; } .o_hub_station_camera { height: 300px; } }
+    @media (max-width: 800px) { .o_hub_station_grid { grid-template-columns: 1fr; grid-template-areas: "camera" "order" "products" "sidebar" "actions"; } .o_hub_station_products { min-height: 0; } }
+    @media (max-width: 700px) { main { padding: 12px; } .o_hub_station_controls { flex-wrap: wrap; } .o_hub_station_camera { height: 350px; } .o_hub_station_scan form { flex-wrap: wrap; } .o_hub_station_scan_summary { padding: 12px 4px; } }
+}

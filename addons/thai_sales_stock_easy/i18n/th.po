@@ -1,0 +1,130 @@
+# Translation of Odoo Server.
+# * thai_sales_stock_easy
+msgid ""
+msgstr ""
+"Language: th_TH\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.act_window,name:thai_sales_stock_easy.action_quotation
+msgid "Quotations"
+msgstr "ใบเสนอราคา"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.act_window,name:thai_sales_stock_easy.action_sales_order
+msgid "All Sales Orders"
+msgstr "รายการขายทั้งหมด"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.act_window,name:thai_sales_stock_easy.action_purchase_rfq
+msgid "Requests for Quotation / Purchase Orders"
+msgstr "ใบขอซื้อ / ใบสั่งซื้อ"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.act_window,name:thai_sales_stock_easy.action_outgoing
+msgid "Outgoing Deliveries"
+msgstr "รอส่งสินค้า"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.act_window,name:thai_sales_stock_easy.action_incoming
+msgid "Incoming Receipts"
+msgstr "รับสินค้าเข้า"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.act_window,name:thai_sales_stock_easy.action_all_pickings
+msgid "All Transfers"
+msgstr "รายการรับส่งสินค้าทั้งหมด"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.act_window,name:thai_sales_stock_easy.action_products
+msgid "Products and Stock"
+msgstr "สินค้าและยอดคงเหลือ"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.act_window,name:thai_sales_stock_easy.action_customer_invoice
+msgid "Customer Invoices"
+msgstr "ใบกำกับภาษีขาย"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.act_window,name:thai_sales_stock_easy.action_receivable
+msgid "Receivables"
+msgstr "รอรับเงิน"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.act_window,name:thai_sales_stock_easy.action_customers
+msgid "Customers"
+msgstr "ลูกค้า"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.act_window,name:thai_sales_stock_easy.action_vendors
+msgid "Vendors"
+msgstr "ผู้ขาย"
+
+#. module: thai_sales_stock_easy
+#: model:ir.ui.menu,name:thai_sales_stock_easy.menu_root
+msgid "Overview"
+msgstr "ภาพรวม"
+
+#. module: thai_sales_stock_easy
+#: model:ir.ui.menu,name:thai_sales_stock_easy.menu_quick_issue
+msgid "Quick Stock Issue"
+msgstr "เบิกสินค้าออกแบบง่าย"
+
+#. module: thai_sales_stock_easy
+#: model:ir.ui.menu,name:thai_sales_stock_easy.menu_finance
+msgid "Billing & Tax"
+msgstr "การเงินและภาษี"
+
+#. module: thai_sales_stock_easy
+#: model:ir.ui.menu,name:thai_sales_stock_easy.menu_receivable
+msgid "Receivables"
+msgstr "รอรับเงิน"
+
+#. module: thai_sales_stock_easy
+#: model:ir.ui.menu,name:thai_sales_stock_easy.menu_customer_invoice
+msgid "Customer Invoices"
+msgstr "ใบกำกับภาษีขาย"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.client,name:thai_sales_stock_easy.action_thai_sales_stock_dashboard
+msgid "Overview"
+msgstr "ภาพรวม"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.client,name:thai_sales_stock_easy.action_thai_quick_sale
+msgid "Create Quotation"
+msgstr "สร้างใบเสนอราคา"
+
+#. module: thai_sales_stock_easy
+#: model:ir.actions.client,name:thai_sales_stock_easy.action_thai_sale_flow
+msgid "Sales Workflow"
+msgstr "ดำเนินงานขาย"
+
+#. module: thai_sales_stock_easy
+msgid "Quotation Pricing"
+msgstr "การกำหนดราคาใบเสนอราคา"
+
+#. module: thai_sales_stock_easy
+msgid "Use Pricelists on Quotations"
+msgstr "ใช้รายการราคาในใบเสนอราคา"
+
+#. module: thai_sales_stock_easy
+msgid "Show a Pricelist selector on quotations for this company only."
+msgstr "แสดงช่องเลือกรายการราคาในใบเสนอราคาของบริษัทนี้เท่านั้น"
+
+#. module: thai_sales_stock_easy
+msgid "Create Sample Pricelists"
+msgstr "สร้างรายการราคาตัวอย่าง"
+
+#. module: thai_sales_stock_easy
+msgid "Wholesale, Retail, and Government are examples. Set their pricing rules before use."
+msgstr "ราคาส่ง ราคาปลีก และหน่วยงานราชการเป็นเพียงตัวอย่าง โปรดตั้งกฎราคาก่อนใช้งาน"
+
+#. module: thai_sales_stock_easy
+msgid "Select Pricelist"
+msgstr "เลือกราคา (Pricelist)"
+
+#. module: thai_sales_stock_easy
+msgid "Sample Pricelists"
+msgstr "รายการราคาตัวอย่าง"

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hub_order_list" model="ir.ui.view">
+        <field name="name">thai.sales.stock.hub.order.list</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <list string="ออเดอร์ทุกช่องทาง" default_order="date_order desc" decoration-muted="state == 'cancel'">
+                <field name="hub_product_image" widget="image" string="สินค้า" options="{'size': [40, 40]}" optional="show"/>
+                <field name="hub_external_ref" string="เลขออเดอร์ช่องทาง" optional="show"/>
+                <field name="name" string="เลขที่ระบบ"/>
+                <field name="hub_channel_icon" widget="image" string="ไอคอน" options="{'size': [28, 28]}" optional="show"/>
+                <field name="hub_channel_id" string="ช่องทาง"/>
+                <field name="shopee_shop_id" string="ร้าน Shopee" optional="hide"/>
+                <field name="lazada_shop_id" string="ร้าน Lazada" optional="hide"/>
+                <field name="tiktok_shop_id" string="ร้าน TikTok" optional="hide"/>
+                <field name="date_order" string="วันที่สั่งซื้อ"/>
+                <field name="partner_id" string="ลูกค้า"/>
+                <field name="amount_total" sum="ยอดรวม"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="hub_fulfillment_state" widget="badge" string="งานจัดส่ง"/>
+                <field name="invoice_status" widget="badge" string="การออกบิล" optional="show"/>
+                <field name="easy_tracking_number" string="Tracking" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hub_order_search" model="ir.ui.view">
+        <field name="name">thai.sales.stock.hub.order.search</field>
+        <field name="model">sale.order</field>
+        <field name="arch" type="xml">
+            <search string="ค้นหาออเดอร์ทุกช่องทาง">
+                <field name="name" string="เลขที่ระบบ"/>
+                <field name="hub_external_ref" string="เลขจากช่องทาง"/>
+                <field name="partner_id"/>
+                <field name="hub_channel_id"/>
+                <field name="hub_is_demo"/>
+                <separator/>
+                <filter name="open_orders" string="งานที่ต้องทำ" domain="[('state','in',('draft','sent','sale'))]"/>
+                <filter name="quotation" string="รอยืนยัน" domain="[('state','in',('draft','sent'))]"/>
+                <filter name="confirmed" string="ยืนยันแล้ว" domain="[('state','in',('sale','done'))]"/>
+                <filter name="to_invoice" string="รอออกบิล" domain="[('invoice_status','=','to invoice')]"/>
+                <filter name="demo" string="ข้อมูลตัวอย่าง" domain="[('hub_is_demo','=',True)]"/>
+                <filter name="real" string="ข้อมูลจริง" domain="[('hub_is_demo','=',False)]"/>
+                <filter name="connector_imported" string="นำเข้าจากตัวเชื่อม" domain="['|','|',('shopee_order_ref','!=',False),('lazada_order_ref','!=',False),('tiktok_order_id','!=',False)]"/>
+                <filter name="today" string="วันนี้" domain="[('date_order','&gt;=',context_today().strftime('%Y-%m-%d 00:00:00'))]"/>
+                <separator/>
+                <filter name="shopee" string="Shopee" domain="[('hub_channel','=','shopee')]"/>
+                <filter name="lazada" string="Lazada" domain="[('hub_channel','=','lazada')]"/>
+                <filter name="tiktok" string="TikTok Shop" domain="[('hub_channel','=','tiktok')]"/>
+                <filter name="group_channel" string="จัดกลุ่มตามช่องทาง" context="{'group_by':'hub_channel_id'}"/>
+                <filter name="group_date" string="จัดกลุ่มตามวันที่" context="{'group_by':'date_order:day'}"/>
+                <filter name="group_state" string="จัดกลุ่มตามสถานะ" context="{'group_by':'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_hub_order_form" model="ir.ui.view">
+        <field name="name">thai.sales.stock.hub.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="hub_channel_id" options="{'no_create': True}" domain="[('active', '=', True)]"/>
+                <field name="hub_channel_icon" widget="image" readonly="1" invisible="not hub_channel_id"/>
+                <field name="hub_external_ref" placeholder="เช่น เลขออเดอร์ Marketplace"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_hub_order_form_channel_summary" model="ir.ui.view">
+        <field name="name">thai.sales.stock.hub.order.form.channel.summary</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="thai_sales_stock_easy.view_order_form_thai_business_layout"/>
+        <field name="priority">100</field>
+        <field name="arch" type="xml">
+            <xpath expr="//div[hasclass('o_tso_summary')]/label[@for='origin']" position="before">
+                <label for="hub_channel_id"><i class="fa fa-tags"/> ช่องทางการขาย</label>
+                <field name="hub_channel_id" options="{'no_create': True, 'no_open': True}" domain="[('active', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

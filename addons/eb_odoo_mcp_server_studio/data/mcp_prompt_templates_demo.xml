@@ -1,0 +1,1114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         MCP Studio — Demo Prompt Templates
+         Covers all 26 tools across Read / Write / Execute / Builder categories
+         noupdate="1" → never overwritten on upgrade, customer edits are safe
+    ═══════════════════════════════════════════════════════════════════════ -->
+
+    <!-- ── CATEGORY: DATA EXPLORER (Read tools) ──────────────────────────── -->
+
+    <record id="mcp_prompt_list_models" model="mcp.prompt.template">
+        <field name="name">list_odoo_models</field>
+        <field name="description">Browse all Odoo models — filter by keyword</field>
+        <field name="sequence">10</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 expert assistant.
+
+The user wants to explore available Odoo models.
+
+1. Call odoo_list_models to retrieve all installed models.
+2. If a keyword filter is provided, return only models whose technical name or description contains "{{keyword}}".
+3. For each matching model return: technical name, human label, and a one-line description of what it stores.
+4. Format the output as a clean numbered list.
+5. End with: "Type a model name to inspect its fields."</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_list_models_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">keyword</field>
+                <field name="description">Filter keyword (e.g. sale, invoice, product). Leave blank to list all.</field>
+                <field name="required">False</field>
+                <field name="default_value">sale</field>
+            </record>
+        </field>
+    </record>
+
+    <record id="mcp_prompt_get_fields" model="mcp.prompt.template">
+        <field name="name">inspect_model_fields</field>
+        <field name="description">List all fields of an Odoo model with types and descriptions</field>
+        <field name="sequence">20</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 expert assistant.
+
+1. Call odoo_get_fields for the model "{{model}}".
+2. Group the results into sections: Identification, Relational, Date/Time, Selection, Boolean, Computed.
+3. For each field show: field name, field type, string label, and whether it is required or readonly.
+4. Highlight any Many2one / One2many / Many2many fields — those are useful for joins.
+5. Present the output as a clean markdown table per section.
+
+Model to inspect: {{model}}</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_get_fields_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">model</field>
+                <field name="description">Odoo technical model name (e.g. sale.order, res.partner, account.move)</field>
+                <field name="required">True</field>
+                <field name="default_value">sale.order</field>
+            </record>
+        </field>
+    </record>
+
+    <record id="mcp_prompt_search_records" model="mcp.prompt.template">
+        <field name="name">search_records</field>
+        <field name="description">Search and display records from any Odoo model</field>
+        <field name="sequence">30</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 expert assistant.
+
+Task: Search {{model}} records and return meaningful results.
+
+Steps:
+1. First call odoo_get_fields on "{{model}}" to identify display fields.
+2. Build a domain filter: {{domain}}
+3. Call odoo_search_read with:
+   - model: "{{model}}"
+   - domain: (as determined above)
+   - fields: the most relevant display fields
+   - limit: {{limit}}
+4. Present the results as a clean table. Include the record ID in the first column.
+5. Summarize: total records found, and any notable patterns.
+
+If the domain is empty, return the latest {{limit}} records ordered by id desc.</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_search_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">model</field>
+                <field name="description">Odoo model technical name (e.g. res.partner, sale.order)</field>
+                <field name="required">True</field>
+                <field name="default_value">res.partner</field>
+            </record>
+            <record id="mcp_prompt_search_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">domain</field>
+                <field name="description">Odoo domain filter (e.g. [["is_company","=",true]]). Leave blank for no filter.</field>
+                <field name="required">False</field>
+                <field name="default_value">[["is_company","=",true]]</field>
+            </record>
+            <record id="mcp_prompt_search_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">limit</field>
+                <field name="description">Maximum number of records to return</field>
+                <field name="required">False</field>
+                <field name="default_value">20</field>
+            </record>
+        </field>
+    </record>
+
+    <record id="mcp_prompt_get_record" model="mcp.prompt.template">
+        <field name="name">get_record_detail</field>
+        <field name="description">Fetch and explain a single Odoo record in full detail</field>
+        <field name="sequence">40</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 expert assistant.
+
+Task: Retrieve and explain record #{{record_id}} from model "{{model}}".
+
+Steps:
+1. Call odoo_get_record with model="{{model}}" and id={{record_id}}.
+2. Display ALL returned fields in a well-formatted two-column table (Field | Value).
+3. For relational fields (Many2one), show both the ID and the display name.
+4. Add a plain-English summary paragraph explaining what this record represents in business terms.
+5. Suggest 2–3 next actions the user could perform on this record (e.g. edit, send email, create PDF).</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_get_record_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">model</field>
+                <field name="description">Odoo model technical name</field>
+                <field name="required">True</field>
+                <field name="default_value">sale.order</field>
+            </record>
+            <record id="mcp_prompt_get_record_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">record_id</field>
+                <field name="description">Numeric ID of the record to fetch</field>
+                <field name="required">True</field>
+                <field name="default_value">1</field>
+            </record>
+        </field>
+    </record>
+
+    <!-- ── CATEGORY: ANALYTICS (aggregate / read_group / echart) ─────────── -->
+
+    <record id="mcp_prompt_aggregate" model="mcp.prompt.template">
+        <field name="name">aggregate_data</field>
+        <field name="description">Calculate SUM / AVG / COUNT on any Odoo model field</field>
+        <field name="sequence">50</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 analytics expert.
+
+Task: Compute {{aggregation}} of "{{field}}" on model "{{model}}".
+
+Steps:
+1. Call odoo_aggregate with:
+   - model: "{{model}}"
+   - field: "{{field}}"
+   - aggregation: "{{aggregation}}"
+   - domain: {{domain}}
+   - group_by: "{{group_by}}" (if provided)
+2. Present the result clearly.
+3. If grouped, display results as a ranked table sorted by value descending.
+4. Add one insight sentence explaining what the number means for the business.
+
+Aggregation: {{aggregation}}
+Field: {{field}}
+Group by: {{group_by}}</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_aggregate_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">model</field>
+                <field name="description">Odoo model (e.g. sale.order, account.move)</field>
+                <field name="required">True</field>
+                <field name="default_value">sale.order</field>
+            </record>
+            <record id="mcp_prompt_aggregate_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">field</field>
+                <field name="description">Numeric field to aggregate (e.g. amount_total, qty_done)</field>
+                <field name="required">True</field>
+                <field name="default_value">amount_total</field>
+            </record>
+            <record id="mcp_prompt_aggregate_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">aggregation</field>
+                <field name="description">Aggregation function: sum, avg, min, max, count</field>
+                <field name="required">True</field>
+                <field name="default_value">sum</field>
+            </record>
+            <record id="mcp_prompt_aggregate_arg4" model="mcp.prompt.template.argument">
+                <field name="sequence">40</field>
+                <field name="name">group_by</field>
+                <field name="description">Field to group by (e.g. partner_id, state). Leave blank for total only.</field>
+                <field name="required">False</field>
+                <field name="default_value">state</field>
+            </record>
+            <record id="mcp_prompt_aggregate_arg5" model="mcp.prompt.template.argument">
+                <field name="sequence">50</field>
+                <field name="name">domain</field>
+                <field name="description">Optional domain filter (e.g. [["state","=","sale"]])</field>
+                <field name="required">False</field>
+                <field name="default_value">[]</field>
+            </record>
+        </field>
+    </record>
+
+    <record id="mcp_prompt_sales_dashboard" model="mcp.prompt.template">
+        <field name="name">sales_performance_report</field>
+        <field name="description">Generate a full sales performance report for a date range</field>
+        <field name="sequence">55</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 business analyst assistant.
+
+Generate a comprehensive sales performance report for the period {{date_from}} to {{date_to}}.
+
+Use these tools in sequence:
+1. odoo_read_group on sale.order grouped by partner_id → top customers by revenue
+2. odoo_read_group on sale.order grouped by state → order status breakdown
+3. odoo_aggregate on sale.order.line field=price_subtotal, aggregation=sum → total revenue
+4. odoo_read_group on sale.order grouped by user_id → top salesperson
+5. odoo_search_read on sale.order with domain [["date_order","&gt;=","{{date_from}}"],["date_order","&lt;=","{{date_to}}"]] sorted by amount_total desc, limit=5 → top 5 orders
+
+Present results as:
+- 📊 **Executive Summary** (3 bullet points)
+- 🏆 **Top 5 Customers** table
+- 💼 **Top Salesperson**
+- 📦 **Order Status Breakdown** table
+- 💰 **Total Revenue** highlighted
+- 📋 **Top 5 Orders** table
+
+Use currency formatting for all monetary values.</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_sales_dash_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">date_from</field>
+                <field name="description">Start date (YYYY-MM-DD)</field>
+                <field name="required">True</field>
+                <field name="default_value">2025-01-01</field>
+            </record>
+            <record id="mcp_prompt_sales_dash_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">date_to</field>
+                <field name="description">End date (YYYY-MM-DD)</field>
+                <field name="required">True</field>
+                <field name="default_value">2025-12-31</field>
+            </record>
+        </field>
+    </record>
+
+    <record id="mcp_prompt_echart_bar" model="mcp.prompt.template">
+        <field name="name">create_bar_chart</field>
+        <field name="description">Create an Apache EChart bar/line dashboard from Odoo live data</field>
+        <field name="sequence">60</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 EChart dashboard expert.
+
+Task: Create a {{chart_type}} chart titled "{{title}}" using live data from Odoo.
+
+Steps:
+1. Call odoo_read_group on model "{{model}}" grouped by "{{group_by_field}}", measuring "{{measure_field}}:{{aggregation}}".
+2. Extract labels (x-axis) and values (y-axis) from the result.
+3. Call odoo_manage_echart with action="create" and a complete ECharts config JSON including:
+   - title.text: "{{title}}"
+   - chart type: "{{chart_type}}"
+   - xAxis with the group labels
+   - yAxis with auto scale
+   - series with the measured values
+   - tooltip enabled
+   - smooth: true (for line charts)
+   - color palette: ["#5470c6","#91cc75","#fac858","#ee6666"]
+4. Report the chart name/ID and a preview description.
+
+The chart should display professional business data with proper axis labels and a legend.</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_echart_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">title</field>
+                <field name="description">Chart title (e.g. Monthly Sales Revenue)</field>
+                <field name="required">True</field>
+                <field name="default_value">Monthly Sales Revenue</field>
+            </record>
+            <record id="mcp_prompt_echart_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">model</field>
+                <field name="description">Odoo model to fetch data from</field>
+                <field name="required">True</field>
+                <field name="default_value">sale.order</field>
+            </record>
+            <record id="mcp_prompt_echart_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">group_by_field</field>
+                <field name="description">Field to group by on X axis (e.g. date_order:month, partner_id)</field>
+                <field name="required">True</field>
+                <field name="default_value">date_order:month</field>
+            </record>
+            <record id="mcp_prompt_echart_arg4" model="mcp.prompt.template.argument">
+                <field name="sequence">40</field>
+                <field name="name">measure_field</field>
+                <field name="description">Numeric field to measure (e.g. amount_total)</field>
+                <field name="required">True</field>
+                <field name="default_value">amount_total</field>
+            </record>
+            <record id="mcp_prompt_echart_arg5" model="mcp.prompt.template.argument">
+                <field name="sequence">50</field>
+                <field name="name">aggregation</field>
+                <field name="description">Aggregation: sum, avg, count</field>
+                <field name="required">False</field>
+                <field name="default_value">sum</field>
+            </record>
+            <record id="mcp_prompt_echart_arg6" model="mcp.prompt.template.argument">
+                <field name="sequence">60</field>
+                <field name="name">chart_type</field>
+                <field name="description">Chart type: bar, line, pie, scatter</field>
+                <field name="required">False</field>
+                <field name="default_value">bar</field>
+            </record>
+        </field>
+    </record>
+
+    <!-- ── CATEGORY: RECORD MANAGEMENT (Write tools) ─────────────────────── -->
+
+    <record id="mcp_prompt_create_partner" model="mcp.prompt.template">
+        <field name="name">create_customer</field>
+        <field name="description">Create a new customer/vendor contact in Odoo</field>
+        <field name="sequence">70</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 expert assistant.
+
+Task: Create a new {{partner_type}} contact in Odoo.
+
+Steps:
+1. Prepare the record values:
+   - name: "{{name}}"
+   - is_company: {{is_company}}
+   - email: "{{email}}"
+   - phone: "{{phone}}"
+   - street: "{{street}}"
+   - city: "{{city}}"
+   - customer_rank: {{customer_rank}}
+   - supplier_rank: {{supplier_rank}}
+2. Call odoo_create on model "res.partner" with the above values.
+3. Report the new partner ID and a clickable Odoo link (base_url/odoo/contacts/ID).
+4. Confirm: "Contact '{{name}}' created successfully as ID [X]."
+
+Only include fields that have non-empty values.</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_create_partner_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">name</field>
+                <field name="description">Contact full name or company name</field>
+                <field name="required">True</field>
+                <field name="default_value">Acme Corporation</field>
+            </record>
+            <record id="mcp_prompt_create_partner_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">partner_type</field>
+                <field name="description">Type: customer, vendor, or both</field>
+                <field name="required">False</field>
+                <field name="default_value">customer</field>
+            </record>
+            <record id="mcp_prompt_create_partner_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">is_company</field>
+                <field name="description">True for company, False for individual</field>
+                <field name="required">False</field>
+                <field name="default_value">true</field>
+            </record>
+            <record id="mcp_prompt_create_partner_arg4" model="mcp.prompt.template.argument">
+                <field name="sequence">40</field>
+                <field name="name">email</field>
+                <field name="description">Email address</field>
+                <field name="required">False</field>
+                <field name="default_value">info@acme.com</field>
+            </record>
+            <record id="mcp_prompt_create_partner_arg5" model="mcp.prompt.template.argument">
+                <field name="sequence">50</field>
+                <field name="name">phone</field>
+                <field name="description">Phone number</field>
+                <field name="required">False</field>
+            </record>
+            <record id="mcp_prompt_create_partner_arg6" model="mcp.prompt.template.argument">
+                <field name="sequence">60</field>
+                <field name="name">street</field>
+                <field name="description">Street address</field>
+                <field name="required">False</field>
+            </record>
+            <record id="mcp_prompt_create_partner_arg7" model="mcp.prompt.template.argument">
+                <field name="sequence">70</field>
+                <field name="name">city</field>
+                <field name="description">City</field>
+                <field name="required">False</field>
+            </record>
+            <record id="mcp_prompt_create_partner_arg8" model="mcp.prompt.template.argument">
+                <field name="sequence">80</field>
+                <field name="name">customer_rank</field>
+                <field name="description">Set to 1 if this is a customer, else 0</field>
+                <field name="required">False</field>
+                <field name="default_value">1</field>
+            </record>
+            <record id="mcp_prompt_create_partner_arg9" model="mcp.prompt.template.argument">
+                <field name="sequence">90</field>
+                <field name="name">supplier_rank</field>
+                <field name="description">Set to 1 if this is a vendor/supplier, else 0</field>
+                <field name="required">False</field>
+                <field name="default_value">0</field>
+            </record>
+        </field>
+    </record>
+
+    <record id="mcp_prompt_update_record" model="mcp.prompt.template">
+        <field name="name">update_record</field>
+        <field name="description">Update fields on an existing Odoo record</field>
+        <field name="sequence">80</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 expert assistant.
+
+Task: Update record #{{record_id}} on model "{{model}}".
+
+Steps:
+1. First call odoo_get_record to fetch the current state of ID {{record_id}} on "{{model}}".
+2. Show the user the current values of {{fields_to_update}}.
+3. Apply these changes: {{new_values}}
+4. Call odoo_write with model="{{model}}", ids=[{{record_id}}], values={parsed from new_values}.
+5. Call odoo_get_record again to confirm the update was saved.
+6. Show a before/after comparison table.
+
+Parse {{new_values}} as a JSON object of field:value pairs (e.g. {"name": "New Name", "email": "new@email.com"}).</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_update_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">model</field>
+                <field name="description">Odoo model name (e.g. res.partner)</field>
+                <field name="required">True</field>
+                <field name="default_value">res.partner</field>
+            </record>
+            <record id="mcp_prompt_update_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">record_id</field>
+                <field name="description">Numeric ID of the record to update</field>
+                <field name="required">True</field>
+                <field name="default_value">1</field>
+            </record>
+            <record id="mcp_prompt_update_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">new_values</field>
+                <field name="description">JSON object of field:value pairs to update (e.g. {"phone":"123","city":"Mumbai"})</field>
+                <field name="required">True</field>
+                <field name="default_value">{"phone": "+91 9876543210"}</field>
+            </record>
+            <record id="mcp_prompt_update_arg4" model="mcp.prompt.template.argument">
+                <field name="sequence">40</field>
+                <field name="name">fields_to_update</field>
+                <field name="description">Comma-separated field names to preview before update</field>
+                <field name="required">False</field>
+                <field name="default_value">name, phone, email</field>
+            </record>
+        </field>
+    </record>
+
+    <record id="mcp_prompt_call_method" model="mcp.prompt.template">
+        <field name="name">confirm_sale_order</field>
+        <field name="description">Confirm a quotation / call any Odoo workflow method</field>
+        <field name="sequence">85</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 expert assistant.
+
+Task: Call the method "{{method}}" on model "{{model}}" for record ID {{record_id}}.
+
+Steps:
+1. Fetch the record first: odoo_get_record model="{{model}}" id={{record_id}}.
+2. Show current state/status of the record.
+3. Confirm with the user: "Calling {{method}} on {{model}} #{{record_id}}. Proceed?"
+4. Call odoo_call_method: model="{{model}}", id={{record_id}}, method="{{method}}".
+5. Fetch the record again and show the updated state.
+6. Confirm: "{{method}} executed successfully. New state: [state]"
+
+Common workflow methods:
+- sale.order: action_confirm (confirm quotation), action_cancel
+- account.move: action_post (post journal entry), button_draft
+- purchase.order: button_confirm
+- stock.picking: button_validate (validate delivery)</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_method_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">model</field>
+                <field name="description">Odoo model name</field>
+                <field name="required">True</field>
+                <field name="default_value">sale.order</field>
+            </record>
+            <record id="mcp_prompt_method_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">record_id</field>
+                <field name="description">Numeric record ID</field>
+                <field name="required">True</field>
+                <field name="default_value">1</field>
+            </record>
+            <record id="mcp_prompt_method_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">method</field>
+                <field name="description">Method name to call (e.g. action_confirm, action_post, button_validate)</field>
+                <field name="required">True</field>
+                <field name="default_value">action_confirm</field>
+            </record>
+        </field>
+    </record>
+
+    <!-- ── CATEGORY: IMPORT DATA ──────────────────────────────────────────── -->
+
+    <record id="mcp_prompt_import_data" model="mcp.prompt.template">
+        <field name="name">bulk_import_records</field>
+        <field name="description">Bulk import records into Odoo from structured data</field>
+        <field name="sequence">90</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 data migration expert.
+
+Task: Bulk import {{record_count}} records into model "{{model}}".
+
+Steps:
+1. Call odoo_get_fields on "{{model}}" to identify required and available fields.
+2. Parse the following data: {{data}}
+3. Validate each row:
+   - Required fields must be present
+   - Many2one fields: resolve display name → ID using odoo_search_read
+   - Date fields: ensure YYYY-MM-DD format
+4. Call odoo_import_data with:
+   - model: "{{model}}"
+   - records: [array of validated record dicts]
+5. Report:
+   - ✅ Records created: [count]
+   - ❌ Errors: [list with row number and reason]
+6. Show first 3 created record IDs as confirmation.
+
+Data format: JSON array of objects, e.g. [{"name":"John","email":"john@example.com"}]</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_import_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">model</field>
+                <field name="description">Target Odoo model (e.g. res.partner, product.product)</field>
+                <field name="required">True</field>
+                <field name="default_value">res.partner</field>
+            </record>
+            <record id="mcp_prompt_import_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">data</field>
+                <field name="description">JSON array of records to import</field>
+                <field name="required">True</field>
+                <field name="default_value">[{"name":"Test Company","email":"test@example.com","is_company":true}]</field>
+            </record>
+            <record id="mcp_prompt_import_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">record_count</field>
+                <field name="description">Number of records being imported (for progress reporting)</field>
+                <field name="required">False</field>
+                <field name="default_value">1</field>
+            </record>
+        </field>
+    </record>
+
+    <!-- ── CATEGORY: CODE TOOLS (Execute) ────────────────────────────────── -->
+
+    <record id="mcp_prompt_orm_query" model="mcp.prompt.template">
+        <field name="name">execute_custom_orm</field>
+        <field name="description">Execute custom ORM Python code against Odoo database</field>
+        <field name="sequence">100</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 Python/ORM expert.
+
+Task: Execute ORM code to {{task_description}}.
+
+Rules you MUST follow:
+- Use `env` (already available) — do NOT import odoo or create your own env
+- Use Odoo ORM only: env['model'].search(), .browse(), .read(), .write(), .create()
+- Do NOT use raw SQL (env.cr.execute) unless absolutely necessary
+- Limit result sets to {{limit}} records maximum to avoid timeouts
+- Handle exceptions within the code using try/except
+
+Write the Python code and call odoo_execute_orm with it.
+
+After execution, present:
+1. The result in a readable format (table/list)
+2. Any errors clearly explained
+3. What was accomplished
+
+Task: {{task_description}}
+Limit: {{limit}} records max</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_orm_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">task_description</field>
+                <field name="description">What should the code do? (e.g. Find all confirmed sales orders this month with amount &gt; 1000)</field>
+                <field name="required">True</field>
+                <field name="default_value">Find all confirmed sale orders this month and return customer name, order date, and total amount</field>
+            </record>
+            <record id="mcp_prompt_orm_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">limit</field>
+                <field name="description">Maximum records to process (keep small to avoid timeout)</field>
+                <field name="required">False</field>
+                <field name="default_value">50</field>
+            </record>
+        </field>
+    </record>
+
+    <record id="mcp_prompt_code_search" model="mcp.prompt.template">
+        <field name="name">search_odoo_source_code</field>
+        <field name="description">Search Odoo 19 source code for methods, classes, or patterns</field>
+        <field name="sequence">110</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 technical expert.
+
+Task: Search Odoo source code for "{{search_term}}".
+
+Steps:
+1. Call odoo_code_search with:
+   - query: "{{search_term}}"
+   - model_filter: "{{model_filter}}" (if provided)
+2. Analyze the results and identify:
+   - The most relevant file(s) containing this term
+   - The exact method/class definition
+   - How it is used in context
+3. Call odoo_code_read on the most relevant file to read the surrounding code.
+4. Provide:
+   - 📍 **Location**: file path and line number
+   - 💡 **Explanation**: what this code does
+   - 🔗 **Usage example**: how to use it in custom code
+   - ⚠️ **Override notes**: how to safely extend/override it
+
+Search query: {{search_term}}</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_code_search_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">search_term</field>
+                <field name="description">Code search term (e.g. _compute_amount, action_confirm, payment_state)</field>
+                <field name="required">True</field>
+                <field name="default_value">_compute_amount_total</field>
+            </record>
+            <record id="mcp_prompt_code_search_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">model_filter</field>
+                <field name="description">Filter to a specific model file (e.g. sale_order.py). Leave blank to search all.</field>
+                <field name="required">False</field>
+            </record>
+        </field>
+    </record>
+
+    <!-- ── CATEGORY: CUSTOM FIELD (Write) ────────────────────────────────── -->
+
+    <record id="mcp_prompt_add_field" model="mcp.prompt.template">
+        <field name="name">add_custom_field</field>
+        <field name="description">Add a new custom field to any Odoo model — no code needed</field>
+        <field name="sequence">120</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 Studio expert assistant.
+
+Task: Add a new "{{field_type}}" field named "{{field_name}}" to model "{{model}}".
+
+Steps:
+1. Validate inputs:
+   - field_name must start with "x_" (Odoo custom field prefix) — if the user provided a name without x_, prefix it automatically
+   - field_type must be one of: char, text, integer, float, boolean, date, datetime, many2one, selection
+2. Call odoo_add_custom_field with:
+   - model: "{{model}}"
+   - field_name: "{{field_name}}" (with x_ prefix)
+   - field_type: "{{field_type}}"
+   - field_label: "{{field_label}}"
+   - required: {{required}}
+   - help: "{{help_text}}"
+3. Confirm the field was created.
+4. Explain how the user can see this field in the Odoo web interface (Settings → Technical → Fields).</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_field_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">model</field>
+                <field name="description">Target model (e.g. res.partner, sale.order, product.template)</field>
+                <field name="required">True</field>
+                <field name="default_value">res.partner</field>
+            </record>
+            <record id="mcp_prompt_field_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">field_name</field>
+                <field name="description">Technical name for the field (will be prefixed with x_ automatically)</field>
+                <field name="required">True</field>
+                <field name="default_value">loyalty_points</field>
+            </record>
+            <record id="mcp_prompt_field_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">field_label</field>
+                <field name="description">Human-readable label shown in Odoo UI</field>
+                <field name="required">True</field>
+                <field name="default_value">Loyalty Points</field>
+            </record>
+            <record id="mcp_prompt_field_arg4" model="mcp.prompt.template.argument">
+                <field name="sequence">40</field>
+                <field name="name">field_type</field>
+                <field name="description">Odoo field type: char, text, integer, float, boolean, date, datetime, many2one, selection</field>
+                <field name="required">True</field>
+                <field name="default_value">integer</field>
+            </record>
+            <record id="mcp_prompt_field_arg5" model="mcp.prompt.template.argument">
+                <field name="sequence">50</field>
+                <field name="name">required</field>
+                <field name="description">Is this field required? (true / false)</field>
+                <field name="required">False</field>
+                <field name="default_value">false</field>
+            </record>
+            <record id="mcp_prompt_field_arg6" model="mcp.prompt.template.argument">
+                <field name="sequence">60</field>
+                <field name="name">help_text</field>
+                <field name="description">Tooltip description shown in Odoo UI</field>
+                <field name="required">False</field>
+                <field name="default_value">Total loyalty points earned by this customer</field>
+            </record>
+        </field>
+    </record>
+
+    <!-- ── CATEGORY: EMAIL TEMPLATES ──────────────────────────────────────── -->
+
+    <record id="mcp_prompt_email_template" model="mcp.prompt.template">
+        <field name="name">create_email_template</field>
+        <field name="description">Design a professional HTML email template for any Odoo workflow</field>
+        <field name="sequence">130</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 email marketing expert.
+
+Task: Create a professional HTML email template for "{{template_purpose}}".
+
+Steps:
+1. Design a responsive HTML email with:
+   - Subject line: {{subject}}
+   - Header with company branding (use ${object.company_id.name} Odoo placeholder)
+   - Body customized for: {{template_purpose}}
+   - Use Odoo dynamic placeholders: ${object.name}, ${object.partner_id.name}, etc.
+   - Call-to-action button if appropriate
+   - Professional footer with company contact info
+   - Mobile-responsive table-based layout
+
+2. Call odoo_email_template with action="create":
+   - name: "{{template_name}}"
+   - model: "{{model}}"
+   - subject: "{{subject}}"
+   - body_html: [the HTML you designed]
+   - email_to: "${object.partner_id.email}"
+
+3. Report the created template ID and name.
+4. Offer to send a test email.
+
+Template purpose: {{template_purpose}}
+Target model: {{model}}</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_email_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">template_purpose</field>
+                <field name="description">What is this email for? (e.g. Order Confirmation, Invoice Reminder, Welcome Email)</field>
+                <field name="required">True</field>
+                <field name="default_value">Order Confirmation</field>
+            </record>
+            <record id="mcp_prompt_email_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">template_name</field>
+                <field name="description">Template name in Odoo (e.g. Sale Order - Confirmation Email)</field>
+                <field name="required">True</field>
+                <field name="default_value">Sale Order - Customer Confirmation</field>
+            </record>
+            <record id="mcp_prompt_email_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">model</field>
+                <field name="description">Model this template applies to (e.g. sale.order, account.move)</field>
+                <field name="required">True</field>
+                <field name="default_value">sale.order</field>
+            </record>
+            <record id="mcp_prompt_email_arg4" model="mcp.prompt.template.argument">
+                <field name="sequence">40</field>
+                <field name="name">subject</field>
+                <field name="description">Email subject line (can use Odoo placeholders like ${object.name})</field>
+                <field name="required">True</field>
+                <field name="default_value">Your Order ${object.name} is Confirmed!</field>
+            </record>
+        </field>
+    </record>
+
+    <!-- ── CATEGORY: MODULE BUILDER ───────────────────────────────────────── -->
+
+    <record id="mcp_prompt_build_module" model="mcp.prompt.template">
+        <field name="name">build_custom_module</field>
+        <field name="description">Generate a complete Odoo 19 custom module with models, views, and menus</field>
+        <field name="sequence">140</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 module development expert.
+
+Task: Build a complete Odoo 19 custom module for: {{module_purpose}}
+
+Module specification:
+- Technical name: {{module_name}}
+- Human name: {{module_label}}
+- Purpose: {{module_purpose}}
+- Models needed: {{models_description}}
+
+Steps:
+1. Design the module structure:
+   - List all models with their fields (name, type, required, relation)
+   - Plan the menu structure (Top menu → Sub-menu → Action)
+   - Identify which standard Odoo modules to depend on
+
+2. Call odoo_manage_module with action="generate" and a complete spec:
+   - module_name, module_label, depends
+   - models array with fields, security rules
+   - views: list and form for each model
+   - menu structure
+
+3. After generation, report:
+   - ✅ Module ZIP location or installation status
+   - 📋 Models created
+   - 🔗 Menu paths created
+   - 📝 Installation instructions
+
+Follow Odoo 19 standards:
+- Use snake_case for technical names
+- All models need ir.model.access rules
+- Views must use Odoo 19 form/list/search view syntax</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_module_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">module_name</field>
+                <field name="description">Technical module name (snake_case, e.g. fleet_maintenance)</field>
+                <field name="required">True</field>
+                <field name="default_value">custom_helpdesk</field>
+            </record>
+            <record id="mcp_prompt_module_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">module_label</field>
+                <field name="description">Human-readable module name (e.g. Fleet Maintenance)</field>
+                <field name="required">True</field>
+                <field name="default_value">Custom Help Desk</field>
+            </record>
+            <record id="mcp_prompt_module_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">module_purpose</field>
+                <field name="description">What does this module do? Describe in plain English.</field>
+                <field name="required">True</field>
+                <field name="default_value">Track customer support tickets with priority levels, assigned agents, and resolution timelines</field>
+            </record>
+            <record id="mcp_prompt_module_arg4" model="mcp.prompt.template.argument">
+                <field name="sequence">40</field>
+                <field name="name">models_description</field>
+                <field name="description">Describe the data models needed (e.g. Ticket: title, customer, priority, agent, status)</field>
+                <field name="required">False</field>
+                <field name="default_value">Ticket model with: title (char), customer (many2one res.partner), priority (selection), assigned_agent (many2one res.users), state (selection: new/open/done)</field>
+            </record>
+        </field>
+    </record>
+
+    <!-- ── CATEGORY: WEB APP BUILDER ──────────────────────────────────────── -->
+
+    <record id="mcp_prompt_build_webapp" model="mcp.prompt.template">
+        <field name="name">build_web_dashboard</field>
+        <field name="description">Create an interactive React web dashboard inside Odoo</field>
+        <field name="sequence">150</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 React web app expert.
+
+Task: Create an interactive dashboard web app titled "{{app_title}}" inside Odoo.
+
+Dashboard purpose: {{dashboard_purpose}}
+
+Steps:
+1. Design a React component that:
+   - Fetches live data from Odoo using MCP tools (via fetch to /mcp/v1/)
+   - Displays: {{dashboard_purpose}}
+   - Uses Tailwind CSS or inline styles for a modern look
+   - Shows loading states, error handling
+   - Is fully responsive
+
+2. The React code should:
+   - Use React hooks (useState, useEffect)
+   - Fetch data from relevant Odoo models
+   - Display KPI cards at the top (total counts/sums)
+   - Include a data table below
+   - Add a refresh button
+
+3. Call odoo_manage_webapp with action="create":
+   - name: "{{app_name}}"
+   - title: "{{app_title}}"
+   - react_code: [the full JSX component]
+   - route: "/mcp/webapp/{{app_name}}"
+
+4. Report the URL to access the dashboard.
+
+Tech stack: React 18, JSX, modern CSS, fetch API</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_webapp_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">app_title</field>
+                <field name="description">Dashboard display title (e.g. Sales Executive Dashboard)</field>
+                <field name="required">True</field>
+                <field name="default_value">Sales Executive Dashboard</field>
+            </record>
+            <record id="mcp_prompt_webapp_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">app_name</field>
+                <field name="description">Technical app name for URL (lowercase, no spaces, e.g. sales_dashboard)</field>
+                <field name="required">True</field>
+                <field name="default_value">sales_dashboard</field>
+            </record>
+            <record id="mcp_prompt_webapp_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">dashboard_purpose</field>
+                <field name="description">What should the dashboard show? (e.g. Total revenue, top customers, order trends)</field>
+                <field name="required">True</field>
+                <field name="default_value">Total revenue this month, top 5 customers by revenue, order count by status, and a list of today's orders</field>
+            </record>
+        </field>
+    </record>
+
+    <!-- ── CATEGORY: WEBSITE SNIPPET ──────────────────────────────────────── -->
+
+    <record id="mcp_prompt_snippet" model="mcp.prompt.template">
+        <field name="name">create_website_snippet</field>
+        <field name="description">Create a custom Odoo website building block (snippet)</field>
+        <field name="sequence">155</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 website builder expert.
+
+Task: Create a custom website snippet block called "{{snippet_name}}" for: {{snippet_purpose}}
+
+Steps:
+1. Design the HTML/CSS snippet:
+   - Clean, modern design
+   - Responsive (mobile-friendly)
+   - Follows Odoo Bootstrap 5 conventions
+   - Data attributes for Odoo snippet options (data-snippet, data-name)
+   - Purpose: {{snippet_purpose}}
+
+2. Call odoo_manage_snippet with action="create":
+   - name: "{{snippet_name}}"
+   - html: [the HTML block]
+   - css: [custom CSS if needed]
+   - category: "{{snippet_category}}"
+
+3. Explain how to add this snippet to a webpage:
+   - Website → Edit → Blocks → Find "{{snippet_name}}" → Drag to page
+
+Snippet category: {{snippet_category}}</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_snippet_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">snippet_name</field>
+                <field name="description">Technical name for the snippet (e.g. testimonials_grid)</field>
+                <field name="required">True</field>
+                <field name="default_value">pricing_table</field>
+            </record>
+            <record id="mcp_prompt_snippet_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">snippet_purpose</field>
+                <field name="description">What does the snippet display? (e.g. 3-tier pricing table with feature list)</field>
+                <field name="required">True</field>
+                <field name="default_value">3-tier pricing table with feature comparison and a highlighted recommended plan</field>
+            </record>
+            <record id="mcp_prompt_snippet_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">snippet_category</field>
+                <field name="description">Snippet category in website builder (e.g. Content, Structure, Features)</field>
+                <field name="required">False</field>
+                <field name="default_value">Content</field>
+            </record>
+        </field>
+    </record>
+
+    <!-- ── CATEGORY: REPORT BUILDER ───────────────────────────────────────── -->
+
+    <record id="mcp_prompt_report" model="mcp.prompt.template">
+        <field name="name">create_pdf_report</field>
+        <field name="description">Generate a custom PDF report/QWeb template for any Odoo model</field>
+        <field name="sequence">160</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 QWeb report expert.
+
+Task: Create a custom PDF report for model "{{model}}" titled "{{report_title}}".
+
+Steps:
+1. Call odoo_get_fields on "{{model}}" to understand available data.
+2. Design a professional QWeb report template:
+   - Company header (logo, name, address)
+   - Report title: {{report_title}}
+   - Date and reference number
+   - Main data table from {{model}}
+   - Summary/totals section if numeric fields exist
+   - Footer with page numbers
+   - Professional styling with company colors
+
+3. Call odoo_manage_report with action="create":
+   - name: "{{report_name}}"
+   - model: "{{model}}"
+   - report_type: "qweb-pdf"
+   - qweb_template: [the full QWeb XML]
+
+4. Explain how to print this report:
+   - From the record's Action menu → Print → {{report_title}}
+
+Report title: {{report_title}}</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_report_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">model</field>
+                <field name="description">Model to generate report for (e.g. sale.order, account.move)</field>
+                <field name="required">True</field>
+                <field name="default_value">sale.order</field>
+            </record>
+            <record id="mcp_prompt_report_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">report_title</field>
+                <field name="description">Report display title (e.g. Sales Quotation, Customer Invoice)</field>
+                <field name="required">True</field>
+                <field name="default_value">Sales Quotation</field>
+            </record>
+            <record id="mcp_prompt_report_arg3" model="mcp.prompt.template.argument">
+                <field name="sequence">30</field>
+                <field name="name">report_name</field>
+                <field name="description">Technical report name (e.g. custom.sale.quotation)</field>
+                <field name="required">True</field>
+                <field name="default_value">custom.sale.quotation</field>
+            </record>
+        </field>
+    </record>
+
+    <!-- ── CATEGORY: SYSTEM / MULTI-STEP ──────────────────────────────────── -->
+
+    <record id="mcp_prompt_health_check" model="mcp.prompt.template">
+        <field name="name">system_health_check</field>
+        <field name="description">Run a full MCP Studio health and configuration check</field>
+        <field name="sequence">180</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 MCP Studio system administrator.
+
+Perform a comprehensive health check of this Odoo MCP Studio installation.
+
+Run all of the following checks in sequence:
+
+1. **Server Status**: Call odoo_list_models — if it responds, the server is live.
+2. **Model Count**: Count the total number of installed models.
+3. **Data Check**: odoo_aggregate on res.partner, field=id, aggregation=count — report total contacts.
+4. **Sales Check**: odoo_aggregate on sale.order, field=amount_total, aggregation=sum — report total revenue.
+5. **User Check**: odoo_search_read on res.users, fields=[name, login, groups_id], limit=5.
+6. **Module Check**: odoo_search_read on ir.module.module, domain=[["state","=","installed"]], limit=100 — count installed modules.
+
+Present results as a System Health Report:
+```
+🟢 MCP Server: ONLINE
+📊 Models: [count]
+👥 Contacts: [count]
+💰 Total Revenue: [amount]
+👤 Active Users: [count]
+📦 Installed Modules: [count]
+```
+
+End with: "All systems operational. MCP Studio is ready."</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_health_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">description</field>
+                <field name="description">Optional: add a note to include in the health report</field>
+                <field name="required">False</field>
+                <field name="default_value">Routine health check</field>
+            </record>
+        </field>
+    </record>
+
+    <record id="mcp_prompt_inventory_report" model="mcp.prompt.template">
+        <field name="name">inventory_stock_report</field>
+        <field name="description">Generate a full inventory and stock level report</field>
+        <field name="sequence">190</field>
+        <field name="visibility">public</field>
+        <field name="prompt_text">You are an Odoo 19 inventory management expert.
+
+Task: Generate a comprehensive stock report for product category "{{category}}".
+
+Steps:
+1. odoo_search_read on product.product:
+   - domain: [["type","=","product"],["active","=",true]]
+   - fields: [name, default_code, qty_available, virtual_available, uom_id]
+   - limit: 50
+   Filter results to category "{{category}}" if specified.
+
+2. odoo_aggregate on stock.move:
+   - grouped by product_id
+   - measure field: product_qty, aggregation: sum
+   - domain: [["state","=","done"],["date","&gt;=","{{date_from}}"]]
+
+3. Present a Stock Summary Report:
+   | Product | SKU | On Hand | Forecasted | Movements (since {{date_from}}) |
+   
+4. Flag items where:
+   - ⚠️ qty_available &lt; 5 (low stock)
+   - 🔴 qty_available == 0 (out of stock)
+
+5. Summary: Total SKUs, low stock count, out of stock count.
+
+Category filter: {{category}}</field>
+        <field name="argument_ids">
+            <record id="mcp_prompt_inv_arg1" model="mcp.prompt.template.argument">
+                <field name="sequence">10</field>
+                <field name="name">category</field>
+                <field name="description">Product category to filter (leave blank for all products)</field>
+                <field name="required">False</field>
+                <field name="default_value">All Products</field>
+            </record>
+            <record id="mcp_prompt_inv_arg2" model="mcp.prompt.template.argument">
+                <field name="sequence">20</field>
+                <field name="name">date_from</field>
+                <field name="description">Start date for movement analysis (YYYY-MM-DD)</field>
+                <field name="required">False</field>
+                <field name="default_value">2025-01-01</field>
+            </record>
+        </field>
+    </record>
+
+</odoo>

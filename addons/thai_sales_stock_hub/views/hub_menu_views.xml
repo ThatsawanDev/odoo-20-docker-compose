@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_hub_dashboard" model="ir.actions.client">
+        <field name="name">Today's Operations</field>
+        <field name="tag">thai_sales_stock_hub.Dashboard</field>
+    </record>
+    <record id="action_hub_packing_dashboard" model="ir.actions.client">
+        <field name="name">Packing Control Center</field>
+        <field name="tag">thai_sales_stock_hub.PackingDashboard</field>
+    </record>
+    <record id="action_hub_packing_station" model="ir.actions.client">
+        <field name="name">Packing Station</field>
+        <field name="tag">thai_sales_stock_hub.PackingStation</field>
+    </record>
+    <record id="action_hub_order_center" model="ir.actions.client">
+        <field name="name">Opening All Channel Orders</field>
+        <field name="tag">thai_sales_stock_hub.OrderCenter</field>
+    </record>
+    <record id="action_hub_orders" model="ir.actions.act_window">
+        <field name="name">All Channel Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form,kanban,pivot,graph</field>
+        <field name="view_id" ref="view_hub_order_list"/>
+        <field name="search_view_id" ref="view_hub_order_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html"><p class="o_view_nocontent_smiling_face">เริ่มจากสร้างออเดอร์ แล้วเลือกช่องทางขาย</p><p>ใช้เลขอ้างอิงจากช่องทางเพื่อค้นหาออเดอร์ได้ในจอเดียว</p></field>
+    </record>
+    <record id="action_hub_marketplace" model="ir.actions.act_window">
+        <field name="name">Marketplace Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="view_id" ref="view_hub_order_list"/>
+        <field name="search_view_id" ref="view_hub_order_search"/>
+        <field name="domain">[('hub_channel','in',('shopee','lazada','tiktok','other'))]</field>
+    </record>
+    <record id="action_hub_settings" model="ir.actions.act_window">
+        <field name="name">Marketplace Settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'module': 'thai_sales_stock_hub'}</field>
+    </record>
+    <data noupdate="1">
+        <menuitem id="menu_hub" name="Marketplace" parent="sale.sale_menu_root" sequence="15" action="action_hub_orders"/>
+    </data>
+    <menuitem id="menu_hub_dashboard" name="Today's Overview" parent="menu_hub" action="action_hub_dashboard" sequence="0"/>
+    <menuitem id="menu_hub_orders" name="All Channel Orders" parent="menu_hub" action="action_hub_orders" sequence="1"/>
+    <menuitem id="menu_hub_marketplace" name="Marketplace" parent="menu_hub" action="action_hub_marketplace" sequence="2"/>
+    <record id="menu_hub_marketplace" model="ir.ui.menu"><field name="active" eval="False"/></record>
+    <menuitem id="menu_hub_shipping" name="Packing" parent="stock.menu_stock_root" action="action_hub_packing_dashboard" sequence="6"/>
+    <menuitem id="menu_hub_packing_station" name="Packing Station" parent="menu_hub_shipping" action="action_hub_packing_station" sequence="2" groups="stock.group_stock_user"/>
+    <menuitem id="menu_hub_packing_stations" name="Packing Stations" parent="menu_hub_shipping" action="action_hub_packing_stations" sequence="3" groups="stock.group_stock_manager"/>
+    <menuitem id="menu_hub_packing_video_history" name="Packing Videos" parent="menu_hub_shipping" action="action_hub_packing_video_history" sequence="4" groups="stock.group_stock_user"/>
+    <menuitem id="menu_hub_stock" name="ตรวจสต็อก" parent="menu_hub" action="thai_sales_stock_easy.action_products" sequence="4"/>
+    <record id="menu_hub_stock" model="ir.ui.menu"><field name="active" eval="False"/></record>
+    <menuitem id="menu_hub_billing" name="ออกบิลและรับเงิน" parent="menu_hub" action="thai_sales_stock_easy.action_receivable" sequence="5" groups="account.group_account_invoice"/>
+    <record id="menu_hub_billing" model="ir.ui.menu"><field name="active" eval="False"/></record>
+    <menuitem id="menu_hub_settings" name="Settings" parent="menu_hub" sequence="90" groups="base.group_system"/>
+    <record id="menu_hub_settings" model="ir.ui.menu"><field name="action" eval="False"/></record>
+    <menuitem id="menu_hub_channels" name="Sales Channels" parent="menu_hub_settings" action="action_hub_channels" sequence="1" groups="base.group_system"/>
+    <menuitem id="menu_hub_shopee_accounts" name="Shopee Accounts" parent="menu_hub_settings" action="sale_shopee.action_shopee_account_list" sequence="10" groups="base.group_system"/>
+    <menuitem id="menu_hub_shopee_shops" name="Shopee Shops &amp; Sync" parent="menu_hub_settings" action="sale_shopee.action_shopee_shop_list" sequence="11" groups="base.group_system"/>
+    <menuitem id="menu_hub_lazada_shops" name="Lazada Shops &amp; Sync" parent="menu_hub_settings" action="sale_lazada.action_lazada_shop_list" sequence="20" groups="base.group_system"/>
+    <menuitem id="menu_hub_tiktok_accounts" name="TikTok Accounts" parent="menu_hub_settings" action="smart_sale_tiktok.action_tiktok_account_list" sequence="30" groups="base.group_system"/>
+    <menuitem id="menu_hub_tiktok_shops" name="TikTok Shops &amp; Sync" parent="menu_hub_settings" action="smart_sale_tiktok.action_tiktok_shop_list" sequence="31" groups="base.group_system"/>
+</odoo>

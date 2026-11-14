@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_thai_address" model="ir.ui.view">
+        <field name="name">res.partner.form.thai.address</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority">90</field>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet" position="attributes"><attribute name="class" add="thai_partner_sheet" separator=" "/></xpath>
+            <xpath expr="//form/sheet/div[hasclass('align-items-center')][1]" position="attributes"><attribute name="class" add="thai_partner_hero" separator=" "/></xpath>
+            <xpath expr="//form/sheet/group[1]" position="attributes"><attribute name="class" add="thai_partner_info_grid" separator=" "/></xpath>
+            <xpath expr="//form/sheet/group[1]/group[1]" position="attributes"><attribute name="class" add="thai_partner_card thai_partner_basic_card" separator=" "/></xpath>
+            <xpath expr="//form/sheet/group[1]/group[2]" position="attributes"><attribute name="class" add="thai_partner_card thai_partner_extra_card" separator=" "/></xpath>
+
+            <!-- Replace Odoo's native City / State / ZIP / Country block on the main contact form. -->
+            <xpath expr="//span[@name='address_name']/following-sibling::div[hasclass('o_address_format')][1]" position="replace">
+                <div class="thai_address_editor">
+                    <field name="country_code" invisible="1"/>
+                    <field name="city" invisible="1"/>
+                    <field name="state_id" invisible="1"/>
+                    <field name="zip" invisible="1"/>
+                    <field name="country_id" invisible="1"/>
+                    <div class="thai_address_line thai_address_line_full">
+                        <i class="fa fa-home" title="ที่อยู่"/>
+                        <field name="street" placeholder="บ้านเลขที่ หมู่ ซอย ถนน..."/>
+                    </div>
+                    <div class="thai_address_line thai_address_line_full">
+                        <i class="fa fa-building-o" title="รายละเอียดเพิ่มเติม"/>
+                        <field name="street2" placeholder="อาคาร ชั้น ห้อง หรือรายละเอียดเพิ่มเติม..."/>
+                    </div>
+                    <div class="thai_address_grid">
+                        <div class="thai_address_line">
+                            <i class="fa fa-map-marker" title="จังหวัด"/>
+                            <field name="province_id" placeholder="เลือกจังหวัด" options="{'no_create': True, 'no_open': True}"/>
+                        </div>
+                        <div class="thai_address_line">
+                            <i class="fa fa-map" title="อำเภอ / เขต"/>
+                            <field name="amphur_id" placeholder="เลือกอำเภอ / เขต" options="{'no_create': True, 'no_open': True}"/>
+                        </div>
+                        <div class="thai_address_line">
+                            <i class="fa fa-location-arrow" title="ตำบล / แขวง"/>
+                            <field name="tambon_id" placeholder="เลือกตำบล / แขวง" options="{'no_create': True, 'no_open': True}"/>
+                        </div>
+                        <div class="thai_address_line">
+                            <i class="fa fa-envelope" title="รหัสไปรษณีย์"/>
+                            <field name="thai_postcode_id" placeholder="รหัสไปรษณีย์" options="{'no_create': True, 'no_open': True}"/>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+            <!-- Apply the same compact Thai address editor to child delivery/invoice addresses. -->
+            <xpath expr="//div[@name='div_address']" position="replace">
+                <div class="thai_address_editor thai_address_editor_compact" name="div_address">
+                    <field name="country_code" invisible="1"/>
+                    <field name="city" invisible="1"/>
+                    <field name="state_id" invisible="1"/>
+                    <field name="zip" invisible="1"/>
+                    <field name="country_id" invisible="1"/>
+                    <div class="thai_address_line thai_address_line_full"><field name="street" placeholder="บ้านเลขที่ หมู่ ซอย ถนน..."/></div>
+                    <div class="thai_address_line thai_address_line_full"><field name="street2" placeholder="รายละเอียดที่อยู่เพิ่มเติม..."/></div>
+                    <div class="thai_address_grid">
+                        <div class="thai_address_line"><field name="province_id" placeholder="จังหวัด" options="{'no_create': True, 'no_open': True}"/></div>
+                        <div class="thai_address_line"><field name="amphur_id" placeholder="อำเภอ / เขต" options="{'no_create': True, 'no_open': True}"/></div>
+                        <div class="thai_address_line"><field name="tambon_id" placeholder="ตำบล / แขวง" options="{'no_create': True, 'no_open': True}"/></div>
+                        <div class="thai_address_line"><field name="thai_postcode_id" placeholder="รหัสไปรษณีย์" options="{'no_create': True, 'no_open': True}"/></div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,127 @@
+<odoo>
+    <data>
+        <record id="view_project_form_business_impact" model="ir.ui.view">
+            <field name="name">project.project.form.business.impact</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header" position="inside">
+                    <button name="action_approve_project"
+                            string="Approve"
+                            type="object"
+                            class="btn-primary"
+                            invisible="not is_current_user_approver"/>
+                    <field name="is_current_user_approver" invisible="1"/>
+                </xpath>
+                <field name="date_start" position="replace">
+                    <field name="date_start" string="Planned Date" widget="daterange"
+                           options='{"end_date_field": "date", "always_range": "1"}'/>
+                </field>
+                <xpath expr="//form/sheet/group/group[2]" position="inside">
+                    <field name="start_date" string="Project Start Date" widget="daterange"
+                           options="{&quot;end_date_field&quot;: &quot;end_date&quot;, &quot;always_range&quot;: 1}"
+                    />
+                    <field name="end_date" string="Project End Date" invisible="1"/>
+                    <field name="progress" string="Progress"/>
+                    <field name="bu" string="Bu"/>
+                </xpath>
+
+                <field name="tag_ids" position="after">
+                    <field name="business_target_date" string="Business Target Date"/>
+                    <field name="business_owner" string="Business Owner"/>
+                </field>
+
+
+                <xpath expr="//page[@name='settings']" position="after">
+                    <page name="approver" string="Approver">
+                        <field name="approver_ids" readonly="1">
+                            <list create="false" edit="false" delete="false">
+                                <field name="user_id" readonly="1"/>
+                                <field name="approve" readonly="1"/>
+                            </list>
+                        </field>
+                    </page>
+                </xpath>
+
+                <xpath expr="//form/sheet/group" position="after">
+                    <group>
+                        <group string="Business Impact">
+                            <field name="impact_legal"/>
+                            <field name="impact_legal_note"
+                                   placeholder="Describe compliance impact"
+                                   invisible="not impact_legal"/>
+
+
+                            <field name="impact_revenue"/>
+                            <field name="impact_revenue_note"
+                                   placeholder="Describe revenue impact"
+                                   invisible="not impact_revenue"/>
+
+                            <field name="impact_cost"/>
+                            <field name="impact_cost_note"
+                                   placeholder="Describe cost saving"
+                                   invisible="not impact_cost"/>
+
+                            <field name="impact_customer"/>
+                            <field name="impact_customer_note"
+                                   placeholder="Describe customer impact"
+                                   invisible="not impact_customer"/>
+
+                            <field name="impact_reputation"/>
+                            <field name="impact_reputation_note"
+                                   placeholder="Describe reputation impact"
+                                   invisible="not impact_reputation"/>
+
+                            <field name="impact_productivity"/>
+                            <field name="impact_productivity_note"
+                                   placeholder="Describe productivity improvement"
+                                   invisible="not impact_productivity"/>
+
+                            <field name="impact_employee"/>
+                            <field name="impact_employee_note"
+                                   placeholder="Describe employee engagement"
+                                   invisible="not impact_employee"/>
+
+                        </group>
+                        <group string="cost">
+                            <field name="cost_cloud"/>
+                            <field name="cost_client"/>
+                            <field name="cost_security"/>
+                            <field name="effort"/>
+                        </group>
+                    </group>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="project_project_tree_view_account_inherit" model="ir.ui.view">
+            <field name="name">project.project.tree.view.account.inherit</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.view_project"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="after">
+                    <field name="start_date" string="Project Start Date" widget="daterange"
+                           options="{'end_date_field': 'end_date', 'always_range': '1'}" optional="show"/>
+                    <field name="end_date" column_invisible="True"/>
+                    <!--                    <field name="business_impact" optional="show"/>-->
+                    <!--                    <field name="solution" optional="show"/>-->
+                    <!--                    <field name="benefits" optional="show"/>-->
+                    <field name="effort" optional="show"/>
+                    <field name="cost_cloud" optional="show"/>
+                    <field name="cost_client" optional="show"/>
+                    <field name="cost_security" optional="show"/>
+                    <field name="impact_legal" optional="hide"/>
+                    <field name="impact_revenue" optional="hide"/>
+                    <field name="impact_cost" optional="hide"/>
+                    <field name="impact_customer" optional="hide"/>
+                    <field name="impact_reputation" optional="hide"/>
+                    <field name="impact_productivity" optional="hide"/>
+                    <field name="impact_employee" optional="hide"/>
+                    <field name="business_target_date" optional="hide"/>
+                    <field name="business_owner" optional="hide"/>
+                </field>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Minimal res.users list view for team member selection (name only) -->
+    <record id="res_users_view_list_team_select" model="ir.ui.view">
+        <field name="name">res.users.view.list.team.select</field>
+        <field name="model">res.users</field>
+        <field name="arch" type="xml">
+            <list string="Select Team Member">
+                <field name="name" />
+            </list>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="project_approval_signoff_view_list" model="ir.ui.view">
+        <field name="name">project.approval.signoff.view.list</field>
+        <field name="model">project.approval.signoff</field>
+        <field name="arch" type="xml">
+            <list string="IT Project Request">
+                <field name="name" />
+                <field name="project_name" />
+                <field name="requester_id" />
+                <field name="date_request" />
+
+                <field name="state" widget="badge"
+                    decoration-muted="state == 'draft'"
+                    decoration-info="state == 'in_review'"
+                    decoration-primary="state == 'wait_for_approval'"
+                    decoration-warning="state == 'wait_it_head_approval'"
+                    decoration-success="state == 'approved'"
+                    decoration-danger="state in ('rejected', 'cancelled')" />
+                <field name="assigne_user_id" widget="many2many_tags"
+                    options="{'no_create': True, 'no_open': True}" />
+                <field name="project_owner_id" />
+                <field name="date_timeline_start" optional="show" />
+                <field name="date_timeline_end" optional="show" />
+                <field name="project_url" readonly="1" widget="url" invisible="not project_url" />
+
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="project_approval_signoff_view_form" model="ir.ui.view">
+        <field name="name">project.approval.signoff.view.form</field>
+        <field name="model">project.approval.signoff</field>
+        <field name="arch" type="xml">
+            <form string="IT Project Request" class="o_crd_project_request_form">
+                <header>
+                    <button name="action_wait_for_approval_wizard" string="Submit For Biz Approval"
+                        type="object" class="btn-warning"
+                        invisible="state != 'in_review' or not (uid in assigne_user_id)" />
+                    <button name="action_sponsor_approve_wizard" string="Approve as Sponsor"
+                        type="object" class="btn-success"
+                        invisible="state != 'wait_for_approval' or not is_pending_sponsor_approver" />
+                    <button name="action_sponsor_reject_wizard" string="Reject as Sponsor"
+                        type="object" class="btn-danger"
+                        invisible="state != 'wait_for_approval' or not is_pending_sponsor_approver" />
+                    <button name="action_it_head_approve_wizard" string="Approve" type="object"
+                        class="btn-success"
+                        invisible="state != 'wait_it_head_approval' or not (uid in assigne_user_id)" />
+                    <button name="action_reject_wizard" string="Reject" type="object"
+                        class="btn-danger"
+                        invisible="state in ('draft','approved','cancelled','rejected','wait_for_approval') or not (uid in assigne_user_id)" />
+                    <button name="action_reset_to_new" string="Reset to New" type="object"
+                        class="btn-secondary"
+                        invisible="state != 'rejected' or requester_id != uid" />
+
+                    <field name="state" widget="dynamic_config_statusbar"
+                        statusbar_visible="draft,in_review,wait_for_approval,wait_it_head_approval" />
+                </header>
+                <sheet>
+                    <!-- Request heading; Odoo keeps its standard save controls. -->
+                    <div class="crd-request-hero">
+                        <div class="crd-request-hero-icon"><i class="oi" data-icon="assignment_add" /></div>
+                        <div class="crd-request-hero-copy">
+                            <h1>Project Request</h1>
+                            <p>คำขอจัดทำ/พัฒนาโครงการใหม่</p>
+                            <div class="crd-request-identity">
+                                <field name="name" readonly="1" />
+                                <field name="state" widget="badge"
+                                    decoration-muted="state == 'draft'"
+                                    decoration-info="state == 'in_review'"
+                                    decoration-primary="state == 'wait_for_approval'"
+                                    decoration-warning="state == 'wait_it_head_approval'"
+                                    decoration-success="state == 'approved'"
+                                    decoration-danger="state in ('rejected', 'cancelled')" />
+                            </div>
+                        </div>
+                    </div>
+                    <field name="is_editable" invisible="1" />
+                    <field name="is_pending_sponsor_approver" invisible="1" />
+                    <!-- Main information cards -->
+                    <div class="row g-3 crd-request-summary">
+                        <div class="col-12 col-xl-6">
+                            <div class="crd-request-card">
+                                <div class="crd-request-card-title"><i class="oi" data-icon="folder_open" />Project Details</div>
+                                <div class="crd-request-card-body"><group>
+                            <field name="project_name" placeholder="ชื่อ Project..."
+                                readonly="not is_editable" />
+                            <field name="business_owner" widget="many2many_tags"
+                                options="{'no_create': True, 'no_open': True}"
+                                context="{'list_view_ref': 'crd_project_approval.res_users_view_list_team_select'}"
+                                readonly="not is_editable" />
+                            <field name="business_sponsor_ids" widget="many2many_tags"
+                                options="{'no_create': True}"
+                                context="{'list_view_ref': 'crd_project_approval.res_users_view_list_team_select'}"
+                                readonly="not is_editable" />
+                                </group></div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-6">
+                            <div class="crd-request-card crd-document-card">
+                                <div class="crd-request-card-title"><i class="oi" data-icon="description" />Document Details</div>
+                                <div class="crd-request-card-body"><group>
+                            <field name="requester_id" readonly="True" force_save="True"
+                                options="{'no_create': True, 'no_open': True}" />
+                            <field name="date_request" readonly="True" force_save="True" />
+                            <field name="project_url" readonly="1" widget="url"
+                                invisible="not project_url" />
+                                </group></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notebook 1: Business side -->
+                    <notebook class="crd-request-notebook">
+                        <page string="Project Overview" name="overview" autofocus="1">
+                            <div class="row g-4 crd-overview-intro">
+                                <div class="col-12 col-lg-6 crd-text-block">
+                                <div class="crd-field-heading"><i class="oi" data-icon="track_changes" /><label for="project_objective" class="o_form_label" /></div>
+                                <field name="project_objective" nolabel="1"
+                                    placeholder="ระบุวัตถุประสงค์ของโปรเจกต์..."
+                                    readonly="not is_editable" />
+                                </div>
+                                <div class="col-12 col-lg-6 crd-text-block">
+                                <div class="crd-field-heading"><i class="oi" data-icon="bolt" /><label for="scope_pain_points" class="o_form_label" /></div>
+                                <field name="scope_pain_points" nolabel="1"
+                                    placeholder="ระบุขอบเขตและปัญหาที่ต้องการแก้ไข..."
+                                    readonly="not is_editable" />
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-lg-6 col-12 mb-3">
+                                    <div class="crd-impact-card crd-business-impact">
+                                    <div class="crd-request-card-title"><i class="oi" data-icon="finance" />Business Impact</div>
+                                    <div class="crd-impact-options">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0"
+                                            style="width: 250px;">
+                                            <field name="is_legal_or_corporate_compliance"
+                                                nolabel="1" readonly="not is_editable" />
+                                            <label for="legal_compliance_detail"
+                                                class="mb-0" />
+                                        </div>
+                                        <field name="legal_compliance_detail" nolabel="1"
+                                            class="flex-grow-1"
+                                            invisible="not is_legal_or_corporate_compliance"
+                                            required="is_legal_or_corporate_compliance"
+                                            placeholder="Specify..."
+                                            readonly="not is_editable" />
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0"
+                                            style="width: 250px;">
+                                            <field name="is_customer_satisfaction" nolabel="1"
+                                                readonly="not is_editable" />
+                                            <label for="customer_satisfaction_detail" class="mb-0" />
+                                        </div>
+                                        <field name="customer_satisfaction_detail" nolabel="1"
+                                            class="flex-grow-1"
+                                            invisible="not is_customer_satisfaction"
+                                            required="is_customer_satisfaction"
+                                            placeholder="Specify..."
+                                            readonly="not is_editable" />
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0"
+                                            style="width: 250px;">
+                                            <field name="is_corporate_reputaion" nolabel="1"
+                                                readonly="not is_editable" />
+                                            <label for="corporate_reputation_detail" class="mb-0" />
+                                        </div>
+                                        <field name="corporate_reputation_detail" nolabel="1"
+                                            class="flex-grow-1"
+                                            invisible="not is_corporate_reputaion"
+                                            required="is_corporate_reputaion"
+                                            placeholder="Specify..."
+                                            readonly="not is_editable" />
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0"
+                                            style="width: 250px;">
+                                            <field name="is_productivity_improvement" nolabel="1"
+                                                readonly="not is_editable" />
+                                            <label for="productivity_improvement_detail" class="mb-0" />
+                                        </div>
+                                        <field name="productivity_improvement_detail" nolabel="1"
+                                            class="flex-grow-1"
+                                            invisible="not is_productivity_improvement"
+                                            required="is_productivity_improvement"
+                                            placeholder="Specify..."
+                                            readonly="not is_editable" />
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0"
+                                            style="width: 250px;">
+                                            <field name="is_employee_engagement" nolabel="1"
+                                                readonly="not is_editable" />
+                                            <label for="employee_engagement_detail" class="mb-0" />
+                                        </div>
+                                        <field name="employee_engagement_detail" nolabel="1"
+                                            class="flex-grow-1"
+                                            invisible="not is_employee_engagement"
+                                            required="is_employee_engagement"
+                                            placeholder="Specify..."
+                                            readonly="not is_editable" />
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0"
+                                            style="width: 250px;">
+                                            <field name="is_exp_golive_date" nolabel="1"
+                                                readonly="not is_editable" />
+                                            <label for="exp_golive_date" class="mb-0" />
+                                        </div>
+                                        <field name="exp_golive_date" nolabel="1"
+                                            class="flex-grow-1"
+                                            invisible="not is_exp_golive_date"
+                                            required="is_exp_golive_date"
+                                            placeholder="Specify..."
+                                            readonly="not is_editable" />
+                                    </div>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-12 mb-3">
+                                    <div class="crd-impact-card crd-financial-impact">
+                                    <div class="crd-request-card-title"><i class="oi" data-icon="paid" />Financial Impact</div>
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0"
+                                            style="width: 200px;">
+                                            <field name="is_revenue_increasing" nolabel="1"
+                                                readonly="not is_editable" />
+                                            <label for="revenue_increasing" class="mb-0" />
+                                        </div>
+                                        <field name="revenue_increasing" nolabel="1"
+                                            class="flex-grow-1"
+                                            invisible="not is_revenue_increasing"
+                                            required="is_revenue_increasing"
+                                            placeholder="Specify..."
+                                            readonly="not is_editable" />
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0"
+                                            style="width: 200px;">
+                                            <field name="is_cost_decreasing_avoidance" nolabel="1"
+                                                readonly="not is_editable" />
+                                            <label for="cost_decreasing_avoidance" class="mb-0" />
+                                        </div>
+                                        <field name="cost_decreasing_avoidance" nolabel="1"
+                                            class="flex-grow-1"
+                                            invisible="not is_cost_decreasing_avoidance"
+                                            required="is_cost_decreasing_avoidance"
+                                            placeholder="Specify..."
+                                            readonly="not is_editable" />
+                                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="crd-attachments-card mb-3">
+                                <div class="crd-request-card-title"><i class="oi" data-icon="attach_file" />Additional Documents</div>
+                                <field name="attachment_ids" widget="many2many_binary" nolabel="1"
+                                    readonly="not is_editable" />
+                            </div>
+                        </page>
+                        <page string="Approval &amp; Remarks" name="signoff">
+                            <field name="history_ids" nolabel="1">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="date" readonly="1" />
+                                    <field name="detail" readonly="1" />
+                                    <field name="actor_id" readonly="1" />
+                                    <field name="status" readonly="1" widget="badge"
+                                        decoration-info="status == 'pending'"
+                                        decoration-success="status == 'done'"
+                                        decoration-danger="status in ('rejected', 'cancelled', 'auto_rejected')"
+                                        decoration-warning="status == 'reset'" />
+                                    <field name="reason" readonly="1" />
+                                    <!-- <field name="user_id" readonly="1" /> -->
+                                </list>
+                            </field>
+
+                        </page>
+                    </notebook>
+
+                    <!-- Technical Information separator -->
+                    <separator string="Technical Information" invisible="state == 'draft'" />
+                    <!-- Notebook 2: IT side -->
+                    <notebook>
+                        <page string="Technical Impact" name="tech_impact_page"
+                            invisible="state == 'draft'">
+                            <group>
+                                <field name="assigne_user_id" widget="many2many_tags"
+                                    options="{'no_create': True, 'no_open': True}"
+                                    context="{'list_view_ref': 'crd_project_approval.res_users_view_list_team_select'}"
+                                    readonly="not is_editable" force_save="True"
+                                    required="state == 'in_review'" />
+
+
+                                <field name="project_owner_id" readonly="not is_editable"
+                                    force_save="True" />
+                                <field name="detail_ids" string="Tag"
+                                    widget="many2many_tags"
+                                    options="{'color_field': 'color', 'no_create_edit': False}"
+                                    readonly="not is_editable" />
+
+                            </group>
+                            <group>
+                                <group name="technical_details" string="Technical Details"
+                                    colspan="2">
+                                    <field name="technical_impact"
+                                        placeholder="IT ระบุผลกระทบตาอระบบปัจจุบัน..."
+                                        readonly="not is_editable" />
+                                    <field name="related_system"
+                                        placeholder="IT กำหนดระบบที่เกี่ยวข้อง..."
+                                        readonly="not is_editable" invisible="not related_system" />
+                                    <field name="related_system_ids" string="Related System"
+                                        widget="many2many_tags"
+                                        options="{'color_field': 'color', 'no_create_edit': False}"
+                                        readonly="not is_editable" />
+                                    <field name="dependency_ids" string="Project Dependency"
+                                        widget="many2many_tags"
+                                        options="{'color_field': 'color', 'no_create_edit': False}"
+                                        readonly="not is_editable" />
+                                </group>
+                            </group>
+                            <field name="feature_impact_ids"
+                                string="Key Features &amp; Function Impact"
+                                readonly="not is_editable">
+                                <list editable="bottom">
+                                    <field name="name" string="Key Features &amp; Function Impact" />
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Planning &amp; Effort" name="planning"
+                            invisible="state == 'draft'">
+                            <group>
+                                <field name="project_size_id" string="Project Size"
+                                    options="{'no_create': True, 'no_open': True}"
+                                    help="[XS] 1–14 Days (2 Weeks)&#10;- Docs: Solution Dev Request&#10;- Roles: DEV, BA/QA&#10;&#10;[S] 15–45 Days (2-6 Weeks)&#10;- Docs: Solution Dev Request&#10;- Roles: SA/BA, DEV, DE (Opt.), QA&#10;&#10;[M / L / XL / XXL]&#10;- M: 46–90 Days (3 Mos) | L: 91–180 Days (3-6 Mos)&#10;- XL: 181–360 Days (6-12 Mos) | XXL: &gt;360 Days (&gt;1 Yr)&#10;&#10;*Required Docs (M to XXL):&#10;1. Solution Dev Request&#10;2. *Project Approval &amp; Sign-off&#10;3. *Requirements Spec &amp; Sign-off&#10;4. *Project Charter&#10;5. *Project Plan&#10;6. Risks &amp; Issues Report&#10;7. *UAT &amp; Sign-off&#10;8. *Golive Sign-off&#10;9. Change Management&#10;10. Deployment &amp; Rollout Plan&#10;11. Progress Report (Every 2 wks)&#10;12. Monthly Steering Meeting&#10;&#10;*Roles (M to XXL):&#10;PM, SA/BA, DEV, DE (Opt.), QA, Infra"
+                                    readonly="not is_editable" />
+
+                                <field name="estimated_effort"
+                                    string="Estimated Effort (Man-days)"
+                                    readonly="not is_editable" />
+                                <label for="date_timeline_start" string="Timeline" />
+                                <div class="o_row">
+                                    <field name="date_timeline_start"
+                                        widget="daterange"
+                                        nolabel="1"
+                                        class="oe_inline"
+                                        options="{'related_end_date': 'date_timeline_end'}"
+                                        readonly="not is_editable" />
+
+                                    <span class="mx-2">ถึง</span>
+
+                                    <field name="date_timeline_end"
+                                        widget="daterange"
+                                        nolabel="1"
+                                        class="oe_inline"
+                                        options="{'related_start_date': 'date_timeline_start'}"
+                                        readonly="not is_editable" />
+                                </div>
+                            </group>
+                        </page>
+                        <page name="business_org_impact" string="Business and Organization Impact"
+                            invisible="state == 'draft'">
+                            <field name="business_impact_ids" readonly="not is_editable">
+                                <list editable="bottom">
+                                    <field name="dept_id" string="Department"
+                                        options="{'no_create': True, 'no_open': True}" />
+                                    <field name="user_id"
+                                        options="{'no_create': True, 'no_open': True}"
+                                        domain="[('employee_ids.department_id', '=', dept_id)]" />
+                                    <field name="change_impact_description"
+                                        string="Impact Description" />
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="project_approval_signoff_view_search" model="ir.ui.view">
+        <field name="name">project.approval.signoff.view.search</field>
+        <field name="model">project.approval.signoff</field>
+        <field name="arch" type="xml">
+            <search string="Search Sign-Off Requests">
+                <field name="name" />
+                <field name="project_name" />
+                <field name="requester_id" />
+                <field name="assigne_user_id" widget="many2many_tags"
+                    options="{'no_create': True, 'no_open': True}" />
+                <field name="project_owner_id" />
+                <separator />
+                <filter string="My Items" name="filter_my_items"
+                    domain="['|','|','|',
+                    ('assigne_user_id', '=', uid),
+                    ('project_owner_id', '=', uid),
+                    ('requester_id', '=', uid),
+                    ('approver_ids', '=', uid)
+                    ]" />
+                <filter string="Assigned to Me" name="filter_assigned_to_me"
+                    domain="['|', ('assigne_user_id', '=', uid), ('approver_ids', '=', uid)]" />
+                <filter string="My Requests" name="filter_my_requests"
+                    domain="[('requester_id', '=', uid)]" />
+                <separator />
+                <filter string="Draft" name="filter_draft" domain="[('state', '=', 'draft')]" />
+                <filter string="In Review" name="filter_in_review"
+                    domain="[('state', '=', 'in_review')]" />
+                <filter string="Waiting for Approval" name="filter_wait_for_approval"
+                    domain="[('state', '=', 'wait_for_approval')]" />
+                <filter string="Approved" name="filter_approved"
+                    domain="[('state', '=', 'approved')]" />
+                <filter string="Rejected" name="filter_rejected"
+                    domain="[('state', '=', 'rejected')]" />
+                <separator />
+                <filter string="Start This Month" name="filter_start_this_month"
+                    domain="[('date_timeline_start', '&gt;=', (context_today()).strftime('%Y-%m-01')),
+                              ('date_timeline_start', '&lt;', (context_today() + relativedelta(months=1)).strftime('%Y-%m-01'))]" />
+                <filter string="End This Month" name="filter_end_this_month"
+                    domain="[('date_timeline_end', '&gt;=', (context_today()).strftime('%Y-%m-01')),
+                              ('date_timeline_end', '&lt;', (context_today() + relativedelta(months=1)).strftime('%Y-%m-01'))]" />
+                <filter string="Overdue" name="filter_overdue"
+                    domain="[('date_timeline_end', '&lt;', context_today().strftime('%Y-%m-%d')), ('state', 'not in', ['approved', 'rejected', 'cancelled'])]" />
+                <group>
+                    <filter string="Status" name="groupby_state" context="{'group_by': 'state'}" />
+                    <filter string="Requester" name="groupby_requester"
+                        context="{'group_by': 'requester_id'}" />
+                    <filter string="Assigned To" name="groupby_assignee"
+                        context="{'group_by': 'assigne_user_id'}" />
+                    <filter string="Project Owner" name="groupby_project_owner"
+                        context="{'group_by': 'project_owner_id'}" />
+                    <separator />
+                    <filter string="Start Date (Month)" name="groupby_start_month"
+                        context="{'group_by': 'date_timeline_start:month'}" />
+                    <filter string="End Date (Month)" name="groupby_end_month"
+                        context="{'group_by': 'date_timeline_end:month'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Window Action -->
+    <record id="project_approval_signoff_action" model="ir.actions.act_window">
+        <field name="name">IT Project Request</field>
+        <field name="res_model">project.approval.signoff</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="project_approval_signoff_view_search" />
+        <field name="context">{'search_default_filter_my_items': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first sign-off request
+            </p>
+        </field>
+    </record>
+
+</odoo>

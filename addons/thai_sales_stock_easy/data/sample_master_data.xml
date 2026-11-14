@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="partner_customer_grandma_kitchen" model="res.partner">
+        <field name="name">ร้านครัวคุณยาย</field><field name="is_company" eval="True"/><field name="customer_rank">1</field>
+        <field name="phone">081-234-5678</field><field name="street">123 ถนนช้างม่อย</field>
+        <field name="city">เชียงใหม่</field><field name="zip">50300</field><field name="country_id" ref="base.th"/>
+    </record>
+    <record id="partner_customer_northern_food" model="res.partner">
+        <field name="name">บริษัท อาหารเหนือ จำกัด</field><field name="is_company" eval="True"/><field name="customer_rank">1</field>
+        <field name="phone">053-456-789</field><field name="email">purchase@example.com</field>
+        <field name="city">เชียงใหม่</field><field name="country_id" ref="base.th"/>
+    </record>
+    <record id="uom_pouch" model="uom.uom">
+        <field name="name">ถุง</field>
+        <field name="relative_factor">1.0</field>
+    </record>
+    <record id="uom_case_6" model="uom.uom">
+        <field name="name">ลัง (6 ถุง)</field>
+        <field name="relative_uom_id" ref="thai_sales_stock_easy.uom_pouch"/>
+        <field name="relative_factor">6.0</field>
+    </record>
+    <record id="product_category_condiment" model="product.category">
+        <field name="name">เครื่องปรุง</field>
+    </record>
+    <record id="product_category_pet_food" model="product.category">
+        <field name="name">อาหารสัตว์</field>
+    </record>
+</odoo>
+
+
+

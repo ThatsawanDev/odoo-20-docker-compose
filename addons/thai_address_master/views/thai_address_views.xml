@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_province_list" model="ir.ui.view">
+        <field name="name">province.list</field><field name="model">province</field>
+        <field name="arch" type="xml"><list editable="bottom"><field name="code"/><field name="name"/><field name="name_eng"/></list></field>
+    </record>
+    <record id="view_province_form" model="ir.ui.view">
+        <field name="name">province.form</field><field name="model">province</field>
+        <field name="arch" type="xml"><form><sheet><div class="oe_title"><label for="name"/><h1><field name="name" placeholder="ชื่อจังหวัด"/></h1></div><group><field name="code"/><field name="name_eng"/></group><notebook><page string="อำเภอ / เขต"><field name="amphur_ids" context="{'default_province_id': id}"><list editable="bottom"><field name="code"/><field name="name"/><field name="name_eng"/></list></field></page></notebook></sheet></form></field>
+    </record>
+    <record id="view_province_search" model="ir.ui.view">
+        <field name="name">province.search</field><field name="model">province</field>
+        <field name="arch" type="xml"><search><field name="name"/><field name="name_eng"/><field name="code"/></search></field>
+    </record>
+    <record id="action_province" model="ir.actions.act_window"><field name="name">จังหวัด</field><field name="res_model">province</field><field name="view_mode">list,form</field></record>
+
+    <record id="view_amphur_list" model="ir.ui.view"><field name="name">amphur.list</field><field name="model">amphur</field><field name="arch" type="xml"><list editable="bottom"><field name="province_id"/><field name="code"/><field name="name"/><field name="name_eng"/></list></field></record>
+    <record id="view_amphur_form" model="ir.ui.view"><field name="name">amphur.form</field><field name="model">amphur</field><field name="arch" type="xml"><form><sheet><div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div><group><field name="province_id"/><field name="code"/><field name="name_eng"/></group><notebook><page string="ตำบล / แขวง"><field name="tambon_ids" context="{'default_amphur_id': id}"><list editable="bottom"><field name="name"/><field name="name_eng"/></list></field></page></notebook></sheet></form></field></record>
+    <record id="view_amphur_search" model="ir.ui.view"><field name="name">amphur.search</field><field name="model">amphur</field><field name="arch" type="xml"><search><field name="name"/><field name="name_eng"/><field name="province_id"/><group name="group_by"><filter string="จังหวัด" name="group_province" context="{'group_by': 'province_id'}"/></group></search></field></record>
+    <record id="action_amphur" model="ir.actions.act_window"><field name="name">อำเภอ / เขต</field><field name="res_model">amphur</field><field name="view_mode">list,form</field></record>
+
+    <record id="view_tambon_list" model="ir.ui.view"><field name="name">tambon.list</field><field name="model">tambon</field><field name="arch" type="xml"><list editable="bottom"><field name="province_id"/><field name="amphur_id" domain="[('province_id', '=', province_id)]"/><field name="name"/><field name="name_eng"/></list></field></record>
+    <record id="view_tambon_form" model="ir.ui.view"><field name="name">tambon.form</field><field name="model">tambon</field><field name="arch" type="xml"><form><sheet><div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div><group><field name="amphur_id"/><field name="province_id" readonly="1"/><field name="name_eng"/></group><notebook><page string="รหัสไปรษณีย์"><field name="zip_ids" context="{'default_tambon_id': id}"><list editable="bottom"><field name="name"/></list></field></page></notebook></sheet></form></field></record>
+    <record id="view_tambon_search" model="ir.ui.view"><field name="name">tambon.search</field><field name="model">tambon</field><field name="arch" type="xml"><search><field name="name"/><field name="name_eng"/><field name="amphur_id"/><field name="province_id"/><group name="group_by"><filter string="จังหวัด" name="group_province" context="{'group_by': 'province_id'}"/><filter string="อำเภอ / เขต" name="group_amphur" context="{'group_by': 'amphur_id'}"/></group></search></field></record>
+    <record id="action_tambon" model="ir.actions.act_window"><field name="name">ตำบล / แขวง</field><field name="res_model">tambon</field><field name="view_mode">list,form</field></record>
+
+    <record id="view_zip_list" model="ir.ui.view"><field name="name">zip.list</field><field name="model">zip</field><field name="arch" type="xml"><list editable="bottom"><field name="name"/><field name="tambon_id"/><field name="amphur_id" readonly="1"/><field name="province_id" readonly="1"/></list></field></record>
+    <record id="view_zip_search" model="ir.ui.view"><field name="name">zip.search</field><field name="model">zip</field><field name="arch" type="xml"><search><field name="name"/><field name="tambon_id"/><field name="amphur_id"/><field name="province_id"/></search></field></record>
+    <record id="action_zip" model="ir.actions.act_window"><field name="name">รหัสไปรษณีย์</field><field name="res_model">zip</field><field name="view_mode">list,form</field></record>
+</odoo>

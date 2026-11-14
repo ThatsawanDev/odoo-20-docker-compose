@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         ACTION
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="action_mcp_echart" model="ir.actions.act_window">
+        <field name="name">EChart Dashboards</field>
+        <field name="res_model">mcp.echart</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{"search_default_active": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No dashboards yet — ask AI to build one!
+            </p>
+            <p>
+                Connect an AI agent and say
+                <em>"Create a monthly sales revenue bar chart"</em>.
+                It will generate the ECharts JSON and Python data handler automatically.
+            </p>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         LIST VIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_echart_tree" model="ir.ui.view">
+        <field name="name">mcp.echart.list</field>
+        <field name="model">mcp.echart</field>
+        <field name="arch" type="xml">
+            <list string="EChart Dashboards"
+                  default_order="write_date desc"
+                  decoration-muted="active == False"
+                  multi_edit="1">
+                <field name="name"/>
+                <field name="slug" optional="show"/>
+                <field name="chart_type" widget="badge"
+                       decoration-info="chart_type in ('bar','line')"
+                       decoration-success="chart_type in ('pie','funnel')"
+                       decoration-warning="chart_type in ('scatter','radar')"
+                       optional="show"/>
+                <field name="is_public" widget="boolean_toggle" optional="show"/>
+                <field name="chart_url" widget="url" optional="show"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="write_date" string="Updated" optional="show"/>
+                <field name="active" column_invisible="1"/>
+                <button name="action_open_chart" string="Open" type="object"
+                        icon="fa-external-link" class="btn-sm btn-secondary"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         KANBAN VIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_echart_kanban" model="ir.ui.view">
+        <field name="name">mcp.echart.kanban</field>
+        <field name="model">mcp.echart</field>
+        <field name="arch" type="xml">
+            <kanban sample="1" default_order="write_date desc">
+                <field name="name"/>
+                <field name="slug"/>
+                <field name="chart_type"/>
+                <field name="description"/>
+                <field name="is_public"/>
+                <field name="chart_url"/>
+                <field name="data_code"/>
+                <field name="user_id"/>
+                <field name="write_date"/>
+                <field name="active"/>
+                <templates>
+                    <t t-name="card">
+                        <!-- Colour strip: bar/line=blue, pie/funnel=green, else=purple -->
+                        <div t-attf-style="
+                            height:5px;margin:-12px -12px 12px;
+                            background:#{
+                                record.chart_type.raw_value in ['bar','line']    ? '#3b82f6' :
+                                record.chart_type.raw_value in ['pie','funnel']  ? '#10b981' :
+                                record.chart_type.raw_value in ['scatter','radar'] ? '#f59e0b' : '#8b5cf6'
+                            };border-radius:8px 8px 0 0;"/>
+
+                        <div class="d-flex align-items-start justify-content-between mb-2">
+                            <strong class="fs-6 text-truncate" style="max-width:75%;">
+                                <field name="name"/>
+                            </strong>
+                            <field name="chart_type" widget="badge"
+                                   decoration-info="chart_type in ('bar','line')"
+                                   decoration-success="chart_type in ('pie','funnel')"
+                                   decoration-warning="chart_type in ('scatter','radar')"
+                                   class="ms-2 flex-shrink-0"/>
+                        </div>
+
+                        <div t-if="record.description.value"
+                             class="text-muted small mb-2"
+                             style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+                            <field name="description"/>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="text-muted small">
+                                <i class="fa fa-link me-1" title="Link"/><field name="slug"/>
+                            </span>
+                        </div>
+
+                        <!-- Badges -->
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span t-if="record.is_public.raw_value"
+                                  class="badge text-bg-success">
+                                <i class="fa fa-globe me-1" title="fa-globe me-1"/>Public
+                            </span>
+                            <span t-else="" class="badge text-bg-secondary">
+                                <i class="fa fa-lock me-1" title="fa-lock me-1"/>Private
+                            </span>
+                            <span t-if="record.data_code.raw_value"
+                                  class="badge text-bg-info">
+                                <i class="fa fa-bolt me-1" title="fa-bolt me-1"/>Live Data
+                            </span>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="d-flex align-items-center justify-content-between border-top pt-2 mt-auto">
+                            <field name="user_id" widget="many2one_avatar_user" readonly="1"/>
+                            <a t-if="record.chart_url.raw_value"
+                               t-attf-href="#{record.chart_url.raw_value}"
+                               target="_blank"
+                               class="btn btn-sm btn-outline-primary"
+                               role="button"
+                               onclick="event.stopPropagation()">
+                                <i class="fa fa-external-link me-1" title="fa-external-link me-1"/>Open
+                            </a>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         FORM VIEW
+    ═══════════════════════════════════════════════════════════ -->
+    <record id="view_mcp_echart_form" model="ir.ui.view">
+        <field name="name">mcp.echart.form</field>
+        <field name="model">mcp.echart</field>
+        <field name="arch" type="xml">
+            <form string="EChart Dashboard">
+                <header>
+                    <button name="action_open_chart" string="View Chart"
+                            type="object" class="btn-primary" icon="fa-external-link"/>
+                    <button name="action_regenerate_token" string="Regenerate Share Token"
+                            type="object" class="btn-secondary" icon="fa-refresh"
+                            invisible="not is_public"
+                            confirm="This will invalidate the existing public share URL. Continue?"/>
+                </header>
+                <sheet>
+                    <!-- URL banner -->
+                    <div class="alert alert-info d-flex align-items-center gap-3 mb-3" role="alert"
+                         invisible="not chart_url">
+                        <i class="fa fa-link fa-lg text-info" title="Open Link"/>
+                        <div class="d-flex flex-column flex-grow-1 gap-1">
+                            <div>
+                                <span class="fw-semibold me-2">Chart URL:</span>
+                                <field name="chart_url" readonly="1" widget="CopyClipboardChar"/>
+                            </div>
+                            <div invisible="not is_public">
+                                <span class="fw-semibold me-2">Share URL:</span>
+                                <field name="share_url" readonly="1" widget="CopyClipboardChar"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="oe_title mb-3">
+                        <label class="o_form_label" for="name">Chart Title</label>
+                        <h1>
+                            <field name="name" id="name" placeholder="My Sales Dashboard…"/>
+                        </h1>
+                        <div class="d-flex align-items-center gap-2 mt-1">
+                            <span class="text-muted small">/mcp/echart/</span>
+                            <field name="slug" placeholder="url-slug" class="text-muted small"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Identity">
+                            <field name="chart_type"/>
+                            <field name="description" placeholder="What this chart visualises…"/>
+                            <field name="user_id" readonly="1" widget="many2one_avatar_user"/>
+                        </group>
+                        <group string="Access">
+                            <field name="is_public" widget="boolean_toggle"/>
+                            <field name="active" widget="boolean_toggle"/>
+<!--                            <field name="refresh_interval" invisible="not data_code"-->
+<!--                                   help="Auto-refresh interval in seconds. 0 = no auto-refresh."/>-->
+                        </group>
+                    </group>
+
+                    <notebook>
+
+                        <!-- ── Tab 2: Chart Options JSON ── -->
+                        <page string="Chart Options (JSON)" name="chart_options">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="Information"/>
+                                Paste a valid ECharts <code>option</code> JSON object.
+                                Use <strong>empty arrays</strong> <code>[]</code> for
+                                <code>xAxis.data</code> / <code>series[].data</code> —
+                                the Python data handler fills them at runtime via deep-merge.
+                            </div>
+                            <field name="echart_option" nolabel="1"
+                                   widget="ace"
+                                   style="min-height:380px;"
+                                   placeholder='{"title":{"text":"My Chart"},"tooltip":{"trigger":"axis"},"xAxis":[{"type":"category","data":[]}],"yAxis":[{"type":"value"}],"series":[{"type":"bar","data":[]}]}'/>
+                        </page>
+
+                        <!-- ── Tab 3: Data Code Python ── -->
+                        <page string="Data Handler (Python)" name="data_code">
+                            <div class="alert alert-secondary py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-info-circle me-1" title="Information"/>
+                                <strong>Odoo 19:</strong> use <code>env['model']._read_group(domain, groupby, aggregates)</code> —
+                                returns <strong>tuples</strong>, not dicts. Date values are date objects — call
+                                <code>.strftime()</code> directly. Set
+                                <code>result = {'xAxis': {'data': labels}, 'series': [{'data': values}]}</code>.
+                                Available: <code>env</code>, <code>datetime</code>, <code>relativedelta</code>, <code>json</code>, <code>math</code>.
+                            </div>
+                            <field name="data_code" nolabel="1"
+                                   widget="ace" options="{'mode': 'python', 'theme': 'monokai'}"
+                                   style="min-height:380px;"
+                                   placeholder="# Example — monthly revenue (Odoo 19)&#10;try:&#10;    now   = datetime.datetime.now()&#10;    start = (now - relativedelta(months=11)).replace(day=1,hour=0,minute=0,second=0,microsecond=0)&#10;    rows  = env['sale.order']._read_group(&#10;        domain=[('state','in',['sale','done']),('date_order','&gt;=',start)],&#10;        groupby=['date_order:month'],&#10;        aggregates=['amount_total:sum'],&#10;    )&#10;    data_map = {r[0].strftime('%Y-%m'): round(r[1] or 0,2) for r in rows}&#10;    labels, values = [], []&#10;    cur = start&#10;    for _ in range(12):&#10;        labels.append(cur.strftime('%b %Y'))&#10;        values.append(data_map.get(cur.strftime('%Y-%m'), 0))&#10;        cur = cur + relativedelta(months=1)&#10;    result = {'xAxis': {'data': labels}, 'series': [{'data': values}]}&#10;except Exception as e:&#10;    result = {'__error': str(e)}"/>
+                        </page>
+
+                        <!-- ── Tab 4: Pre-Init JS ── -->
+                        <page string="Pre-Init JS" name="pre_init_js">
+                            <div class="alert alert-warning py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-bolt me-1" title="fa-bolt me-1"/>
+                                Runs <strong>before</strong> <code>chart.setOption()</code>.
+                                Use for: <code>echarts.registerMap()</code>, <code>echarts.registerTheme()</code>.
+                                Available: <code>echarts</code>, <code>chartDom</code>, <code>chart</code>.
+                            </div>
+                            <field name="pre_init_js" nolabel="1"
+                                   widget="ace" 
+                                   style="min-height:280px;"
+                                   placeholder="// echarts.registerTheme('dark', { ... });"/>
+                        </page>
+
+                        <!-- ── Tab 5: Post-Init JS ── -->
+                        <page string="Post-Init JS" name="post_init_js">
+                            <div class="alert alert-warning py-2 px-3 mb-2" role="alert">
+                                <i class="fa fa-flag-checkered me-1" title="fa-flag-checkered me-1"/>
+                                Runs <strong>after</strong> data loads and <code>chart.setOption()</code>.
+                                Use for: click handlers, drill-down, export buttons.
+                                Available: <code>echarts</code>, <code>chart</code>, <code>option</code>.
+                            </div>
+                            <field name="post_init_js" nolabel="1"
+                                   widget="ace" 
+                                   style="min-height:280px;"
+                                   placeholder="// chart.on('click', function(params) { console.log(params); });"/>
+                        </page>
+
+                        <!-- ── Tab 6: Sharing ── -->
+                        <page string="Sharing" name="sharing">
+                            <group>
+                                <group string="Access Control">
+                                    <field name="is_public" widget="boolean_toggle"/>
+                                    <field name="share_url" readonly="1"
+                                           widget="CopyClipboardChar" invisible="not is_public"/>
+                                    <field name="embed_code" readonly="1"
+                                           widget="CopyClipboardText" invisible="not is_public"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-success mt-3" invisible="not is_public" role="alert">
+                                <i class="fa fa-globe me-2" title="Website"/>
+                                <strong>Public sharing is ON.</strong>
+                                Share the URL above with anyone — no Odoo login required.
+                                Use the Embed Code to embed in any website via <code>&lt;iframe&gt;</code>.
+                            </div>
+                            <div class="alert alert-secondary mt-3" role="alert" invisible="is_public">
+                                <i class="fa fa-lock me-2" title="Secure"/>
+                                <strong>Private.</strong>
+                                Enable Public Access to get a shareable URL and embed code.
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="mcp_config_default" model="mcp.config">
+        <field name="server_enabled">True</field>
+        <field name="access_token_timeout_hours">24</field>
+        <field name="refresh_token_timeout_days">30</field>
+        <field name="log_retention_days">90</field>
+        <field name="code_execute_limit">10000</field>
+        <field name="code_search_limit">5000</field>
+    </record>
+
+    <!-- Tool allowlists: Write/Execute tools — empty = only MCP Admin until users added -->
+    <record id="allowlist_odoo_create" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_create</field>
+        <field name="tool_category">write</field>
+    </record>
+    <record id="allowlist_odoo_write" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_write</field>
+        <field name="tool_category">write</field>
+    </record>
+    <record id="allowlist_odoo_unlink" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_unlink</field>
+        <field name="tool_category">write</field>
+    </record>
+    <record id="allowlist_odoo_import_data" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_import_data</field>
+        <field name="tool_category">write</field>
+    </record>
+    <record id="allowlist_odoo_call_method" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_call_method</field>
+        <field name="tool_category">write</field>
+    </record>
+    <record id="allowlist_odoo_execute_action" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_execute_action</field>
+        <field name="tool_category">write</field>
+    </record>
+    <record id="allowlist_odoo_add_custom_field" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_add_custom_field</field>
+        <field name="tool_category">write</field>
+    </record>
+    <record id="allowlist_odoo_execute_orm" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_execute_orm</field>
+        <field name="tool_category">execute</field>
+    </record>
+    <record id="allowlist_odoo_manage_echart" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_manage_echart</field>
+        <field name="tool_category">execute</field>
+    </record>
+    <record id="allowlist_odoo_manage_webapp" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_manage_webapp</field>
+        <field name="tool_category">execute</field>
+    </record>
+    <record id="allowlist_odoo_manage_module" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_manage_module</field>
+        <field name="tool_category">execute</field>
+    </record>
+    <record id="allowlist_odoo_code_search" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_code_search</field>
+        <field name="tool_category">execute</field>
+    </record>
+    <record id="allowlist_odoo_code_read" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_code_read</field>
+        <field name="tool_category">execute</field>
+    </record>
+    <record id="allowlist_odoo_search_webapp_code" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_search_webapp_code</field>
+        <field name="tool_category">execute</field>
+    </record>
+    <record id="allowlist_odoo_search_module_code" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_search_module_code</field>
+        <field name="tool_category">execute</field>
+    </record>
+    <record id="allowlist_odoo_manage_report" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_manage_report</field>
+        <field name="tool_category">execute</field>
+    </record>
+    <record id="allowlist_odoo_manage_snippet" model="mcp.tool.allowlist">
+        <field name="tool_name">odoo_manage_snippet</field>
+        <field name="tool_category">execute</field>
+    </record>
+    <record id="oauth_client_public" model="mcp.oauth.client">
+        <field name="client_id">odoo-mcp-public</field>
+        <field name="client_name">Odoo MCP Public Client</field>
+        <field name="redirect_uris"></field>
+        <field name="scope">read write execute offline_access</field>
+        <field name="grant_types">authorization_code refresh_token</field>
+    </record>
+
+    <!-- Default prompt templates (DB-stored, editable) -->
+    <record id="prompt_create_echart" model="mcp.prompt.template">
+        <field name="name">create_echart</field>
+        <field name="description">Create an ECharts dashboard with live Odoo data</field>
+        <field name="prompt_text">Create an Apache ECharts dashboard for: {{description}}
+
+INSTRUCTIONS:
+1. Choose the right chart type (bar, line, pie, scatter, radar, funnel, gauge, treemap, sunburst, sankey, heatmap)
+2. Call odoo_manage_echart with action='create'
+3. Write valid echart_option JSON with EMPTY arrays
+4. Write data_code Python using _read_group() and set result = {dict}
+5. Share the chart URL when done</field>
+        <field name="visibility">public</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="prompt_create_webapp" model="mcp.prompt.template">
+        <field name="name">create_webapp</field>
+        <field name="description">Create a React web application with live Odoo data</field>
+        <field name="prompt_text">Create a React 18 web application for: {{description}}
+
+INSTRUCTIONS:
+1. Call odoo_manage_webapp with action='create'
+2. Write jsx_code defining function App() at top level
+3. Use React.useState, React.useEffect (globals)
+4. Fetch Odoo data: const data = await window.odoo.fetch()
+5. Use Tailwind CSS 2.x for styling</field>
+        <field name="visibility">public</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="prompt_create_module" model="mcp.prompt.template">
+        <field name="name">create_module</field>
+        <field name="description">Create an Odoo 19 data module</field>
+        <field name="prompt_text">Create an Odoo 19 data module for: {{description}}
+
+INSTRUCTIONS:
+1. Call odoo_manage_module with action='create'
+2. Use models_code XML (ir.model + ir.model.fields)
+3. Use views_code XML with &lt;list&gt; NOT &lt;tree&gt;
+4. Provide security_code CSV
+5. After create, call action='install'</field>
+        <field name="visibility">public</field>
+        <field name="sequence">30</field>
+    </record>
+</odoo>

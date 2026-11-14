@@ -1,0 +1,560 @@
+.o_thai_easy_dashboard {
+    --thai-navy: #1f2f59;
+    --thai-blue: #2878dc;
+    --thai-border: #dbe4f2;
+    width: 100%; height: 100%; min-height: 0; overflow-x: hidden; overflow-y: auto;
+    -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain;
+    background: #f1f5fb; color: #18243d;
+    font-family: inherit; font-size: 16px;
+    h1, h2, h3, h4, h5, h6, button, input, select, textarea, table { font-family: inherit !important; }
+    main { width: 100%; max-width: 1540px; min-height: max-content; margin: 0 auto; padding: 22px 28px 48px; }
+    .o_thai_header {
+        min-height: 210px; padding: 34px 42px 56px; display: flex; align-items: center;
+        border: 1px solid #d4e0f0; border-radius: 20px; color: #102b55;
+        background: linear-gradient(115deg, #edf4fd 0%, #dbe8f8 58%, #cbdcf1 100%);
+        box-shadow: 0 7px 20px #233d6515; position: relative; overflow: hidden;
+        &::before { content: ""; position: absolute; width: 480px; height: 480px; right: -135px; top: -255px; border-radius: 50%; background: #fff3; }
+        &::after { content: ""; position: absolute; left: 42px; right: 42px; bottom: 0; height: 5px; border-radius: 5px 5px 0 0; background: #274578; }
+    }
+    .o_thai_header_copy { position: relative; z-index: 1; }
+    .o_thai_eyebrow { color: #274578; font-size: 13px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+    .o_thai_header h1 { margin: 12px 0 5px !important; color: #0b2b58 !important; font-size: 35px !important; font-weight: 800 !important; }
+    .o_thai_header p { margin: 0; color: #526f99; font-size: 15px; }
+    .o_thai_header_art { position: absolute; z-index: 0; right: 70px; bottom: 5px; width: 390px; height: 175px; color: #7797c1; }
+    .o_thai_warehouse { position: absolute; bottom: 0; display: grid; place-items: center; border-radius: 20px 20px 0 0; background: #ffffff48; box-shadow: inset 0 0 0 1px #ffffff52; }
+    .o_thai_warehouse i { opacity: .82; }
+    .o_thai_warehouse.is-back { right: 105px; width: 145px; height: 160px; font-size: 74px; }
+    .o_thai_warehouse.is-front { right: 225px; width: 125px; height: 112px; font-size: 62px; }
+    .o_thai_warehouse.is-small { right: 0; width: 95px; height: 125px; font-size: 42px; }
+    .o_thai_quote_panel { margin-top: 18px; padding: 20px 22px; border: 1px solid #cad9ec; border-radius: 16px; background: #fff; box-shadow: 0 5px 18px #273b6014; }
+    main.is-sale-page { max-width: none; height: 100%; padding: 16px; }
+    main.is-sale-page > .o_thai_header, main.is-sale-page > .o_thai_cards, main.is-sale-page > .o_thai_process_grid, main.is-sale-page > .o_thai_workspace { display: none; }
+    .o_thai_sale_page { width: 100%; height: 100%; }
+    .o_thai_quote_panel.o_thai_pos_modal { width: 100%; max-width: 1660px; height: 100%; min-height: 560px; margin: 0 auto; padding: 0; display: flex; flex-direction: column; overflow: hidden; border: 1px solid #cad9ec; border-radius: 16px; box-shadow: 0 8px 24px #20385d1a; }
+    .o_thai_pos_modal .o_thai_quote_heading { flex: 0 0 auto; padding: 17px 20px; border-bottom: 1px solid #dbe4f2; background: #fff; }
+    .o_thai_pos_modal .o_thai_pos_customer { flex: 0 0 auto; margin: 12px 16px 0; }
+    .o_thai_pos_modal .o_thai_pos_body { flex: 1 1 auto; min-height: 0; margin: 12px 16px; overflow: hidden; }
+    .o_thai_pos_modal .o_thai_product_area, .o_thai_pos_modal .o_thai_cart { height: 100%; overflow-y: auto; }
+    .o_thai_pos_modal .o_thai_quote_footer { flex: 0 0 auto; margin: 0; padding: 13px 16px; border-top: 1px solid #dbe4f2; background: #fff; box-shadow: 0 -5px 14px #233b6010; }
+    .o_thai_quote_heading, .o_thai_quote_heading > div { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .o_thai_page_actions { margin-left: auto; }
+    .o_thai_page_actions > button { min-height: 48px; display: flex; align-items: center; gap: 8px; padding: 7px 12px; border: 1px solid #d8e3f1; border-radius: 10px; color: #294468; background: #f8fbff; font-weight: 700; }
+    .o_thai_page_actions > button > i { color: #2878dc; font-size: 19px; }
+    .o_thai_page_actions span, .o_thai_page_actions small { display: block; text-align: left; }
+    .o_thai_page_actions small { color: #7b8ba3; font-size: 10px; font-weight: 500; }
+    .o_thai_page_actions .o_thai_back { margin-left: 10px; border-radius: 999px; background: #fff; }
+    .o_thai_page_actions .is-muted { opacity: .8; }
+    .o_thai_quote_heading h2 { margin: 0 !important; color: #10264c !important; font-size: 22px !important; font-weight: 800 !important; }
+    .o_thai_quote_heading p { margin: 2px 0 0; color: #7c8aa3; font-size: 13px; }
+    .o_thai_quote_icon { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 11px; color: #fff; background: #2878dc; font-size: 20px; }
+    .o_thai_close { width: 36px; height: 36px; border: 0; border-radius: 9px; color: #70809b; background: #f1f4f9; }
+    .o_thai_pos_customer { display: grid; grid-template-columns: minmax(0, 2.1fr) minmax(330px, 1fr); gap: 10px; margin: 18px 0; padding: 0; border: 0; background: transparent; }
+    .o_thai_customer_block, .o_thai_order_dates { padding: 12px; border: 1px solid #dbe4f2; border-radius: 12px; background: #f8fbff; }
+    .o_thai_order_dates { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; }
+    .o_thai_order_dates label { display: flex; align-items: center; gap: 9px; margin: 0; color: #687a95; font-size: 11px; }
+    .o_thai_order_dates label > i { color: #2878dc; font-size: 22px; }
+    .o_thai_order_dates label span { width: 100%; }
+    .o_thai_order_dates input { width: 100%; height: 38px; margin-top: 3px; color: #20375b; font-weight: 700; }
+    .o_thai_customer_select { display: grid; grid-template-columns: 110px minmax(250px, 1fr) auto; gap: 10px; align-items: center; }
+    .o_thai_customer_select label { color: #253b61; font-weight: 800; }
+    .o_thai_customer_select label i { margin-right: 5px; color: #2878dc; }
+    .o_thai_customer_select em { color: #e24a42; font-style: normal; }
+    .o_thai_new_customer { height: 42px; padding: 0 15px; border: 1px solid #2878dc; border-radius: 9px; color: #1767bf; background: #fff; font-weight: 700; }
+    .o_thai_customer_search { position: relative; min-width: 0; }
+    .o_thai_customer_search > i { position: absolute; z-index: 1; left: 13px; top: 14px; color: #7890ad; }
+    .o_thai_customer_search > input { width: 100%; padding-left: 37px; }
+    .o_thai_customer_results { position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 5px); max-height: 300px; overflow-y: auto; padding: 6px; border: 1px solid #cbd9ea; border-radius: 10px; background: #fff; box-shadow: 0 12px 28px #172d542e; }
+    .o_thai_customer_results > button { width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px; border: 0; border-radius: 8px; color: #203657; background: #fff; text-align: left; }
+    .o_thai_customer_results > button:hover { background: #edf5ff; }
+    .o_thai_customer_results > button > i { width: 30px; color: #2878dc; font-size: 22px; text-align: center; }
+    .o_thai_customer_results strong, .o_thai_customer_results small { display: block; }
+    .o_thai_customer_results small { margin-top: 2px; color: #75849b; }
+    .o_thai_customer_results small i { margin-right: 3px; }
+    .o_thai_no_customer { padding: 18px 10px; color: #7c8aa0; text-align: center; }
+    .o_thai_customer_form { display: grid; grid-template-columns: 1fr 1fr 2fr 1fr 140px; gap: 9px; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ccd9e9; }
+    .o_thai_selected_customer { display: grid; grid-template-columns: 42px minmax(190px, .65fr) minmax(260px, 1.35fr); gap: 12px; align-items: center; margin-top: 12px; padding: 11px 13px; border-top: 1px dashed #ccd9e9; border-radius: 0 0 9px 9px; color: #263b5e; background: #fff; }
+    .o_thai_customer_avatar { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; color: #2878dc; background: #eaf3ff; }
+    .o_thai_selected_customer strong, .o_thai_selected_customer span { display: block; }
+    .o_thai_selected_customer > div > span { margin-top: 2px; color: #718198; font-size: 12px; }
+    .o_thai_selected_customer i { margin-right: 5px; color: #2878dc; }
+    .o_thai_customer_address { display: flex; align-items: flex-start; padding-left: 14px; border-left: 1px solid #dbe4f2; color: #536985; font-size: 13px; }
+    .o_thai_customer_address > i { margin-top: 2px; }
+    .o_thai_pos_body { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(360px, .85fr); gap: 16px; }
+    .o_thai_product_area, .o_thai_cart { min-width: 0; padding: 0; border: 1px solid #dbe4f2; border-radius: 13px; background: #fff; }
+    .o_thai_product_area { display: grid; grid-template-columns: 175px minmax(0, 1fr); overflow: hidden !important; }
+    .o_thai_cart { padding: 14px; overflow-y: auto; }
+    .o_thai_categories { padding: 14px 10px; border-right: 1px solid #dbe4f2; background: #f7faff; }
+    .o_thai_categories h3 { margin: 0 8px 10px !important; color: #233b61 !important; font-size: 14px !important; font-weight: 800 !important; }
+    .o_thai_categories button { width: 100%; display: grid; grid-template-columns: 24px 1fr auto; align-items: center; gap: 5px; padding: 10px 8px; border: 0; border-radius: 8px; color: #536985; background: transparent; text-align: left; }
+    .o_thai_categories button.is-active { color: #1767bf; background: #e3efff; font-weight: 800; }
+    .o_thai_categories button i { color: #2878dc; text-align: center; }
+    .o_thai_categories button b { font-size: 11px; }
+    .o_thai_product_browser { min-width: 0; padding: 10px; overflow-y: auto; }
+    .o_thai_product_toolbar { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; margin-bottom: 10px; }
+    .o_thai_product_toolbar > div { position: relative; }
+    .o_thai_product_toolbar > div i { position: absolute; left: 12px; top: 13px; color: #8292a8; }
+    .o_thai_product_toolbar input { width: 100%; padding-left: 35px; }
+    .o_thai_product_toolbar button { padding: 0 13px; border: 1px solid #d4dfed; border-radius: 9px; color: #304b71; background: #fff; font-weight: 700; }
+    .o_thai_pos_title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .o_thai_pos_title h3 { margin: 0 !important; color: #18335e !important; font-size: 17px !important; font-weight: 800 !important; }
+    .o_thai_pos_title span { color: #7b89a1; font-size: 12px; }
+    .o_thai_product_grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+    .o_thai_product_tile { position: relative; min-width: 0; padding: 9px; overflow: hidden; border: 1px solid #dbe4f2; border-radius: 12px; color: #172642; background: #fff; text-align: left; transition: transform .15s ease, box-shadow .15s ease; }
+    .o_thai_product_tile:hover { transform: translateY(-2px); border-color: #8cb9ee; box-shadow: 0 7px 15px #25446f18; }
+    .o_thai_product_tile img { width: 100%; height: 128px; display: block; object-fit: contain; border-radius: 8px; background: #f5f7fa; }
+    .o_thai_product_tile > span { display: -webkit-box; min-height: 42px; margin-top: 8px; overflow: hidden; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-size: 14px; font-weight: 700; }
+    .o_thai_product_tile > small { display: block; margin-top: 3px; color: #7588a4; }
+    .o_thai_product_tile .o_thai_sku { color: #7890ad; font-size: 10px; }
+    .o_thai_product_tile > em { display: block; width: fit-content; margin-top: 5px; padding: 2px 7px; border-radius: 999px; color: #18885a; background: #e3f7ed; font-size: 10px; font-style: normal; }
+    .o_thai_product_tile > em.is-empty { color: #c94a43; background: #fff0ef; }
+    .o_thai_product_tile > small i { margin-right: 4px; color: #2878dc; }
+    .o_thai_product_tile strong { display: block; margin-top: 4px; color: #1767bf; font-size: 16px; }
+    .o_thai_product_tile > i { position: absolute; right: 8px; bottom: 8px; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: #2878dc; }
+    .o_thai_cart { background: #f8fbff; }
+    .o_thai_cart_empty { min-height: 210px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: #8090aa; }
+    .o_thai_cart_empty i { margin-bottom: 8px; color: #b4c5dc; font-size: 45px; }
+    .o_thai_cart_empty span { font-weight: 700; }
+    .o_thai_cart_empty small { margin-top: 3px; }
+    .o_thai_cart_line { display: grid; grid-template-columns: minmax(0, 1fr) 122px 76px 34px; gap: 8px; align-items: center; padding: 10px 0; border-top: 1px solid #e1e8f2; }
+    .o_thai_cart_line:first-of-type { border-top: 0; }
+    .o_thai_cart_line > div { min-width: 0; }
+    .o_thai_cart_line strong, .o_thai_cart_line small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .o_thai_cart_line strong { color: #203759; font-size: 13px; }
+    .o_thai_cart_line small { color: #8390a5; }
+    .o_thai_qty_control { height: 40px; display: grid; grid-template-columns: 34px 52px 34px; overflow: hidden; border: 1px solid #bfcde0; border-radius: 9px; background: #fff; }
+    .o_thai_qty_control button { width: 34px; height: 38px; padding: 0; border: 0; color: #1767bf; background: #edf5ff; font-size: 12px; }
+    .o_thai_qty_control button:hover { background: #dcecff; }
+    .o_thai_qty_control button:disabled { color: #aeb9c8; background: #f3f5f7; }
+    .o_thai_qty_control input { width: 52px; height: 38px; padding: 3px; border: 0; border-right: 1px solid #d4deeb; border-left: 1px solid #d4deeb; border-radius: 0; text-align: center; font-weight: 800; -moz-appearance: textfield; }
+    .o_thai_qty_control input::-webkit-inner-spin-button, .o_thai_qty_control input::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; }
+    .o_thai_cart_line b { color: #173c6a; text-align: right; }
+    .o_thai_customer_row { display: grid; grid-template-columns: 110px minmax(260px, 480px); align-items: center; gap: 10px; margin: 20px 0 14px; }
+    .o_thai_customer_row label, .o_thai_note label { color: #253b61; font-weight: 700; }
+    .o_thai_customer_row em { color: #e24a42; font-style: normal; }
+    .o_thai_quote_panel select, .o_thai_quote_panel input { height: 42px; padding: 7px 11px; border: 1px solid #cfd9e8; border-radius: 9px; color: #172642; background: #fff; outline: 0; }
+    .o_thai_quote_panel select:focus, .o_thai_quote_panel input:focus { border-color: #2878dc; box-shadow: 0 0 0 3px #2878dc18; }
+    .o_thai_quote_table { overflow-x: auto; border: 1px solid #dbe4f2; border-radius: 11px; }
+    .o_thai_quote_table_head, .o_thai_quote_line { min-width: 850px; display: grid; grid-template-columns: minmax(280px, 2fr) 100px 90px 130px 120px 42px; gap: 10px; align-items: center; padding: 9px 12px; }
+    .o_thai_quote_table_head { color: #697995; background: #f4f7fb; font-size: 12px; font-weight: 700; }
+    .o_thai_quote_line { border-top: 1px solid #edf1f6; }
+    .o_thai_quote_line strong { text-align: right; color: #172b50; }
+    .o_thai_uom { color: #65748d; text-align: center; }
+    .o_thai_remove { width: 34px; height: 34px; border: 0; border-radius: 8px; color: #d84343; background: #fff0f0; }
+    .o_thai_remove:disabled { color: #b8c0cc; background: #f3f5f8; }
+    .o_thai_add_line { margin-top: 10px; padding: 8px 13px; border: 1px solid #a9c7ed; border-radius: 9px; color: #1767bf; background: #f3f8ff; font-weight: 700; }
+    .o_thai_quote_footer { display: grid; grid-template-columns: minmax(220px, 1fr) auto auto auto; gap: 12px; align-items: end; margin-top: 16px; }
+    .o_thai_note label { display: block; margin-bottom: 5px; font-size: 13px; }
+    .o_thai_note input { width: 100%; }
+    .o_thai_quote_total { min-width: 180px; padding: 0 12px; text-align: right; }
+    .o_thai_quote_total span, .o_thai_quote_total strong { display: block; }
+    .o_thai_quote_total span { color: #77859c; font-size: 12px; }
+    .o_thai_quote_total strong { color: #173c6a; font-size: 21px; }
+    .o_thai_tax_summary { min-width: 310px; padding: 9px 13px; border: 1px solid #d5e1ef; border-radius: 10px; background: #f7faff; }
+    .o_thai_tax_summary > div { display: flex; justify-content: space-between; gap: 18px; padding: 2px 0; color: #61738d; font-size: 12px; }
+    .o_thai_tax_summary b { color: #263b5d; }
+    .o_thai_tax_summary .is-total { margin-top: 5px; padding-top: 6px; border-top: 1px solid #dbe4f2; color: #15345f; font-size: 14px; font-weight: 800; }
+    .o_thai_tax_summary strong { color: #0f3b74; font-size: 20px; }
+    .o_thai_cancel, .o_thai_save { height: 42px; padding: 0 17px; border-radius: 9px; font-weight: 700; }
+    .o_thai_cancel { border: 1px solid #cfd8e6; color: #4f5f78; background: #fff; }
+    .o_thai_save { border: 1px solid #2878dc; color: #fff; background: #2878dc; }
+    .o_thai_save:disabled { opacity: .6; }
+    .o_thai_section_title { display: flex; justify-content: space-between; align-items: end; margin: 20px 2px 10px; }
+    .o_thai_section_title h2 { margin: 0 !important; color: #10264c !important; font-size: 19px !important; font-weight: 800 !important; }
+    .o_thai_section_title p { margin: 2px 0 0; color: #8492ab; font-size: 13px; }
+    .o_thai_live { color: #61708c; font-size: 12px; }
+    .o_thai_live i { color: #3bc987; font-size: 8px; }
+    .o_thai_cards { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); border: 1px solid var(--thai-border); border-radius: 15px; overflow: hidden; background: #fff; box-shadow: 0 3px 12px #273b6010; }
+    .o_thai_cards.is-overlap { position: relative; z-index: 3; width: calc(100% - 48px); margin: -38px auto 0; box-shadow: 0 10px 24px #273b6020; }
+    .o_thai_card { --card-color: #2878dc; min-width: 0; min-height: 122px; padding: 18px 16px; border: 0; border-right: 1px solid var(--thai-border); border-top: 3px solid var(--card-color); border-radius: 0; color: #172642; background: #fff; text-align: left; transition: background .15s ease; }
+    .o_thai_card:last-child { border-right: 0; }
+    .o_thai_card:hover { background: #f7faff; }
+    .o_thai_card i { float: left; width: 36px; height: 36px; margin: 3px 12px 35px 0; display: grid; place-items: center; border-radius: 10px; color: var(--card-color); background: #eef5ff; font-size: 18px; }
+    .o_thai_card span { display: block; color: #7b88a1; font-size: 13px; font-weight: 500; white-space: nowrap; }
+    .o_thai_card strong { display: block; margin-top: 8px; color: #15264a; font-size: 21px; font-weight: 800; white-space: nowrap; }
+    .o_thai_card.is-blue { --card-color: #2878dc; } .o_thai_card.is-orange { --card-color: #f28c38; }
+    .o_thai_card.is-green { --card-color: #25ad72; } .o_thai_card.is-purple { --card-color: #7955d9; }
+    .o_thai_card.is-cyan { --card-color: #18a6bd; } .o_thai_card.is-red { --card-color: #e54c45; }
+    .o_thai_process_grid { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 20px; }
+    .o_thai_process_panel, .o_thai_quick_panel { padding: 20px; border: 1px solid var(--thai-border); border-radius: 15px; background: #fff; box-shadow: 0 3px 12px #273b600d; }
+    .o_thai_process_heading { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .o_thai_process_heading h2 { margin: 0 !important; color: #10264c !important; font-size: 20px !important; font-weight: 800 !important; }
+    .o_thai_process_heading p { margin: 2px 0 0; color: #8492ab; font-size: 13px; }
+    .o_thai_process_icon { width: 43px; height: 43px; display: grid; place-items: center; flex: 0 0 43px; border-radius: 11px; color: #fff; background: #2878dc; font-size: 19px; }
+    .is-purchase .o_thai_process_icon { background: #7955d9; }
+    .o_thai_flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: stretch; overflow: hidden; border: 1px solid #d6e1f0; border-radius: 14px; background: #fbfdff; }
+    .o_thai_flow button { min-width: 0; min-height: 132px; position: relative; border: 0; border-right: 1px solid #d6e1f0; border-radius: 0; color: #22385f; background: #fbfdff; }
+    .o_thai_flow button:last-child { border-right: 0; }
+    .o_thai_flow button:not(:last-child)::after { content: "\f105"; font-family: FontAwesome; position: absolute; z-index: 2; right: -15px; top: 50%; width: 30px; height: 30px; display: grid; place-items: center; transform: translateY(-50%); border: 1px solid #d6e1f0; border-radius: 50%; color: #2878dc; background: #fff; font-size: 21px; }
+    .is-purchase .o_thai_flow button:not(:last-child)::after { color: #7955d9; }
+    .o_thai_flow button b { position: absolute; left: 10px; top: 9px; width: 23px; height: 23px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: var(--thai-blue); font-size: 12px; }
+    .o_thai_flow button i { display: block; margin: 4px 0 10px; color: var(--thai-blue); font-size: 27px; }
+    .o_thai_flow button span { font-weight: 700; }
+    .o_thai_flow button strong { display: block; width: fit-content; margin: 10px auto 0; padding: 3px 10px; border-radius: 999px; color: #1767bf; background: #eaf3ff; font-size: 13px; font-weight: 800; }
+    .o_thai_flow button:hover { background: #f0f6ff; }
+    .o_thai_help { display: flex; gap: 12px; padding: 13px 15px; border-radius: 11px; color: #45607d; background: #f1f7ff; }
+    .o_thai_help i { margin-top: 2px; color: #2878dc; } .o_thai_help strong, .o_thai_help span { display: block; }
+    .o_thai_help span { margin-top: 2px; color: #718198; font-size: 12px; }
+    .o_thai_shortcuts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .o_thai_shortcuts button { min-height: 82px; padding: 12px 8px; border: 1px solid #dbe4f2; border-radius: 12px; color: #253b61; background: #fff; }
+    .o_thai_shortcuts button i { display: block; margin-bottom: 7px; color: #2878dc; font-size: 22px; }
+    .o_thai_shortcuts button span { font-size: 14px; font-weight: 700; }
+    .o_thai_shortcuts button:hover { border-color: #2878dc; background: #f5f9ff; }
+    .o_thai_workspace { margin-top: 18px; }
+    .o_thai_quick_panel { width: 100%; }
+    .o_thai_shortcuts { grid-template-columns: repeat(4, 1fr); }
+    .o_thai_loading { padding: 80px; text-align: center; color: #66758e; font-size: 18px; }
+    /* Operations dashboard */
+    main:not(.is-sale-page) .o_thai_header { min-height: 154px; padding: 24px 34px; border-radius: 16px; }
+    main:not(.is-sale-page) .o_thai_header h1 { margin: 5px 0 2px !important; font-size: 27px !important; }
+    main:not(.is-sale-page) .o_thai_header_copy > small { display: block; margin-top: 12px; color: #34577f; font-weight: 700; }
+    main:not(.is-sale-page) .o_thai_header_art { right: 32px; bottom: 5px; width: 540px; height: 145px; display: flex; align-items: center; justify-content: flex-end; gap: 44px; }
+    .o_thai_boxes { width: 180px; height: 125px; display: grid; place-items: center; color: #b07c4e; font-size: 92px; text-shadow: 0 5px 10px #75471922; }
+    .o_thai_header_art blockquote { margin: 0; padding-left: 18px; border-left: 3px solid #2878dc; color: #2878dc; font-size: 14px; line-height: 1.55; text-align: center; }
+    .o_thai_main_actions { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+    .o_thai_main_actions button { min-width: 0; min-height: 70px; display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 0; border-radius: 10px; color: #fff; text-align: left; box-shadow: 0 4px 10px #203b6815; }
+    .o_thai_main_actions button > i { width: 35px; font-size: 25px; text-align: center; }
+    .o_thai_main_actions b, .o_thai_main_actions small { display: block; }
+    .o_thai_main_actions b { font-size: 14px; }
+    .o_thai_main_actions small { margin-top: 2px; color: #ffffffcf; font-size: 10px; }
+    .o_thai_main_actions .is-blue { background: linear-gradient(135deg, #247beb, #1766d5); }
+    .o_thai_main_actions .is-green { background: linear-gradient(135deg, #14b982, #08a46f); }
+    .o_thai_main_actions .is-orange { background: linear-gradient(135deg, #ff9d3e, #ff7624); }
+    .o_thai_main_actions .is-purple { background: linear-gradient(135deg, #9762f3, #7548e5); }
+    .o_thai_main_actions .is-white { border: 1px solid #dbe5f2; color: #24518b; background: #fff; }
+    .o_thai_main_actions .is-white small { color: #72839b; }
+    .o_thai_kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+    .o_thai_kpis button { min-width: 0; min-height: 95px; display: flex; align-items: flex-start; gap: 10px; padding: 14px; border: 1px solid #dce6f2; border-radius: 11px; color: #50627e; background: #fff; text-align: left; }
+    .o_thai_kpis button > i { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; color: #2878dc; background: #e9f3ff; font-size: 17px; }
+    .o_thai_kpis span, .o_thai_kpis strong, .o_thai_kpis small { display: block; }
+    .o_thai_kpis span { min-width: 0; font-size: 11px; }
+    .o_thai_kpis strong { margin-top: 4px; overflow: hidden; color: #173560; font-size: 19px; text-overflow: ellipsis; white-space: nowrap; }
+    .o_thai_kpis small { margin-top: 4px; color: #8796aa; font-size: 9px; }
+    .o_thai_dashboard_tables { display: grid; grid-template-columns: 1.55fr 1fr; gap: 10px; margin-top: 10px; }
+    .o_thai_dashboard_bottom { display: grid; grid-template-columns: 1.35fr .8fr .95fr; gap: 10px; margin-top: 10px; }
+    .o_thai_dash_panel { min-width: 0; padding: 13px; border: 1px solid #dce6f2; border-radius: 11px; background: #fff; box-shadow: 0 2px 7px #233b5d0a; }
+    .o_thai_dash_title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+    .o_thai_dash_title h2 { margin: 0 !important; color: #17345f !important; font-size: 14px !important; font-weight: 800 !important; }
+    .o_thai_dash_title h2 em { margin-left: 5px; padding: 2px 6px; border-radius: 5px; color: #e34843; background: #ffeded; font-size: 9px; font-style: normal; }
+    .o_thai_dash_title button { border: 0; color: #2878dc; background: transparent; font-size: 10px; font-weight: 700; }
+    .o_thai_recent_table .is-head, .o_thai_recent_table > button { width: 100%; display: grid; grid-template-columns: 1fr 1.35fr .8fr .85fr .85fr; gap: 7px; align-items: center; padding: 6px 7px; }
+    .o_thai_recent_table .is-head { color: #77889f; background: #f0f5fb; font-size: 9px; }
+    .o_thai_recent_table > button { border: 0; border-bottom: 1px solid #edf1f6; color: #405572; background: #fff; text-align: left; font-size: 10px; }
+    .o_thai_recent_table > button:hover { background: #f7faff; }
+    .o_thai_recent_table b { color: #2472d2; }
+    .o_thai_recent_table strong { color: #203b63; }
+    .o_thai_recent_table em { width: fit-content; padding: 3px 7px; border-radius: 999px; color: #937025; background: #fff2c9; font-size: 9px; font-style: normal; }
+    .o_thai_recent_table em.is-confirm { color: #16805a; background: #dff6eb; }
+    .o_thai_recent_table em.is-invoice { color: #245fbd; background: #e5efff; }
+    .o_thai_recent_table em.is-delivery { color: #176f8a; background: #dff5fa; }
+    .o_thai_recent_table em.is-payment { color: #9b6417; background: #fff0d5; }
+    .o_thai_recent_table em.is-paid { color: #16805a; background: #dff6eb; }
+    .o_thai_low_list > button { width: 100%; display: grid; grid-template-columns: 38px 1fr auto 25px; gap: 8px; align-items: center; padding: 6px; border: 0; border-bottom: 1px solid #edf1f6; color: #405572; background: #fff; text-align: left; font-size: 10px; }
+    .o_thai_low_list img { width: 36px; height: 36px; object-fit: contain; border-radius: 6px; background: #f3f5f8; }
+    .o_thai_product_image_fallback { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 6px; color: #7894b9; background: #edf3fa; font-size: 18px; }
+    .o_thai_low_list b { padding: 3px 7px; border-radius: 5px; color: #e24b42; background: #ffeded; white-space: nowrap; }
+    .o_thai_low_list > button > i { width: 23px; height: 23px; display: grid; place-items: center; border: 1px solid #dce5f1; border-radius: 5px; color: #2878dc; }
+    .o_thai_empty_row { padding: 24px; color: #8594a8; text-align: center; font-size: 11px; }
+    .o_thai_bars { height: 105px; display: flex; align-items: flex-end; gap: 3px; padding: 8px 3px 18px; border-bottom: 1px solid #dce6f2; }
+    .o_thai_bar { height: 100%; flex: 1; position: relative; display: flex; align-items: flex-end; }
+    .o_thai_bar > span { width: 100%; min-height: 2px; border-radius: 2px 2px 0 0; background: #428bef; }
+    .o_thai_bar small { position: absolute; left: 0; bottom: -16px; color: #8a98aa; font-size: 7px; }
+    .o_thai_payment_chart { display: grid; grid-template-columns: 120px 1fr; align-content: center; gap: 5px 12px; }
+    .o_thai_payment_chart .o_thai_dash_title { grid-column: 1 / -1; }
+    .o_thai_donut { grid-row: span 2; width: 112px; height: 112px; display: grid; place-items: center; border-radius: 50%; background: conic-gradient(#1bb780 0 70%, #ff9c35 70% 100%); }
+    .o_thai_donut > div { width: 72px; height: 72px; display: grid; place-content: center; border-radius: 50%; background: #fff; text-align: center; }
+    .o_thai_donut strong, .o_thai_donut small { display: block; }
+    .o_thai_donut strong { color: #18365f; font-size: 13px; }
+    .o_thai_donut small { color: #8695a9; font-size: 8px; }
+    .o_thai_payment_chart p { display: grid; grid-template-columns: 9px 1fr; margin: 0; color: #536984; font-size: 9px; }
+    .o_thai_payment_chart p span { width: 7px; height: 7px; margin-top: 3px; border-radius: 50%; background: #1bb780; }
+    .o_thai_payment_chart p span.is-orange { background: #ff9c35; }
+    .o_thai_payment_chart p em { grid-column: 2; color: #8a98aa; font-style: normal; }
+    .o_thai_menu_grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .o_thai_menu_grid button { min-height: 49px; padding: 7px; border: 0; border-radius: 7px; color: #294a74; background: #eef5fd; font-size: 9px; font-weight: 700; }
+    .o_thai_menu_grid i { display: block; margin-bottom: 4px; color: #2878dc; font-size: 15px; }
+
+    /* Keep the operations dashboard readable on wide screens. */
+    main:not(.is-sale-page) .o_thai_header h1 { font-size: 31px !important; }
+    main:not(.is-sale-page) .o_thai_header p,
+    main:not(.is-sale-page) .o_thai_header_art blockquote { font-size: 16px; }
+    main:not(.is-sale-page) .o_thai_kpis span { font-size: 14px; }
+    main:not(.is-sale-page) .o_thai_kpis strong { font-size: 24px; }
+    main:not(.is-sale-page) .o_thai_kpis small { font-size: 12px; }
+    main:not(.is-sale-page) .o_thai_dash_title h2 { font-size: 18px !important; }
+    main:not(.is-sale-page) .o_thai_dash_title h2 em { font-size: 11px; }
+    main:not(.is-sale-page) .o_thai_dash_title button { font-size: 13px; }
+    main:not(.is-sale-page) .o_thai_recent_table .is-head { font-size: 12px; }
+    main:not(.is-sale-page) .o_thai_recent_table > button { font-size: 13px; }
+    main:not(.is-sale-page) .o_thai_recent_table em { font-size: 11px; }
+    main:not(.is-sale-page) .o_thai_low_list > button { font-size: 13px; }
+    main:not(.is-sale-page) .o_thai_empty_row { font-size: 13px; }
+    main:not(.is-sale-page) .o_thai_donut strong { font-size: 16px; }
+    main:not(.is-sale-page) .o_thai_donut small { font-size: 11px; }
+    main:not(.is-sale-page) .o_thai_payment_chart p { font-size: 12px; }
+    main:not(.is-sale-page) .o_thai_menu_grid button { min-height: 58px; font-size: 13px; }
+    main:not(.is-sale-page) .o_thai_menu_grid i { font-size: 20px; }
+    @media (max-width: 1200px) { .o_thai_page_actions .is-muted { display: none; } .o_thai_pos_customer { grid-template-columns: 1fr; } .o_thai_cards { grid-template-columns: repeat(3, 1fr); } .o_thai_card:nth-child(3) { border-right: 0; } }
+    @media (max-width: 1050px) { .o_thai_pos_body { grid-template-columns: 1fr; overflow-y: auto !important; } .o_thai_pos_modal .o_thai_product_area, .o_thai_pos_modal .o_thai_cart { height: auto; min-height: 300px; overflow: visible; } .o_thai_customer_form { grid-template-columns: 1fr 1fr; } .o_thai_customer_form .is-wide { grid-column: 1 / -1; } .o_thai_selected_customer { grid-template-columns: 42px 1fr; } .o_thai_customer_address { grid-column: 2; padding: 8px 0 0; border: 0; border-top: 1px solid #e2e8f1; } }
+    @media (max-width: 850px) { main { padding: 14px; } .o_thai_page_actions > button:not(.o_thai_back) { display: none; } .o_thai_product_area { grid-template-columns: 1fr; } .o_thai_categories { display: flex; overflow-x: auto; border-right: 0; border-bottom: 1px solid #dbe4f2; } .o_thai_categories h3 { display: none; } .o_thai_categories button { min-width: 135px; } .o_thai_cards { grid-template-columns: 1fr 1fr; } .o_thai_card:nth-child(3) { border-right: 1px solid var(--thai-border); } .o_thai_card:nth-child(even) { border-right: 0; } .o_thai_flow { display: flex; overflow-x: auto; } .o_thai_flow button { min-width: 165px; } .o_thai_shortcuts { grid-template-columns: 1fr 1fr; } .o_thai_customer_select { grid-template-columns: 1fr; } .o_thai_product_grid { grid-template-columns: repeat(2, 1fr); } .o_thai_quote_footer { grid-template-columns: 1fr 1fr; } .o_thai_note { grid-column: 1 / -1; } }
+    @media (max-width: 850px) { .o_thai_header_art { right: -45px; opacity: .38; } }
+    @media (max-width: 560px) { main.is-sale-page { padding: 0; } .o_thai_quote_panel.o_thai_pos_modal { min-height: 100%; border: 0; border-radius: 0; } .o_thai_pos_modal .o_thai_pos_customer, .o_thai_pos_modal .o_thai_pos_body { margin-left: 10px; margin-right: 10px; } .o_thai_header { min-height: 185px; padding: 24px 20px 50px; } .o_thai_header h1 { font-size: 27px !important; } .o_thai_header_art { display: none; } .o_thai_cards { grid-template-columns: 1fr; } .o_thai_cards.is-overlap { width: calc(100% - 24px); margin-top: -30px; } .o_thai_card { border-right: 0 !important; } }
+
+    /* Single-screen sales workflow */
+    .o_thai_sale_flow_page { min-height: 100%; padding: 16px 24px 30px; overflow: auto; color: #17345f; background: #f3f7fc; }
+    .o_tsf_head { display: grid; grid-template-columns: auto 1fr auto auto; gap: 20px; align-items: center; padding: 16px 20px; border: 1px solid #dbe5f2; border-radius: 14px 14px 0 0; background: #fff; }
+    .o_tsf_back { border: 0; color: #176bd5; background: transparent; font-weight: 700; }
+    .o_tsf_head h1 { margin: 0; color: #102e59; font-size: 25px; }.o_tsf_head h1 em { margin-left: 8px; padding: 5px 10px; border-radius: 7px; color: #13865e; background: #dff8ec; font-size: 12px; font-style: normal; }.o_tsf_head p { margin: 4px 0 0; color: #425c80; }.o_tsf_head aside { padding-left: 18px; border-left: 1px solid #dbe5f2; color: #637894; font-size: 12px; }.o_tsf_head aside strong { color: #176bd5; font-size: 16px; }
+    .o_tsf_head_actions { display: flex; gap: 8px; }.o_tsf_head_actions button, .o_tsf_prints button { padding: 10px 14px; border: 1px solid #9cc5f6; border-radius: 9px; color: #176bd5; background: #fff; font-weight: 700; }
+    .o_tsf_steps { display: flex; align-items: stretch; gap: 14px; padding: 12px 20px; border: 1px solid #dbe5f2; background: #fff; }.o_tsf_steps > article { min-width: 0; flex: 1; position: relative; display: flex; align-items: center; gap: 12px; padding: 15px; border: 1px solid #dbe5f2; border-radius: 12px; color: #7f90a8; }.o_tsf_steps > article > i { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 50%; background: #edf1f7; font-size: 22px; }.o_tsf_steps > article b,.o_tsf_steps > article small { display: block; }.o_tsf_steps > article b { color: #526783; font-size: 15px; }.o_tsf_steps > article small { margin-top: 3px; }.o_tsf_steps > article > span { position: absolute; top: 12px; right: 12px; color: #15aa75; }.o_tsf_steps > article.is-done > i { color: #fff; background: #18ad77; }.o_tsf_steps > article.is-current { border-color: #6ba7ef; box-shadow: 0 3px 10px #2577dd1a; }.o_tsf_steps > article.is-current > i { color: #fff; background: #176bd5; }.o_tsf_steps > article.is-current b { color: #145db7; }.o_tsf_steps > i { align-self: center; color: #86b2e9; font-size: 22px; }
+    .o_tsf_layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(310px, .95fr); gap: 14px; margin-top: 12px; }.o_tsf_main,.o_tsf_side > section { border: 1px solid #dbe5f2; border-radius: 12px; background: #fff; }.o_tsf_main > nav { display: flex; border-bottom: 1px solid #dbe5f2; }.o_tsf_main > nav button { padding: 14px 20px; border: 0; color: #617593; background: transparent; font-weight: 700; }.o_tsf_main > nav button.active { border-bottom: 3px solid #247be5; color: #176bd5; background: #f2f8ff; }
+    .o_tsf_info_grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 12px; padding: 12px; }.o_tsf_info_grid > section,.o_tsf_products,.o_tsf_note { padding: 14px; border: 1px solid #dbe5f2; border-radius: 10px; }.o_tsf_info_grid h3,.o_tsf_products h3,.o_tsf_side h3 { margin: 0 0 10px; color: #16365f; font-size: 15px; }.o_tsf_customer { display: grid; grid-template-columns: 42px 1fr 1fr; gap: 4px 10px; align-items: center; }.o_tsf_customer > i { grid-row: span 2; width: 42px; height: 42px; display: grid; place-items: center; border-radius: 9px; color: #1871db; background: #eaf4ff; font-size: 23px; }.o_tsf_customer span { grid-column: 2; color: #657b98; font-size: 11px; }.o_tsf_customer p { grid-column: 3; grid-row: 1 / 3; margin: 0; line-height: 1.8; }
+    .o_tsf_products { margin: 0 12px 12px; }.o_tsf_table { display: grid; grid-template-columns: 30px 55px 110px 2fr 100px 105px 70px 100px; align-items: center; min-height: 55px; border-bottom: 1px solid #e4eaf2; font-size: 12px; }.o_tsf_table.head { min-height: 34px; color: #73849a; background: #f2f6fb; }.o_tsf_table img { width: 44px; height: 44px; object-fit: contain; }.o_tsf_table strong { text-align: right; }.o_tsf_totals { width: 350px; display: grid; grid-template-columns: 1fr auto; gap: 6px 18px; margin: 14px 0 0 auto; }.o_tsf_totals strong,.o_tsf_totals em { padding: 10px; color: #173b6a; background: #e7f2ff; font-size: 18px; font-style: normal; }.o_tsf_note { margin: 0 12px 12px; }.o_tsf_note p { margin: 8px 0 0; color: #6d7f96; }
+    .o_tsf_side { display: flex; flex-direction: column; gap: 12px; }.o_tsf_side > section { padding: 15px; }.o_tsf_side h2 { margin: 0; color: #176bd5; font-size: 20px; }.o_tsf_side p { color: #6a7d96; }.o_tsf_side button.primary,.o_tsf_dialog button.primary { width: 100%; padding: 12px; border: 0; border-radius: 9px; color: #fff; background: #176bd5; font-weight: 800; }.o_tsf_stock { margin-top: 12px; padding: 12px; border-radius: 9px; background: #edf5ff; }.o_tsf_stock p { display: flex; justify-content: space-between; margin: 7px 0; }.o_tsf_warning { margin-bottom: 9px; padding: 9px; border-radius: 8px; color: #cf641c; background: #fff1e3; font-weight: 700; }.o_tsf_side button.next { width: 100%; display: flex; gap: 12px; margin-top: 8px; padding: 14px; border: 1px solid #81b4f1; border-radius: 9px; color: #176bd5; background: #f7fbff; text-align: left; }.o_tsf_side button.next.cash { border-color: #59cba2; color: #15805b; background: #f1fff9; }.o_tsf_side button.next > i { font-size: 25px; }.o_tsf_side button.next b,.o_tsf_side button.next small { display: block; }.o_tsf_due { display: flex; flex-direction: column; gap: 4px; padding: 13px; border-radius: 9px; background: #eef5ff; }.o_tsf_due strong { color: #173a69; font-size: 22px; }.o_tsf_prints { display: flex; flex-wrap: wrap; gap: 7px; }.o_tsf_prints button { padding: 8px; font-size: 11px; }.o_tsf_side section.danger button { padding: 9px 14px; border: 1px solid #ef4d4d; border-radius: 8px; color: #d92f2f; background: #fff; }
+    .o_tsf_modal { position: fixed; z-index: 1100; inset: 0; display: grid; place-items: center; background: #10274499; }.o_tsf_dialog { width: 92vw; max-width: 470px; position: relative; padding: 24px; border-radius: 14px; background: #fff; box-shadow: 0 22px 70px #10274455; }.o_tsf_dialog .close { position: absolute; top: 12px; right: 12px; border: 0; background: transparent; font-size: 24px; }.o_tsf_dialog label { display: grid; gap: 5px; margin: 12px 0; color: #526985; font-weight: 700; }.o_tsf_dialog input,.o_tsf_dialog select { padding: 10px; border: 1px solid #cad7e7; border-radius: 8px; }
+    @media(max-width:1100px){.o_tsf_steps{overflow-x:auto}.o_tsf_steps>article{min-width:190px}.o_tsf_layout{grid-template-columns:1fr}.o_tsf_table{grid-template-columns:25px 45px 90px 1fr 80px 90px 60px 90px}}
+}
+
+/* Restyle the real Odoo sale.view_order_form, preserving its native behavior. */
+.o_form_view.o_thai_sale_order_form { background: #f3f7fc; }
+.o_thai_sale_order_form header button[name="action_quotation_send"] { display: none !important; }
+.o_thai_sale_order_form .o_form_sheet_bg { padding: 14px 22px 32px; background: #f3f7fc; }
+.o_thai_sale_order_form .o_form_sheet { max-width: none !important; display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 12px; padding: 0 !important; border: 0; background: transparent; box-shadow: none; }
+.o_thai_sale_order_form .o_tso_hero,.o_thai_sale_order_form .o_tso_progress { grid-column: 1/-1; }
+.o_thai_sale_order_form .o_tso_hero { display: grid; grid-template-columns: minmax(245px,.8fr) minmax(390px,1.35fr) minmax(285px,.85fr); gap: 14px; align-items: stretch; padding: 14px 18px; border: 1px solid #dbe5f2; border-radius: 0 0 14px 14px; background: #fff; }
+.o_thai_sale_order_form .o_tso_identity { display: flex; gap: 14px; align-items: center; }.o_thai_sale_order_form .o_tso_doc_icon { width: 56px; height: 56px; display: grid; place-items: center; border-radius: 12px; color: #fff; background: #2479df; font-size: 28px; }.o_thai_sale_order_form .o_tso_identity small { color: #7588a3; font-size: 14px; }.o_thai_sale_order_form .o_tso_identity h1 { margin: 0; color: #14345f; font-size: 28px; }.o_thai_sale_order_form .o_tso_identity p { margin: 4px 0 0; color: #6d809b; font-size: 14px; }
+.o_thai_sale_order_form .o_tso_parties { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }.o_thai_sale_order_form .o_tso_parties section { min-width: 0; padding: 11px 13px; border: 1px solid #dbe5f2; border-radius: 9px; background: #f8fbff; }.o_thai_sale_order_form .o_tso_parties section > span { display: block; margin-bottom: 7px; color: #55708f; font-size: 14px; font-weight: 800; }.o_thai_sale_order_form .o_tso_parties section > span i { margin-right: 5px; color: #2479df; }.o_thai_sale_order_form .o_tso_parties .o_field_widget { font-size: 15px; line-height: 1.55; }.o_thai_sale_order_form .o_tso_parties .o_field_many2one_selection { font-weight: 700; }
+.o_thai_sale_order_form .o_tso_summary { display: grid; grid-template-columns: 125px minmax(0,1fr); gap: 7px 10px; align-content: center; padding: 10px 13px; border-left: 1px solid #e0e8f2; }.o_thai_sale_order_form .o_tso_summary > label { margin: 0; color: #6c809b; font-size: 14px; font-weight: 700; }.o_thai_sale_order_form .o_tso_summary > label i { width: 17px; color: #2479df; text-align: center; }.o_thai_sale_order_form .o_tso_summary .o_field_widget { min-height: 29px; font-size: 15px; }
+.o_thai_sale_order_form .o_tso_progress { position: relative; display: flex; align-items: flex-start; gap: 0; padding: 24px 34px 22px; border: 1px solid #dbe5f2; border-radius: 14px 14px 0 0; background: #fff; }
+.o_thai_sale_order_form .o_tso_progress::before { content: ""; position: absolute; z-index: 0; top: 47px; left: 11%; right: 11%; height: 4px; border-radius: 999px; background: #dfe7f2; }
+.o_thai_sale_order_form .o_tso_progress::after { content: ""; position: absolute; z-index: 0; top: 47px; left: 11%; width: 20%; height: 4px; border-radius: 999px; background: linear-gradient(90deg, #18ad77 0 45%, #2479df 100%); }
+.o_thai_sale_order_form .o_tso_progress > div { min-width: 0; flex: 1; position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0 10px; border: 0; color: #8190a5; background: transparent; text-align: center; }
+.o_thai_sale_order_form .o_tso_progress > div > i { width: 50px; height: 50px; display: grid; place-items: center; flex: 0 0 auto; border: 5px solid #fff; border-radius: 50%; color: #8799af; background: #e8eef6; box-shadow: 0 0 0 2px #dfe7f2; font-size: 20px; }
+.o_thai_sale_order_form .o_tso_progress b,.o_thai_sale_order_form .o_tso_progress small { display: block; }
+.o_thai_sale_order_form .o_tso_progress b { color: #506681; font-size: 16px; }
+.o_thai_sale_order_form .o_tso_progress small { margin-top: 3px; font-size: 13px; }
+.o_thai_sale_order_form .o_tso_progress > i { display: none; }
+.o_thai_sale_order_form .o_tso_progress .is-done > i { color: #fff; background: #18ad77; box-shadow: 0 0 0 2px #18ad77; }
+.o_thai_sale_order_form .o_tso_progress .is-done b { color: #13845d; }
+.o_thai_sale_order_form .o_tso_progress .is-current > i { color: #fff; background: #2479df; box-shadow: 0 0 0 3px #a9cefa, 0 4px 12px #2479df3d; }
+.o_thai_sale_order_form .o_tso_progress .is-current b { color: #176bd5; }
+.o_thai_sale_order_form .o_tso_progress em { position: absolute; top: -3px; left: calc(50% + 15px); color: #15a875; font-size: 17px; }
+.o_thai_sale_order_form .o_tso_progress .o_tso_print_button { min-height: 34px; margin-top: 7px; padding: 6px 12px; border: 1px solid #8ab9ef; border-radius: 8px; color: #176bd5; background: #fff; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.o_thai_sale_order_form .o_tso_progress .o_tso_print_button:hover { color: #fff; background: #2479df; }
+.o_thai_sale_order_form .o_tso_progress .o_tso_print_button i { margin-right: 5px; }
+.o_thai_sale_order_form .oe_button_box,.o_thai_sale_order_form .oe_title,.o_thai_sale_order_form group[name='sale_header'] { display: none !important; }
+.o_thai_sale_order_form .o_tso_customer_cards { grid-column: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }.o_thai_sale_order_form .o_tso_customer_cards section,.o_thai_sale_order_form .o_tso_action_panel section { padding: 15px; border: 1px solid #dbe5f2; border-radius: 11px; background: #fff; }.o_thai_sale_order_form .o_tso_customer_cards h3,.o_thai_sale_order_form .o_tso_action_panel h3 { margin: 0 0 10px; color: #193a66; font-size: 15px; }
+.o_thai_sale_order_form .o_tso_action_panel { grid-column: 2; grid-row: 3 / span 3; display: flex; flex-direction: column; gap: 10px; }.o_thai_sale_order_form .o_tso_action_panel h2 { color: #176bd5; font-size: 19px; }.o_thai_sale_order_form .o_tso_action_panel button { width: 100%; margin-top: 7px; padding: 10px; }.o_thai_sale_order_form .o_tso_hint { padding: 9px; border-radius: 8px; color: #cc641c; background: #fff0df; font-weight: 700; }
+.o_thai_sale_order_form .o_notebook { grid-column: 1; margin: 0 !important; border: 1px solid #dbe5f2; border-radius: 11px; background: #fff; overflow: hidden; }
+.o_thai_sale_order_form .o_notebook .nav-tabs { padding: 10px 28px; gap: 8px; background: #f8fbff; }
+.o_thai_sale_order_form .o_notebook .nav-tabs .nav-link { min-height: 52px; padding: 12px 26px; border: 1px solid #1f2f59; border-radius: 10px; font-size: 17px; font-weight: 700; }
+.o_thai_sale_order_form .o_notebook .tab-pane { padding: 16px; }
+.o_thai_sale_order_form .o_field_x2many .o_list_renderer { border: 1px solid #dbe5f2; border-radius: 10px; overflow: hidden; background: #fff; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table { width: 100%; margin: 0; border: 0; border-radius: 0; overflow: hidden; table-layout: auto; background: #fff; font-size: 15px; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table thead { background: #f7faff; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table thead th { padding-top: 15px; padding-bottom: 15px; font-size: 15px; font-weight: 800; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table tbody tr { background: #fff; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table tbody tr:not(:last-child) td { border-bottom: 1px solid #edf1f6; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table tbody td { padding-top: 14px; padding-bottom: 14px; background: #fff; font-size: 15px; line-height: 1.55; vertical-align: middle; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table .o_thai_sol_image { width: 70px; min-width: 70px; text-align: center; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table .o_thai_sol_image img { width: 44px; height: 44px; border: 1px solid #dbe5f2; border-radius: 7px; object-fit: contain; background: #fff; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table th[data-name="product_template_id"],.o_thai_sale_order_form .o_field_x2many .o_list_table td[name="product_template_id"] { min-width: 420px; width: auto !important; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table th[data-name="price_subtotal"],.o_thai_sale_order_form .o_field_x2many .o_list_table td[name="price_subtotal"],.o_thai_sale_order_form .o_field_x2many .o_list_table th[data-name="price_total"],.o_thai_sale_order_form .o_field_x2many .o_list_table td[name="price_total"] { width: 140px !important; min-width: 140px; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table th[data-name="price_unit"],.o_thai_sale_order_form .o_field_x2many .o_list_table td[name="price_unit"] { width: 120px !important; min-width: 120px; text-align: right; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table th[data-name="tax_ids"],.o_thai_sale_order_form .o_field_x2many .o_list_table td[name="tax_ids"] { width: 100px !important; min-width: 100px; max-width: 100px; }
+.o_thai_sale_order_form .o_field_x2many .o_list_renderer .o_list_record_selector { width: 34px; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table th:first-child,.o_thai_sale_order_form .o_field_x2many .o_list_table td:first-child { width: 34px; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table th:last-child,.o_thai_sale_order_form .o_field_x2many .o_list_table td:last-child { width: 38px; }
+.o_thai_sale_order_form .o_field_x2many .o_list_table td.o_list_number,.o_thai_sale_order_form .o_field_x2many .o_list_table th.o_list_number { white-space: nowrap; }
+.o_thai_sale_order_form .o_form_sheet > .o_group:not([name='sale_header']),.o_thai_sale_order_form .o_form_sheet > .oe_chatter { grid-column: 1; }
+@media(max-width:1200px){.o_thai_sale_order_form .o_tso_hero{grid-template-columns:1fr 1.4fr}.o_thai_sale_order_form .o_tso_summary{grid-column:1/-1;grid-template-columns:100px 1fr 100px 1fr 100px 1fr;border-left:0;border-top:1px solid #e0e8f2}}
+@media(max-width:1000px){.o_thai_sale_order_form .o_form_sheet{grid-template-columns:1fr}.o_thai_sale_order_form .o_tso_action_panel{grid-column:1;grid-row:auto}.o_thai_sale_order_form .o_tso_progress{overflow-x:auto}.o_thai_sale_order_form .o_tso_progress>div{min-width:175px}}
+
+/* Clean sale-order layout (v2). Kept separate from the legacy experiment above. */
+.o_form_view.o_thai_sale_order_v2 { background: #f3f7fc; }
+.o_thai_sale_order_v2 .o_form_sheet_bg { padding: 8px 12px 24px; background: #f3f7fc; }
+.o_thai_sale_order_v2 .o_form_sheet { width:100% !important; max-width:none !important; margin:0 !important; display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:14px; padding:0 !important; border:0; background:transparent; box-shadow:none; }
+.o_thai_sale_order_v2 .oe_button_box,.o_thai_sale_order_v2 .oe_title,.o_thai_sale_order_v2 group[name="sale_header"] { display: none !important; }
+
+.o_thai_sale_order_v2 .o_tso_progress { grid-column:1/-1; position:relative; display:grid; grid-template-columns:repeat(5,minmax(150px,1fr)); padding:24px 30px 20px; border:1px solid #d8e3f1; border-radius:14px; background:#fff; box-shadow:0 3px 12px #1b3b6810; }
+.o_thai_sale_order_v2 .o_tso_progress::before { content:""; position:absolute; top:49px; left:10%; right:10%; height:4px; background:#dfe7f2; }
+.o_thai_sale_order_v2 .o_tso_progress::after { display:none; }
+.o_thai_sale_order_v2 .o_tso_progress > div { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:8px; color:#7d8da3; text-align:center; }
+.o_thai_sale_order_v2 .o_tso_progress > div.is-done:not(.step-payment)::after { content:""; position:absolute; z-index:-1; top:24px; left:50%; width:100%; height:4px; background:linear-gradient(90deg,#18ad77,#2479df); }
+.o_thai_sale_order_v2 .o_tso_progress > div > i { width:52px; height:52px; display:grid; place-items:center; border:5px solid #fff; border-radius:50%; color:#8799af; background:#e8eef6; box-shadow:0 0 0 2px #dfe7f2; font-size:20px; }
+.o_thai_sale_order_v2 .o_tso_progress > i { display:none; }
+.o_thai_sale_order_v2 .o_tso_progress b { display:block; color:#526783; font-size:16px; }
+.o_thai_sale_order_v2 .o_tso_progress small { display:block; margin-top:4px; font-size:12px; }
+.o_thai_sale_order_v2 .o_tso_progress > div > span { width:100%; text-align:center; }
+.o_thai_sale_order_v2 .o_tso_progress .o_tso_step_datetime { width:100%; display:flex; justify-content:center; margin-top:4px; color:#71839b; font-size:12px; font-weight:600; text-align:center !important; white-space:nowrap; }
+.o_thai_sale_order_v2 .o_tso_progress .o_tso_step_datetime * { text-align:center !important; }
+.o_thai_sale_order_v2 .o_tso_progress .is-done > i { color:#fff; background:#18ad77; box-shadow:0 0 0 2px #18ad77; }
+.o_thai_sale_order_v2 .o_tso_progress .is-done b { color:#13845d; }
+.o_thai_sale_order_v2 .o_tso_progress .is-current > i { color:#fff; background:#2479df; box-shadow:0 0 0 3px #acd0fa; }
+.o_thai_sale_order_v2 .o_tso_progress .is-current b { color:#176bd5; }
+.o_thai_sale_order_v2 .o_tso_progress em { position:absolute; top:-3px; left:calc(50% + 14px); color:#15a875; }
+.o_thai_sale_order_v2 .o_tso_print_button { min-height:34px; margin-top:5px; padding:6px 12px; border:1px solid #8ab9ef; border-radius:8px; color:#176bd5; background:#fff; font-size:13px; font-weight:700; white-space:nowrap; }
+
+.o_thai_sale_order_v2 .o_tso_hero { grid-column:1/-1; display:grid; grid-template-columns:minmax(0,.7fr) minmax(0,1.2fr) minmax(0,1.5fr); gap:10px; align-items:stretch; padding:10px; border:1px solid #d8e3f1; border-radius:12px; background:#fff; box-shadow:0 3px 12px #1b3b6810; }
+.o_thai_sale_order_v2 .o_tso_identity { display:none; }
+.o_thai_sale_order_v2 .o_tso_doc_icon { width:56px; height:56px; display:grid; place-items:center; flex:0 0 auto; border-radius:12px; color:#fff; background:#2479df; font-size:27px; }
+.o_thai_sale_order_v2 .o_tso_identity small { color:#7588a3; font-size:14px; }
+.o_thai_sale_order_v2 .o_tso_identity h1 { margin:0; color:#14345f; font-size:28px; }
+.o_thai_sale_order_v2 .o_tso_identity p { margin:4px 0 0; color:#6d809b; font-size:14px; }
+.o_thai_sale_order_v2 .o_tso_parties { display:contents; }
+.o_thai_sale_order_v2 .o_tso_parties section { min-height:116px; padding:15px 16px; border:1px solid #dbe5f2; border-radius:9px; background:#fff; }
+.o_thai_sale_order_v2 .o_tso_parties section > span { display:block; margin-bottom:8px; color:#55708f; font-size:14px; font-weight:800; }
+.o_thai_sale_order_v2 .o_tso_parties .o_field_widget { font-size:15px; line-height:1.5; }
+.o_thai_sale_order_v2 .o_tso_customer_master { display:grid; grid-template-columns:minmax(0,1fr) 32px; align-content:start; align-items:center; column-gap:8px; }
+.o_thai_sale_order_v2 .o_tso_customer_master > span { grid-column:1/-1; }
+.o_thai_sale_order_v2 .o_tso_customer_master > .o_field_widget,
+.o_thai_sale_order_v2 .o_tso_customer_master > .o_field_widget .o_field_many2one_selection,
+.o_thai_sale_order_v2 .o_tso_customer_master > .o_field_widget .o_input_dropdown,
+.o_thai_sale_order_v2 .o_tso_customer_master > .o_field_widget .o-autocomplete { width:100% !important; min-width:0; max-width:none !important; }
+.o_thai_sale_order_v2 .o_tso_customer_master > .o_field_widget input { width:100% !important; }
+.o_thai_sale_order_v2 .o_tso_customer_master .o_field_many2one_selection > .o_external_button { display:none !important; }
+.o_thai_sale_order_v2 .o_tso_customer_master > button { grid-column:2; margin:0 !important; justify-self:center; }
+.o_thai_sale_order_v2 .o_tso_customer_pricelist { grid-column:1/-1; display:grid; grid-template-columns:105px minmax(0,1fr); align-items:center; gap:8px; margin-top:12px; padding-top:10px; border-top:1px solid #e2eaf5; }
+.o_thai_sale_order_v2 .o_tso_customer_pricelist label { margin:0; color:#6c809b; font-size:13px; font-weight:700; }
+.o_thai_sale_order_v2 .o_tso_customer_pricelist label i { margin-right:5px; color:#2479df; }
+.o_thai_sale_order_v2 .o_tso_customer_pricelist > .o_field_widget { min-width:0; width:100%; }
+.o_thai_sale_order_v2 .o_tso_customer_contacts { grid-column:1/-1; display:grid; gap:6px; margin-top:12px; padding-top:10px; border-top:1px solid #edf1f6; }
+.o_thai_sale_order_v2 .o_tso_contact_line { display:flex; align-items:center; gap:9px; min-width:0; color:#516986; font-size:13px; }
+.o_thai_sale_order_v2 .o_tso_contact_line > i { flex:0 0 16px; color:#5579a8; text-align:center; }
+.o_thai_sale_order_v2 .o_tso_contact_line .o_field_widget { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:13px; }
+.o_thai_sale_order_v2 .o_tso_parties .o_field_many2one,
+.o_thai_sale_order_v2 .o_tso_parties .o_field_many2one .o_field_many2one_selection,
+.o_thai_sale_order_v2 .o_tso_parties .o_field_many2one .o_input_dropdown,
+.o_thai_sale_order_v2 .o_tso_parties .o_field_many2one .o-autocomplete { width:100% !important; max-width:none !important; }
+.o_thai_sale_order_v2 .o_tso_parties .o_field_many2one input { width:100% !important; min-height:38px; padding:7px 34px 7px 10px; font-size:15px; }
+.o_thai_sale_order_v2 .o_tso_shipping_editor > span { display:flex !important; align-items:center; gap:5px; }
+.o_thai_sale_order_v2 .o_tso_shipping_editor > span small { margin-left:auto; color:#8a98aa; font-size:11px; font-weight:500; }
+.o_thai_sale_order_v2 .o_tso_shipping_editor .thai_address_editor { display:flex; flex-direction:column; gap:8px; width:100%; }
+.o_thai_sale_order_v2 .o_tso_shipping_editor .thai_address_grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 12px; }
+.o_thai_sale_order_v2 .o_tso_shipping_editor .thai_address_line { display:flex; align-items:center; gap:8px; min-width:0; }
+.o_thai_sale_order_v2 .o_tso_shipping_editor .thai_address_line > i { flex:0 0 18px; color:var(--biz-theme-primary-color,#173f74); text-align:center; }
+.o_thai_sale_order_v2 .o_tso_shipping_editor .thai_address_line > .o_field_widget { flex:1 1 auto; width:100%; min-width:0; }
+@media(max-width:650px){.o_thai_sale_order_v2 .o_tso_shipping_editor .thai_address_grid{grid-template-columns:1fr}}
+.o_thai_sale_order_v2 .o_tso_summary { display:grid; grid-template-columns:185px minmax(0,1fr); align-content:start; align-items:center; gap:6px 10px; min-height:0; padding:12px 14px; border:1px solid #dbe5f2; border-radius:9px; background:#f9fbff; }
+.o_thai_sale_order_v2 .o_tso_summary label { margin:0; color:#6c809b; font-size:13px; font-weight:700; white-space:nowrap; }
+.o_thai_sale_order_v2 .o_tso_summary .o_field_widget { min-height:28px; font-size:15px; }
+.o_thai_sale_order_v2 .o_tso_summary textarea { min-height:48px; resize:vertical; }
+.o_thai_sale_order_v2 .o_tso_dates_inline { min-width:0; display:grid; grid-template-columns:minmax(135px,1fr) auto minmax(105px,.75fr); gap:10px; align-items:center; }
+.o_thai_sale_order_v2 .o_tso_dates_inline > span { color:#6c809b; font-size:13px; font-weight:700; white-space:nowrap; }
+.o_thai_sale_order_v2 .o_tso_dates_inline .o_field_widget { width:100%; min-width:0; }
+
+.o_thai_sale_order_v2 .o_tso_summary .o_field_widget,
+.o_thai_sale_order_v2 .o_tso_summary .o_datepicker,
+.o_thai_sale_order_v2 .o_tso_summary .o_input_dropdown { width: 100%; min-width: 0; }
+
+.o_thai_sale_order_v2 .o_tso_next_action { grid-column:2; grid-row:2; align-self:start; display:flex; flex-direction:column; align-items:stretch; gap:10px; margin:0; padding:20px; border:1px solid #d8e3f1; border-radius:12px; background:#fff; box-shadow:0 3px 12px #1b3b6810; }
+.o_thai_sale_order_v2 .o_tso_next_action b,.o_thai_sale_order_v2 .o_tso_next_action span,.o_thai_sale_order_v2 .o_tso_next_action small { display:block; }
+.o_thai_sale_order_v2 .o_tso_next_action .o_tso_side_button { width:100%; min-height:58px; display:grid; grid-template-columns:38px 1fr 20px; gap:10px; align-items:center; padding:10px 14px; border:1px solid #cdd9e8; border-radius:9px; color:#263b60; background:#fff; box-shadow:0 2px 5px #1d38580c; text-align:left; }
+.o_thai_sale_order_v2 .o_tso_next_action .o_tso_side_button:hover { border-color:#77aef0; background:#f8fbff; }
+.o_thai_sale_order_v2 .o_tso_next_action .o_tso_side_button > i:first-child { color:#203b68; font-size:22px; text-align:center; }
+.o_thai_sale_order_v2 .o_tso_next_action .o_tso_side_button b { color:inherit; font-size:15px; }
+.o_thai_sale_order_v2 .o_tso_next_action .o_tso_side_button small { margin-top:3px; color:inherit; font-size:12px; font-weight:500; opacity:.9; }
+.o_thai_sale_order_v2 .o_tso_next_action .o_tso_side_button .o_tso_chevron { grid-column:3; color:#29466f; font-size:12px; }
+.o_thai_sale_order_v2 .o_tso_next_action .o_tso_side_button.is-primary { min-height:72px; border-color:#176bd5; color:#fff; background:linear-gradient(135deg,#2479ef,#0f63e6); box-shadow:0 5px 13px #176bd535; }
+.o_thai_sale_order_v2 .o_tso_next_action .o_tso_side_button.is-primary:hover { background:linear-gradient(135deg,#1c70e5,#0758d3); }
+.o_thai_sale_order_v2 .o_tso_next_action .o_tso_side_button.is-primary > i:first-child { color:#fff; font-size:25px; }
+.o_thai_sale_order_v2 .o_tso_next_action .o_tso_side_button.is-disabled { cursor:not-allowed; color:#697a91; background:#f8fafc; opacity:.72; }
+.o_thai_sale_order_v2 .o_tso_next_action .o_tso_side_button.is-disabled:hover { border-color:#cdd9e8; background:#f8fafc; }
+.o_thai_sale_order_v2 .o_tso_price_summary { margin:-2px -2px 4px; padding:0 2px 14px; border-bottom:1px solid #dfe7f2; font-family:inherit !important; }
+.o_thai_sale_order_v2 .o_tso_price_summary h3 { margin:0; padding:2px 2px 14px; border-bottom:1px solid #e7edf5; color:#17345f; font-family:inherit !important; font-size:18px; font-weight:800; }
+.o_thai_sale_order_v2 .o_tso_price_summary h3 i { margin-right:6px; color:#2479df; }
+.o_thai_sale_order_v2 .o_tso_price_summary .o_field_widget { width:100%; font-size:14px; }
+.o_thai_sale_order_v2 .o_tso_price_summary .o_tax_total { color:#176bd5; font-size:20px; font-weight:800; }
+.o_thai_sale_order_v2 .o_tso_price_row { display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:11px 4px; border-bottom:1px solid #edf1f6; color:#63748c; font-size:14px; }
+.o_thai_sale_order_v2 .o_tso_price_row .o_field_widget { width:auto; color:#203a60; text-align:right; font-weight:700; }
+.o_thai_sale_order_v2 .o_tso_line_count { min-width:110px; display:flex; justify-content:flex-end; align-items:baseline; gap:4px; color:#203a60; font-weight:700; text-align:right; white-space:nowrap; }
+.o_thai_sale_order_v2 .o_tso_line_count .o_field_widget { width:auto !important; min-width:0; line-height:1.4; text-align:right; }
+.o_thai_sale_order_v2 .o_tso_price_row.is-total { margin-top:8px; padding:14px 12px; border:0; border-radius:9px; color:#17345f; background:#eaf3ff; font-size:16px; }
+.o_thai_sale_order_v2 .o_tso_price_row.is-total .o_field_widget { color:#176bd5; font-size:24px; font-weight:800; }
+
+.o_thai_sale_order_v2 .o_notebook { grid-column:1; grid-row:2; width:100%; margin:0 !important; border:1px solid #d8e3f1; border-radius:12px; overflow:hidden; background:#fff; box-shadow:0 3px 12px #1b3b6810; }
+.o_thai_sale_order_v2 .o_notebook { position:relative; }
+.o_thai_sale_order_v2 .o_notebook .o_notebook_headers {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.o_thai_sale_order_v2 .tax_mode_badge .o_selection_badge.active,
+.o_thai_sale_order_v2 .tax_mode_badge .o_selection_badge.pe-none {
+    border-color: #1f2f59 !important;
+    color: #fff !important;
+    background: #1f2f59 !important;
+    font-weight: 700;
+}
+.o_thai_sale_order_v2 .tax_mode_badge .o_selection_badge:not(.active):not(.pe-none) {
+    color: #435b80 !important;
+    background: #fff !important;
+}
+// Odoo 20 wraps each status button in .o_arrow_button_wrap.
+body:has(.o_tso_summary) .o_form_statusbar .o_statusbar_status .o_arrow_button_wrap > button.o_arrow_button_current {
+    background: #176bd5 !important;
+    border-color: #176bd5 !important;
+    color: #fff !important;
+    opacity: 1 !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 7px #176bd54d;
+}
+body:has(.o_tso_summary) .o_form_statusbar .o_statusbar_status .o_arrow_button_wrap > button.o_arrow_button_current[data-value="sale"] {
+    background: #11966d !important;
+    border-color: #11966d !important;
+    box-shadow: 0 2px 7px #11966d4d;
+}
+body:has(.o_tso_summary) .o_form_statusbar .o_statusbar_status .o_arrow_button_wrap > button.o_arrow_button_current[data-value="cancel"] {
+    background: #c94b53 !important;
+    border-color: #c94b53 !important;
+    box-shadow: 0 2px 7px #c94b534d;
+}
+.o_thai_sale_order_v2 .o_notebook .document_tax_mode { position:absolute !important; top:14px; right:24px; z-index:3; display:flex; align-items:center; gap:8px; width:auto; margin:0; padding:0; }
+.o_thai_sale_order_v2 .document_tax_mode .tax_mode_badge { position:static !important; margin:0 !important; transform:none !important; }
+.o_thai_sale_order_v2 .document_tax_mode .o_tso_order_toolbar { position:static; order:-1; display:flex; margin:0; }
+.o_thai_sale_order_v2 .o_tso_order_toolbar .btn { display:inline-flex; align-items:center; justify-content:center; height:40px; min-height:40px; padding:0 12px; border-color:#b9cce4; border-radius:8px; color:#245a9a; background:#fff; font-family:inherit; font-size:13px; font-weight:700; line-height:1; white-space:nowrap; }
+.o_thai_sale_order_v2 .document_tax_mode .o_selection_badge { display:inline-flex; align-items:center; justify-content:center; height:40px; min-height:40px; padding:0 12px; border-radius:8px; font-size:13px; line-height:1; white-space:nowrap; }
+.o_thai_sale_order_v2 .o_tso_order_toolbar .btn:hover { border-color:#2479df; color:#176bd5; background:#f4f8ff; }
+.o_thai_sale_order_v2 .o_tso_customer_signature { max-width:720px; min-height:210px; margin:10px auto 20px; padding:20px 24px; border:1px solid #d8e3f1; border-radius:10px; background:#f8fbff; }
+.o_thai_sale_order_v2 .o_tso_customer_signature .o_field_image img { max-width:360px; max-height:130px; object-fit:contain; }
+.o_thai_sale_order_v2 .o_notebook .nav-tabs { margin:0 !important; padding:14px 24px !important; background:#f8fbff; }
+.o_thai_sale_order_v2 .o_notebook .nav-tabs .nav-link { display:inline-flex; align-items:center; justify-content:center; min-height:40px; height:40px; padding:0 14px; border:1px solid #1f2f59; border-radius:8px; font-size:13px; font-weight:700; line-height:1; white-space:nowrap; }
+.o_thai_sale_order_v2 .o_notebook .tab-content { padding:20px 24px 24px !important; background:#fff; }
+.o_thai_sale_order_v2 .o_notebook .tab-pane { padding:0 !important; }
+.o_thai_sale_order_v2 .o_field_x2many { margin:0; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_renderer { border:1px solid #dbe5f2 !important; border-radius:10px; overflow-x:auto; background:#fff; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table { width:100%; min-width:1220px; margin:0; table-layout:auto; background:#fff; font-size:15px; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table thead { background:#f7faff; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table th { height:52px; padding:10px 12px; font-size:14px; font-weight:800; white-space:nowrap; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table td { min-height:72px; padding:12px; border-bottom:1px solid #edf1f6; background:#fff; font-size:14px; line-height:1.45; vertical-align:middle; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table .o_thai_sol_image { display:block; float:none; width:52px; min-width:52px; margin:0 auto; text-align:center; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table .o_thai_sol_image img { width:44px; height:44px; border:1px solid #dbe5f2; border-radius:7px; object-fit:contain; background:#fff; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table tr:not(.o_is_line_section):not(.o_is_line_note) .o_thai_sol_description { display:none !important; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table th[data-name="product_and_description"],
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table td[name="product_and_description"],
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table td[data-name="product_and_description"] { width:360px !important; min-width:360px !important; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table th[data-name="product_image"],
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table td[name="product_image"] { width:72px !important; min-width:72px !important; max-width:72px !important; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table td[name="product_and_description"] .o_column_group_field[data-field-name="product_template_id"] { display:block; width:100%; min-width:280px; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table tr:not(.o_selected_row) td[name="product_and_description"] .o_column_group_field[data-field-name="product_template_id"] { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table td[name="product_and_description"] .o_field_widget,
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table td[data-name="product_and_description"] .o_field_widget { min-width:0; max-width:100%; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table th[data-name="product_uom_qty"] { width:90px; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table th[data-name="price_unit"] { width:120px; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table th[data-name="tax_ids"],.o_thai_sale_order_v2 .o_field_x2many .o_list_table td[data-name="tax_ids"],.o_thai_sale_order_v2 .o_field_x2many .o_list_table td[name="tax_ids"] { width:110px !important; min-width:110px !important; max-width:110px !important; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table th[data-name="discount"] { width:100px; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_table th[data-name="price_subtotal"],.o_thai_sale_order_v2 .o_field_x2many .o_list_table th[data-name="price_total"] { width:150px; }
+.o_thai_sale_order_v2 .o_field_x2many .o_list_record_selector { width:34px; }
+.o_thai_sale_order_v2 .o_form_sheet > .o_group:not([name="sale_header"]),.o_thai_sale_order_v2 .o_form_sheet > .oe_chatter { grid-column:1; }
+
+@media(max-width:1450px){.o_thai_sale_order_v2 .o_tso_hero{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr)}.o_thai_sale_order_v2 .o_tso_summary{grid-column:1/-1}}
+@media(max-width:1200px){.o_thai_sale_order_v2 .o_form_sheet_bg{padding:8px 10px 24px}.o_thai_sale_order_v2 .o_form_sheet{grid-template-columns:1fr}.o_thai_sale_order_v2 .o_tso_next_action{grid-column:1;grid-row:3}.o_thai_sale_order_v2 .o_notebook{grid-column:1;grid-row:2}}
+@media(max-width:900px){.o_thai_sale_order_v2 .o_tso_hero{grid-template-columns:1fr}.o_thai_sale_order_v2 .o_tso_summary{grid-template-columns:minmax(145px,.6fr) minmax(0,1.4fr)}}
+@media(max-width:900px){.o_thai_sale_order_v2 .o_notebook .document_tax_mode{position:static !important; justify-content:flex-end; padding:8px 16px}.o_thai_sale_order_v2 .o_notebook .nav-tabs{padding:10px 16px !important}}
+.o_thai_sale_list_summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; padding:10px 14px; background:#f1f5fb; border-bottom:1px solid #dbe5f2; }
+.o_thai_sale_list_stat { display:flex; align-items:center; gap:10px; min-width:0; min-height:54px; padding:8px 12px; border:1px solid #dbe5f2; border-radius:9px; background:#fff; color:#5f718d; }
+.o_thai_sale_list_stat i { display:grid; place-items:center; flex:0 0 32px; width:32px; height:32px; border-radius:8px; background:#eaf3ff; color:#2479df; font-size:16px; }
+.o_thai_sale_list_stat span { display:block; min-width:0; font-size:12px; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.o_thai_sale_list_stat strong { display:block; margin-top:3px; color:#17345f; font-size:18px; line-height:1.2; }
+@media(max-width:1000px){.o_thai_sale_list_summary{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.o_thai_sale_list_summary{grid-template-columns:1fr}}

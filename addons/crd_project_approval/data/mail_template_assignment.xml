@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Sent to reviewer when request is submitted → in_review -->
+    <record id="email_template_assignment_in_review" model="mail.template">
+        <field name="name">IT Project Approval: Assigned for Review</field>
+        <field name="model_id" ref="crd_project_approval.model_project_approval_signoff"/>
+        <field name="email_to">{{ ', '.join(filter(None, object.assigne_user_id.mapped('email'))) or '' }}</field>
+        <field name="subject">[IT Project Approval] รอ Review: {{ object.name or '' }}</field>
+        <field name="body_html" type="html">
+<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; max-width: 600px;">
+    <p>เรียน <t t-out="', '.join(object.assigne_user_id.mapped('name')) or 'ท่าน'">ท่าน</t>,</p>
+    <p>มีคำขออนุมัติโปรเจกต์ IT ที่รอการ Review จากคุณ กรุณาดำเนินการภายในระยะเวลาที่กำหนด</p>
+    <table style="border-collapse: collapse; width: 100%; margin: 16px 0; border: 1px solid #ddd;">
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; width: 160px; background: #f9f9f9;">ชื่อโปรเจกต์</td>
+            <td style="padding: 8px 12px;"><t t-out="object.project_name or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">ผู้ยื่นคำขอ</td>
+            <td style="padding: 8px 12px;"><t t-out="object.create_uid.name or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">Project Background &amp; Objective</td>
+            <td style="padding: 8px 12px; white-space: pre-wrap;"><t t-out="object.project_objective or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">Scope / Pain Points</td>
+            <td style="padding: 8px 12px; white-space: pre-wrap;"><t t-out="object.scope_pain_points or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">วันที่ยื่น</td>
+            <td style="padding: 8px 12px;">
+                <t t-if="object.write_date"><t t-out="(object.write_date + datetime.timedelta(hours=7)).strftime('%d/%m/%Y')">-</t></t>
+                <t t-else="">-</t>
+            </td>
+        </tr>
+    </table>
+    <p style="margin: 24px 0;">
+        <a t-att-href="object.get_base_url() + '/web#model=project.approval.signoff&amp;id=' + str(object.id)"
+           style="background-color: #875A7B; color: #fff; padding: 10px 24px; text-decoration: none; border-radius: 4px; font-size: 14px;">
+            เปิดคำขอ
+        </a>
+    </p>
+    <p style="color: #999; font-size: 12px; margin-top: 32px;">ระบบ OFM IT Project Approval</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Sent to business sponsor when reviewer forwards → wait_for_approval -->
+    <record id="email_template_assignment_wait_approval" model="mail.template">
+        <field name="name">IT Project Approval: Waiting for Approval</field>
+        <field name="model_id" ref="crd_project_approval.model_project_approval_signoff"/>
+        <field name="email_to">{{ ', '.join(object.business_sponsor_ids.mapped('email')) or '' }}</field>
+        <field name="subject">[IT Project Approval] รออนุมัติ: {{ object.name or '' }}</field>
+        <field name="body_html" type="html">
+<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; max-width: 600px;">
+    <p>เรียน ท่าน,</p>
+    <p>มีคำขออนุมัติโปรเจกต์ IT ที่รอการอนุมัติจากคุณ กรุณาตรวจสอบและอนุมัติ/ปฏิเสธคำขอ</p>
+    <table style="border-collapse: collapse; width: 100%; margin: 16px 0; border: 1px solid #ddd;">
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; width: 160px; background: #f9f9f9;">ชื่อโปรเจกต์</td>
+            <td style="padding: 8px 12px;"><t t-out="object.project_name or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">ผู้ยื่นคำขอ</td>
+            <td style="padding: 8px 12px;"><t t-out="object.create_uid.name or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">Project Background &amp; Objective</td>
+            <td style="padding: 8px 12px; white-space: pre-wrap;"><t t-out="object.project_objective or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">Scope / Pain Points</td>
+            <td style="padding: 8px 12px; white-space: pre-wrap;"><t t-out="object.scope_pain_points or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">วันที่ยื่น</td>
+            <td style="padding: 8px 12px;">
+                <t t-if="object.write_date"><t t-out="(object.write_date + datetime.timedelta(hours=7)).strftime('%d/%m/%Y %H:%M')">-</t></t>
+                <t t-else="">-</t>
+            </td>
+        </tr>
+    </table>
+    <p style="margin: 24px 0;">
+        <a t-att-href="object.get_base_url() + '/web#model=project.approval.signoff&amp;id=' + str(object.id)"
+           style="background-color: #875A7B; color: #fff; padding: 10px 24px; text-decoration: none; border-radius: 4px; font-size: 14px;">
+            เปิดคำขอ
+        </a>
+    </p>
+    <p style="color: #999; font-size: 12px; margin-top: 32px;">ระบบ OFM IT Project Approval</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Sent to newly assigned users when assigne_user_id is changed via write() -->
+    <record id="email_template_assignment_reassign" model="mail.template">
+        <field name="name">IT Project Approval: Reassignment Notification</field>
+        <field name="model_id" ref="crd_project_approval.model_project_approval_signoff"/>
+        <field name="email_to"></field>
+        <field name="subject">[IT Project Approval] ได้รับมอบหมายใหม่: {{ object.name or '' }}</field>
+        <field name="body_html" type="html">
+<div style="font-family: Arial, sans-serif; font-size: 14px; color: #333; max-width: 600px;">
+    <p>เรียน ท่าน,</p>
+    <p>คุณได้รับการมอบหมายให้ดำเนินการกับคำขออนุมัติโปรเจกต์ IT ใหม่ กรุณาตรวจสอบและดำเนินการตามที่ระบุ</p>
+    <table style="border-collapse: collapse; width: 100%; margin: 16px 0; border: 1px solid #ddd;">
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; width: 160px; background: #f9f9f9;">ชื่อโปรเจกต์</td>
+            <td style="padding: 8px 12px;"><t t-out="object.project_name or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">ผู้ยื่นคำขอ</td>
+            <td style="padding: 8px 12px;"><t t-out="object.create_uid.name or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">Project Background &amp; Objective</td>
+            <td style="padding: 8px 12px; white-space: pre-wrap;"><t t-out="object.project_objective or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">Scope / Pain Points</td>
+            <td style="padding: 8px 12px; white-space: pre-wrap;"><t t-out="object.scope_pain_points or '-'">-</t></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 12px; font-weight: bold; background: #f9f9f9;">วันที่ยื่น</td>
+            <td style="padding: 8px 12px;">
+                <t t-if="object.write_date"><t t-out="(object.write_date + datetime.timedelta(hours=7)).strftime('%d/%m/%Y %H:%M')">-</t></t>
+                <t t-else="">-</t>
+            </td>
+        </tr>
+    </table>
+    <p style="margin: 24px 0;">
+        <a t-att-href="object.get_base_url() + '/web#model=project.approval.signoff&amp;id=' + str(object.id)"
+           style="background-color: #875A7B; color: #fff; padding: 10px 24px; text-decoration: none; border-radius: 4px; font-size: 14px;">
+            เปิดคำขอ
+        </a>
+    </p>
+    <p style="color: #999; font-size: 12px; margin-top: 32px;">ระบบ OFM IT Project Approval</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+</odoo>

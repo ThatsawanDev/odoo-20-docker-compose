@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_mcp_report" model="ir.actions.act_window">
+        <field name="name">AI Reports</field>
+        <field name="res_model">mcp.report</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No reports yet.</p>
+            <p>
+                Ask the AI: <em>"Create a sale order PDF report with
+                product lines, totals, and company logo."</em>
+                Reports appear in the <strong>Print</strong> menu of the target model's records.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_mcp_report_list" model="ir.ui.view">
+        <field name="name">mcp.report.list</field>
+        <field name="model">mcp.report</field>
+        <field name="arch" type="xml">
+            <list default_order="write_date desc"
+                  decoration-success="state == 'installed'"
+                  decoration-danger="state == 'error'">
+                <field name="name" string="Report Name"/>
+                <field name="model_name" optional="show" string="Target Model"/>
+                <field name="layout" widget="badge" string="Layout"
+                       decoration-info="layout == 'external'"
+                       decoration-warning="layout == 'internal'"
+                       decoration-success="layout == 'minimal'"
+                       optional="show"/>
+                <field name="report_type" widget="badge" optional="show" string="Output"/>
+                <field name="state" widget="badge" string="State"
+                       decoration-success="state == 'installed'"
+                       decoration-danger="state == 'error'"
+                       decoration-info="state == 'draft'"/>
+                <field name="user_id" widget="many2one_avatar_user" optional="show"/>
+                <field name="write_date" string="Updated" optional="show"/>
+                <button name="action_install" string="Install" type="object"
+                        icon="fa-download" class="btn-sm btn-primary"
+                        invisible="state == 'installed'"/>
+                <button name="action_preview" string="Preview" type="object"
+                        icon="fa-eye" class="btn-sm btn-secondary"
+                        invisible="state != 'installed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mcp_report_kanban" model="ir.ui.view">
+        <field name="name">mcp.report.kanban</field>
+        <field name="model">mcp.report</field>
+        <field name="arch" type="xml">
+            <kanban default_order="write_date desc" sample="1">
+                <field name="name"/>
+                <field name="model_name"/>
+                <field name="layout"/>
+                <field name="report_type"/>
+                <field name="state"/>
+                <field name="report_url"/>
+                <field name="user_id"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-style="
+                            height:5px;margin:-12px -12px 12px;border-radius:8px 8px 0 0;
+                            background:#{
+                                record.layout.raw_value == 'external' ? '#3b82f6' :
+                                record.layout.raw_value == 'internal' ? '#f59e0b' : '#10b981'
+                            };"/>
+                        <div class="d-flex align-items-start justify-content-between mb-1">
+                            <strong class="fs-6 text-truncate" style="max-width:70%;">
+                                <field name="name"/>
+                            </strong>
+                            <field name="state" widget="badge"
+                                   decoration-success="state == 'installed'"
+                                   decoration-danger="state == 'error'"
+                                   decoration-info="state == 'draft'"
+                                   class="ms-2 flex-shrink-0"/>
+                        </div>
+                        <div class="text-muted small mb-1">
+                            <i class="fa fa-database me-1" title="mcp report"/>
+                            <field name="model_name"/>
+                        </div>
+                        <div class="d-flex gap-2 mb-3 overflow-hidden">
+                            <field name="layout" widget="badge"
+                                   decoration-info="layout == 'external'"
+                                   decoration-warning="layout == 'internal'"
+                                   decoration-success="layout == 'minimal'"
+                                   class="text-truncate" style="max-width:140px;"/>
+                            <field name="report_type" widget="badge" class="flex-shrink-0"/>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between border-top pt-2 mt-auto">
+                            <field name="user_id" widget="many2one_avatar_user" readonly="1"/>
+                            <div class="d-flex gap-1">
+                                <button name="action_preview" type="object"
+                                        t-if="record.state.raw_value == 'installed'"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        onclick="event.stopPropagation()">
+                                    <i class="fa fa-eye" title="mcp report"/>
+                                </button>
+                                <button name="action_install" type="object"
+                                        t-if="record.state.raw_value != 'installed'"
+                                        class="btn btn-sm btn-outline-primary"
+                                        onclick="event.stopPropagation()">
+                                    <i class="fa fa-download me-1" title="mcp report"/>Install
+                                </button>
+                                <span t-else=""
+                                      class="text-success small fw-semibold align-self-center">
+                                    <i class="fa fa-check-circle me-1" title="mcp report"/>Live
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_mcp_report_form" model="ir.ui.view">
+        <field name="name">mcp.report.form</field>
+        <field name="model">mcp.report</field>
+        <field name="arch" type="xml">
+            <form string="AI Report">
+                <header>
+                    <button name="action_install" string="Install Report"
+                            type="object" class="btn-primary" icon="fa-download"
+                            invisible="state == 'installed'"/>
+                    <button name="action_install" string="Re-Install"
+                            type="object" class="btn-secondary" icon="fa-refresh"
+                            invisible="state != 'installed'"/>
+                    <button name="action_preview" string="Preview in Browser"
+                            type="object" class="btn-secondary" icon="fa-eye"
+                            invisible="state != 'installed'"/>
+                    <button name="action_uninstall" string="Remove"
+                            type="object" class="btn-secondary" icon="fa-trash"
+                            invisible="state != 'installed'"
+                            confirm="Remove this report from Odoo Print menus?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,installed"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-success d-flex gap-2 align-items-center mb-3"
+                         role="alert" invisible="state != 'installed'">
+                        <i class="fa fa-check-circle fa-lg" title="mcp report"/>
+                        <span>
+                            <strong>Report installed.</strong>
+                            Open any <field name="model_name" readonly="1" nolabel="1"/>
+                            record → Print → <field name="name" readonly="1" nolabel="1"/>
+                        </span>
+                    </div>
+                    <div class="alert alert-danger d-flex gap-2 mb-3" role="alert"
+                         invisible="state != 'error'">
+                        <i class="fa fa-exclamation-triangle fa-lg" title="mcp report"/>
+                        <span>Installation failed — see the <strong>Install Log</strong> tab.</span>
+                    </div>
+
+                    <div class="oe_title mb-3">
+                        <h1><field name="name" placeholder="e.g. Sale Order Summary with Lines"/></h1>
+                        <div class="text-muted small mt-1">
+                            Report key: <code><field name="report_key" readonly="1"/></code>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Configuration">
+                            <field name="model_name" string="Target Odoo Model"
+                                   placeholder="e.g. sale.order"/>
+                            <field name="technical_name" string="Technical Name"
+                                   placeholder="e.g. sale_order_summary"/>
+                            <field name="layout" widget="radio" string="Page Layout"/>
+                            <field name="report_type" string="Output Format"/>
+                            <field name="landscape" widget="boolean_toggle"
+                                   string="Landscape Orientation"/>
+                            <field name="binding_model" string="Add to Print Menu Of"
+                                   placeholder="Leave blank = same as Target Model"/>
+                        </group>
+                        <group string="Paper and Info">
+                            <field name="paper_format" string="Paper Format"/>
+                            <field name="paper_width" string="Width (mm)"
+                                   invisible="paper_format != 'custom'"/>
+                            <field name="paper_height" string="Height (mm)"
+                                   invisible="paper_format != 'custom'"/>
+                            <field name="description" string="Internal Notes"
+                                   placeholder="e.g. Shows order lines, tax summary, payment terms"/>
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="user_id" readonly="1" widget="many2one_avatar_user"/>
+                            <field name="report_url" readonly="1" widget="CopyClipboardChar"
+                                   string="Preview URL" invisible="not report_url"/>
+                        </group>
+                    </group>
+
+                    <div class="alert alert-secondary py-2 px-3 mb-2 small" role="alert">
+                        <strong>Layout guide:</strong>
+                        <strong class="text-primary"> External</strong> — company logo + address + footer. Best for customer documents.
+                        <strong class="text-warning"> Internal</strong> — minimal header. Best for warehouse picks.
+                        <strong class="text-success"> Minimal</strong> — blank page. Best for ID cards, badges (use Custom CSS tab).
+                    </div>
+
+                    <notebook>
+                        <page string="Report Template (QWeb HTML)" name="template">
+                            <div class="alert alert-secondary py-2 px-3 mb-2 small" role="alert">
+                                Write content for <code>&lt;div class="page"&gt;</code>.
+                                Variables: <code>doc</code> = current record,
+                                <code>res_company</code> = company (NOT "company").
+                                <strong>t-field rule:</strong> only on
+                                <code>&lt;span&gt; &lt;div&gt; &lt;p&gt; &lt;h1-6&gt;</code> —
+                                NEVER on <code>&lt;td&gt;</code>.
+                                Use <code>&lt;td t-esc="doc.name"/&gt;</code> or
+                                <code>&lt;td&gt;&lt;span t-field="doc.amount_total"/&gt;&lt;/td&gt;</code>.
+                            </div>
+                            <field name="template_html" nolabel="1" widget="ace"
+                                   options="{'mode': 'xml', 'theme': 'monokai'}"
+                                   style="min-height:400px;"/>
+                        </page>
+
+                        <page string="Custom CSS" name="css">
+                            <div class="alert alert-secondary py-2 px-3 mb-2 small" role="alert">
+                                CSS injected into the report page. Especially useful with
+                                <strong>Minimal layout</strong> for ID cards and badges.
+                                Bootstrap 4 classes are available in the template.
+                            </div>
+                            <field name="custom_css" nolabel="1" widget="ace"
+                                   style="min-height:200px;"/>
+                        </page>
+
+                        <page string="Install Log" name="log" invisible="not install_log">
+                            <field name="install_log" nolabel="1" readonly="1"
+                                   widget="ace" style="min-height:120px;"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+</odoo>

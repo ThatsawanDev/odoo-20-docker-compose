@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+<t t-name="thai_sales_stock_easy.SaleFlow">
+  <div class="o_thai_easy_dashboard">
+    <main class="o_thai_sale_flow_page" t-if="!this.state.loading">
+        <header class="o_tsf_head">
+            <button class="o_tsf_back" t-on-click="this.back"><i class="fa fa-arrow-left"/> กลับ</button>
+            <div><h1><t t-esc="this.state.order.name"/> <em t-esc="this.state.order.state_label"/></h1><p>ลูกค้า : <b t-esc="this.state.order.customer.name"/>　 <i class="fa fa-phone"/> <t t-esc="this.state.order.customer.phone"/></p></div>
+            <div class="o_tsf_head_actions"><button><i class="fa fa-print"/> พิมพ์เอกสาร</button><button><i class="fa fa-envelope-o"/> ส่งให้ลูกค้า</button></div>
+            <aside>สร้างจากใบเสนอราคา<br/><strong t-esc="this.state.order.quotation"/></aside>
+        </header>
+        <section class="o_tsf_steps">
+            <article class="is-done"><i class="fa fa-file-text-o"/><div><b>ใบเสนอราคา</b><small t-esc="this.state.order.date"/></div><span class="fa fa-check-circle"/></article><i class="fa fa-long-arrow-right"/>
+            <article t-att-class="this.state.order.confirmed ? 'is-done' : 'is-current'"><i class="fa fa-shopping-cart"/><div><b>ยืนยันการขาย</b><small t-if="this.state.order.delivered">ตัดสต็อกแล้ว ✓</small><small t-else="">รอยืนยันรายการ</small></div><span t-if="this.state.order.confirmed" class="fa fa-check-circle"/></article><i class="fa fa-long-arrow-right"/>
+            <article t-att-class="this.state.order.confirmed &amp;&amp; !this.state.order.invoiced ? 'is-current' : (this.state.order.invoiced ? 'is-done' : '')"><i class="fa fa-truck"/><div><b>เตรียมจัดส่ง</b><small t-if="this.state.order.delivered">พร้อมพิมพ์ใบปะหน้า</small><small t-else="">รอดำเนินการ</small></div></article><i class="fa fa-long-arrow-right"/>
+            <article t-att-class="this.state.order.invoiced ? 'is-done' : ''"><i class="fa fa-file-text"/><div><b>เอกสารการเงิน</b><small t-esc="this.state.order.invoiced ? 'ออกเอกสารแล้ว' : 'รอดำเนินการ'"/></div></article><i class="fa fa-long-arrow-right"/>
+            <article t-att-class="this.state.order.paid ? 'is-done' : (this.state.order.invoiced ? 'is-current' : '')"><i class="fa fa-money"/><div><b>รับเงิน</b><small t-esc="this.state.order.paid ? 'รับเงินแล้ว' : 'รอดำเนินการ'"/></div></article>
+        </section>
+        <div class="o_tsf_layout">
+            <div class="o_tsf_main">
+                <nav><button class="active"><i class="fa fa-shopping-cart"/> ข้อมูลรายการ</button><button><i class="fa fa-map-marker"/> ที่อยู่จัดส่ง</button><button><i class="fa fa-file-text-o"/> ประวัติการทำรายการ</button></nav>
+                <div class="o_tsf_info_grid">
+                    <section><h3>ข้อมูลลูกค้า</h3><div class="o_tsf_customer"><i class="fa fa-building-o"/><b t-esc="this.state.order.customer.name"/><span>เลขประจำตัวผู้เสียภาษี <t t-esc="this.state.order.customer.vat"/></span><p><i class="fa fa-phone"/> <t t-esc="this.state.order.customer.phone"/><br/><i class="fa fa-envelope-o"/> <t t-esc="this.state.order.customer.email"/></p></div></section>
+                    <section><h3>ที่อยู่จัดส่ง</h3><p><i class="fa fa-map-marker"/> <b t-esc="this.state.order.shipping.name"/><br/><t t-esc="this.state.order.shipping.address"/><br/><i class="fa fa-phone"/> <t t-esc="this.state.order.shipping.phone"/></p></section>
+                </div>
+                <section class="o_tsf_products"><h3>รายการสินค้า</h3><div class="o_tsf_table head"><span>#</span><span>รูปสินค้า</span><span>รหัสสินค้า</span><span>ชื่อสินค้า</span><span>จำนวน</span><span>ราคาต่อหน่วย</span><span>ส่วนลด</span><span>รวม</span></div><div class="o_tsf_table" t-foreach="this.state.order.lines" t-as="line" t-key="line.id"><span t-esc="line_index + 1"/><img t-att-src="line.image"/><b t-esc="line.code"/><span t-esc="line.name"/><span><t t-esc="line.qty"/> <t t-esc="line.uom"/></span><span t-esc="this.money(line.price)"/><span><t t-esc="line.discount"/>%</span><strong t-esc="this.money(line.subtotal)"/></div>
+                    <div class="o_tsf_totals"><span>รวมก่อน VAT</span><b t-esc="this.money(this.state.order.untaxed)"/><span>ภาษีมูลค่าเพิ่ม</span><b t-esc="this.money(this.state.order.tax)"/><strong>ยอดรวมทั้งสิ้น</strong><em><t t-esc="this.money(this.state.order.total)"/> <t t-esc="this.state.order.currency"/></em></div>
+                </section>
+                <section class="o_tsf_note"><b><i class="fa fa-file-text-o"/> หมายเหตุ</b><p t-esc="this.state.order.note || '-'"/></section>
+            </div>
+            <aside class="o_tsf_side">
+                <section><h3>สถานะปัจจุบัน</h3><h2><i class="fa fa-truck"/> <t t-esc="this.state.order.paid ? 'เสร็จสิ้น' : (this.state.order.invoiced ? 'รอรับเงิน' : (this.state.order.confirmed ? 'เตรียมจัดส่ง' : 'รอยืนยันการขาย'))"/></h2><p t-if="this.state.order.delivered">ยืนยันการขายแล้ว สต็อกถูกตัดเรียบร้อย</p><button t-if="!this.state.order.confirmed" class="primary" t-on-click="this.confirmSale" t-att-disabled="this.state.busy">ยืนยันการขายและตัดสต็อก</button><div class="o_tsf_stock" t-if="this.state.order.delivered"><b>สต็อกคงเหลือ (หลังตัด)</b><p t-foreach="this.state.order.lines" t-as="line" t-key="line.id"><span t-esc="line.code"/><strong><t t-esc="line.stock"/> <t t-esc="line.uom"/></strong></p></div></section>
+                <section t-if="this.state.order.confirmed &amp;&amp; !this.state.order.paid"><h3>ขั้นตอนถัดไป</h3><div class="o_tsf_warning">เลือกรูปแบบเอกสารและรับเงิน</div><button class="next cash" t-on-click="this.openCash"><i class="fa fa-money"/><span><b>รับเงินทันที</b><small>ออกใบเสร็จและรับเงิน</small></span></button><button class="next" t-if="!this.state.order.invoiced" t-on-click="this.openCredit"><i class="fa fa-file-text-o"/><span><b>ออกใบแจ้งหนี้</b><small>สำหรับลูกค้าที่ชำระภายหลัง</small></span></button><div class="o_tsf_due" t-if="this.state.order.invoiced"><span>ยอดค้างชำระ</span><strong><t t-esc="this.money(this.state.order.residual)"/> <t t-esc="this.state.order.currency"/></strong><small t-if="this.state.order.due_date">ครบกำหนด <t t-esc="this.state.order.due_date"/></small></div></section>
+                <section><h3>พิมพ์เอกสาร / อื่น ๆ</h3><div class="o_tsf_prints"><button><i class="fa fa-cube"/> พิมพ์ใบปะหน้าลัง</button><button><i class="fa fa-list"/> พิมพ์รายการสินค้า</button><button t-if="this.state.order.invoiced" t-on-click="this.printInvoice"><i class="fa fa-file-pdf-o"/> ใบแจ้งหนี้/ใบเสร็จ</button></div></section>
+                <section class="danger" t-if="this.state.order.can_cancel"><h3>ยกเลิกใบสั่งขาย</h3><p>* สต็อกจะถูกปรับกลับคืนอัตโนมัติ</p><button t-on-click="this.cancel"><i class="fa fa-trash"/> ยกเลิกเอกสาร</button></section>
+            </aside>
+        </div>
+        <div class="o_tsf_modal" t-if="this.state.modal"><div class="o_tsf_dialog"><button class="close" t-on-click="() => this.state.modal = ''">×</button><h2 t-esc="this.state.modal === 'payment' ? 'บันทึกรับเงิน' : 'ออกใบแจ้งหนี้'"/><p>ยอดเงิน <strong><t t-esc="this.money(this.state.order.residual || this.state.order.total)"/> <t t-esc="this.state.order.currency"/></strong></p><t t-if="this.state.modal === 'payment'"><label>วันที่รับเงิน<input type="date" t-model="this.state.payment.date"/></label><label>ช่องทางการชำระเงิน<select t-model.number="this.state.payment.journal_id"><option t-foreach="this.state.journals" t-as="journal" t-key="journal.id" t-att-value="journal.id" t-esc="journal.name"/></select></label><label>จำนวนเงินรับ<input type="number" t-model.number="this.state.payment.amount"/></label><label>หมายเหตุ<input t-model="this.state.payment.memo"/></label><button class="primary" t-on-click="this.pay" t-att-disabled="this.state.busy || !this.state.payment.journal_id">ยืนยันรับเงิน</button></t><t t-else=""><label>วันที่ออกใบแจ้งหนี้<input type="date" t-model="this.state.invoice.date"/></label><label>วันครบกำหนด<input type="date" t-model="this.state.invoice.due_date"/></label><button class="primary" t-on-click="this.createInvoice" t-att-disabled="this.state.busy">ยืนยันออกใบแจ้งหนี้</button></t></div></div>
+    </main>
+    <div class="o_thai_loading" t-else="">กำลังโหลดข้อมูลรายการขาย...</div>
+  </div>
+</t>
+</templates>
