@@ -48,6 +48,7 @@
     <menuitem id="menu_hub_marketplace" name="Marketplace" parent="menu_hub" action="action_hub_marketplace" sequence="2"/>
     <record id="menu_hub_marketplace" model="ir.ui.menu"><field name="active" eval="False"/></record>
     <menuitem id="menu_hub_shipping" name="Packing" parent="stock.menu_stock_root" action="action_hub_packing_dashboard" sequence="6"/>
+    <menuitem id="menu_hub_packing_overview" name="ภาพรวมการแพ็ก" parent="menu_hub_shipping" action="action_hub_packing_dashboard" sequence="1" groups="stock.group_stock_user"/>
     <menuitem id="menu_hub_packing_station" name="Packing Station" parent="menu_hub_shipping" action="action_hub_packing_station" sequence="2" groups="stock.group_stock_user"/>
     <menuitem id="menu_hub_packing_stations" name="Packing Stations" parent="menu_hub_shipping" action="action_hub_packing_stations" sequence="3" groups="stock.group_stock_manager"/>
     <menuitem id="menu_hub_packing_video_history" name="Packing Videos" parent="menu_hub_shipping" action="action_hub_packing_video_history" sequence="4" groups="stock.group_stock_user"/>

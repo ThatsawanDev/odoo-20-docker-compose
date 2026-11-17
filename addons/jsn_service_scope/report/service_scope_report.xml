@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_jsn_service" model="ir.actions.report">
+        <field name="name">รายงานบริการ (JSN)</field>
+        <field name="model">service.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">jsn_service_scope.report_jsn_service</field>
+        <field name="binding_model_id" ref="machine_service_management.model_service_order"/>
+        <field name="binding_type">report</field>
+    </record>
+    <template id="report_jsn_service">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>รายงานบริการ / ใบงานซ่อม</h2>
+                        <p><strong>เลขที่:</strong> <span t-field="o.name"/>　<strong>ประเภท:</strong> <span t-field="o.report_kind"/></p>
+                        <p><strong>ลูกค้า:</strong> <span t-field="o.partner_id"/>　<strong>ช่าง:</strong> <span t-field="o.technician_id"/></p>
+                        <p><strong>เครื่อง:</strong> <span t-field="o.machine_id"/>　<strong>S/N:</strong> <span t-field="o.machine_serial"/></p>
+                        <p><strong>สถานที่:</strong> <span t-field="o.install_location"/></p>
+                        <t t-if="o.report_kind == 'receive'">
+                            <p><strong>เอกสารรับเครื่องกลับ:</strong> รับเครื่องจากลูกค้าเพื่อตรวจสอบและซ่อม</p>
+                            <p><strong>วันที่รับ:</strong> <span t-field="o.scheduled_date"/></p>
+                        </t>
+                        <t t-if="o.report_kind == 'return'">
+                            <p><strong>เอกสารส่งเครื่องคืน:</strong> ส่งเครื่องคืนหลังดำเนินการและทดสอบ</p>
+                            <p><strong>วันที่ส่งคืน:</strong> <span t-field="o.date_end"/></p>
+                        </t>
+                        <p><strong>อาการ:</strong> <span t-field="o.symptoms"/></p>
+                        <p><strong>วิเคราะห์สาเหตุ:</strong> <span t-field="o.diagnosis"/></p>
+                        <p><strong>การแก้ไข:</strong> <span t-field="o.resolution"/></p>
+                        <p><strong>ผลทดสอบ:</strong> <span t-field="o.test_results"/></p>
+                        <h3>อะไหล่ที่ใช้</h3>
+                        <table class="table table-sm"><thead><tr><th>รายการ</th><th>จำนวน</th><th>ต้นทุน</th></tr></thead><tbody>
+                            <tr t-foreach="o.part_line_ids" t-as="line"><td><span t-field="line.new_product_id"/></td><td><span t-field="line.quantity"/></td><td><span t-field="line.subtotal"/></td></tr>
+                        </tbody></table>
+                        <p><strong>ต้นทุนรวม:</strong> <span t-field="o.total_cost"/></p>
+                        <p><strong>ผู้รับรอง:</strong> <span t-field="o.signed_by"/>　<strong>วันที่:</strong> <span t-field="o.signed_date"/></p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

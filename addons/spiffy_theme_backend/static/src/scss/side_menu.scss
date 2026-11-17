@@ -2546,7 +2546,7 @@ body.o_web_client.top_menu_vertical {
                 .dropdown-menu { min-width: 9rem; }
             }
 
-            .o_debug_manager { display: none !important; }
+            &:has(.o_debug_manager) .debug_activator { display: none !important; }
             display: flex !important;
             flex-wrap: wrap !important;
             justify-content: center !important;

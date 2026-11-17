@@ -1,0 +1,92 @@
+/* Keep the quotation header compact while giving the customer name priority. */
+.o_thai_sale_order_v2 .o_tso_hero {
+    grid-template-columns: minmax(360px, 1fr) minmax(0, 1.25fr) minmax(0, 1.65fr);
+    align-items: start;
+}
+
+.o_thai_sale_order_v2 .o_tso_parties section,
+.o_thai_sale_order_v2 .o_tso_summary {
+    padding: 10px 12px;
+    min-height: 0;
+}
+
+.o_thai_sale_order_v2 .o_tso_parties section > span {
+    margin-bottom: 5px;
+}
+
+.o_thai_sale_order_v2 .o_tso_customer_master > .o_field_widget input {
+    min-height: 38px;
+    font-size: 18px !important;
+    font-weight: 700;
+}
+
+.o_thai_sale_order_v2 .o_tso_customer_master > .o_tso_customer_full_name {
+    grid-column: 1 / -1;
+    min-width: 0;
+    margin-top: 5px;
+    overflow-wrap: anywhere;
+    white-space: normal;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.o_thai_sale_order_v2 .o_tso_shipping_editor .thai_address_editor,
+.o_thai_sale_order_v2 .o_tso_shipping_editor .thai_address_grid {
+    gap: 6px 10px;
+}
+
+.o_thai_sale_order_v2 .o_tso_shipping_editor input,
+.o_thai_sale_order_v2 .o_tso_summary input,
+.o_thai_sale_order_v2 .o_tso_summary select {
+    min-height: 36px !important;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.o_thai_sale_order_v2 .o_tso_summary {
+    gap: 4px 10px;
+}
+
+/* Spiffy adds tall controls to autocomplete, select and date widgets. */
+.o_thai_sale_order_v2 .o_tso_shipping_editor .o_field_widget,
+.o_thai_sale_order_v2 .o_tso_shipping_editor .o_input_dropdown,
+.o_thai_sale_order_v2 .o_tso_shipping_editor .o-autocomplete,
+.o_thai_sale_order_v2 .o_tso_summary .o_field_widget:not(.o_field_text),
+.o_thai_sale_order_v2 .o_tso_summary .o_input_dropdown,
+.o_thai_sale_order_v2 .o_tso_summary .o-autocomplete,
+.o_thai_sale_order_v2 .o_tso_summary .o_datepicker {
+    min-height: 0 !important;
+    height: 38px !important;
+    max-height: 38px !important;
+    align-items: center;
+}
+
+.o_thai_sale_order_v2 .o_tso_shipping_editor input,
+.o_thai_sale_order_v2 .o_tso_shipping_editor select,
+.o_thai_sale_order_v2 .o_tso_summary input,
+.o_thai_sale_order_v2 .o_tso_summary select {
+    box-sizing: border-box;
+    min-height: 0 !important;
+    height: 38px !important;
+    max-height: 38px !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    line-height: 26px !important;
+}
+
+.o_thai_sale_order_v2 .o_tso_summary textarea {
+    min-height: 52px;
+    padding: 7px 10px;
+}
+
+@media (max-width: 1450px) {
+    .o_thai_sale_order_v2 .o_tso_hero {
+        grid-template-columns: minmax(320px, .9fr) minmax(0, 1.3fr);
+    }
+}
+
+@media (max-width: 900px) {
+    .o_thai_sale_order_v2 .o_tso_hero {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}

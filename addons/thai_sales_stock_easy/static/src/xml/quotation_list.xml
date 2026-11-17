@@ -3,10 +3,10 @@
     <t t-name="thai_sales_stock_easy.QuotationListView" t-inherit="web.ListView" t-inherit-mode="primary">
         <xpath expr="//t[@t-component='this.props.Renderer']" position="before">
             <div class="o_thai_sale_list_summary">
-                <div class="o_thai_sale_list_stat"><i class="fa fa-file-text-o"/><span>ใบเสนอราคาใหม่<strong t-esc="this.saleSummary.draft"/></span></div>
-                <div class="o_thai_sale_list_stat"><i class="fa fa-paper-plane-o"/><span>ส่งแล้วรอยืนยัน<strong t-esc="this.saleSummary.sent"/></span></div>
-                <div class="o_thai_sale_list_stat"><i class="fa fa-check-circle-o"/><span>คำสั่งขาย<strong t-esc="this.saleSummary.confirmed"/></span></div>
-                <div class="o_thai_sale_list_stat"><i class="fa fa-line-chart"/><span>ยอดขายเดือนนี้<strong><t t-esc="this.monthTotalText"/> <t t-esc="this.saleSummary.currency"/></strong></span></div>
+                <div class="o_thai_sale_list_stat"><svg class="o_tsl_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5M9 12h6M9 16h6"/></svg><span>ใบเสนอราคาใหม่<strong t-esc="this.saleSummary.draft"/></span></div>
+                <div class="o_thai_sale_list_stat"><svg class="o_tsl_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3 3 10l8 3 3 8 7-18zM11 13l10-10"/></svg><span>ส่งแล้วรอยืนยัน<strong t-esc="this.saleSummary.sent"/></span></div>
+                <div class="o_thai_sale_list_stat"><svg class="o_tsl_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg><span>คำสั่งขาย<strong t-esc="this.saleSummary.confirmed"/></span></div>
+                <div class="o_thai_sale_list_stat"><svg class="o_tsl_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M7 15l4-4 3 2 5-6M16 7h3v3"/></svg><span>ยอดขายเดือนนี้<strong><t t-esc="this.monthTotalText"/> <t t-esc="this.saleSummary.currency"/></strong></span></div>
             </div>
         </xpath>
     </t>

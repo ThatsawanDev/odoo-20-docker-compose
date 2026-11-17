@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="partner_food_demo" model="res.partner">
+        <field name="name">บริษัท กรีนเดลี่ ฟู้ดส์ จำกัด (ตัวอย่าง)</field>
+        <field name="is_company" eval="True"/><field name="customer_rank">1</field>
+        <field name="phone">02-000-0001</field><field name="city">กรุงเทพมหานคร</field><field name="country_id" ref="base.th"/>
+    </record>
+    <record id="partner_pack_demo" model="res.partner">
+        <field name="name">บริษัท โกลเด้น ไลน์ บิสซิเนส จำกัด (ตัวอย่าง)</field>
+        <field name="is_company" eval="True"/><field name="customer_rank">1</field>
+        <field name="phone">02-000-0002</field><field name="city">สมุทรปราการ</field><field name="country_id" ref="base.th"/>
+    </record>
+    <record id="product_e860tp" model="product.product">
+        <field name="name">เครื่องพิมพ์วันที่ EMICO E860TP (ตัวอย่าง)</field><field name="default_code">E860TP</field>
+        <field name="is_storable" eval="True"/><field name="tracking">serial</field><field name="list_price">185000</field>
+    </record>
+    <record id="product_e850t" model="product.product">
+        <field name="name">เครื่องพิมพ์วันที่ EMICO E850T (ตัวอย่าง)</field><field name="default_code">E850T</field>
+        <field name="is_storable" eval="True"/><field name="tracking">serial</field><field name="list_price">145000</field>
+    </record>
+    <record id="product_printhead" model="product.product">
+        <field name="name">หัวพิมพ์ E860TP (ตัวอย่าง)</field><field name="default_code">SP-E860-HEAD</field>
+        <field name="is_storable" eval="True"/><field name="list_price">12500</field><field name="standard_price">7500</field>
+    </record>
+    <record id="product_filter" model="product.product">
+        <field name="name">ชุดกรองหมึก E860TP (ตัวอย่าง)</field><field name="default_code">SP-E860-FILTER</field>
+        <field name="is_storable" eval="True"/><field name="list_price">3200</field><field name="standard_price">1800</field>
+    </record>
+    <record id="product_service_labor" model="product.product">
+        <field name="name">ค่าแรงบริการช่าง (ตัวอย่าง)</field><field name="default_code">SVC-LABOR</field>
+        <field name="type">service</field><field name="list_price">500</field>
+    </record>
+    <record id="model_e860tp" model="service.machine.model">
+        <field name="name">E860TP</field><field name="code">E860TP</field><field name="brand">EMICO</field>
+        <field name="description">เครื่องพิมพ์วันที่อุตสาหกรรม (ข้อมูลตัวอย่าง)</field>
+    </record>
+    <record id="model_e850t" model="service.machine.model">
+        <field name="name">E850T</field><field name="code">E850T</field><field name="brand">EMICO</field>
+        <field name="description">เครื่องพิมพ์วันที่อุตสาหกรรม (ข้อมูลตัวอย่าง)</field>
+    </record>
+    <record id="machine_e860_demo_1" model="service.machine.asset">
+        <field name="name">EMICO E860TP (ตัวอย่าง)</field><field name="serial_number">860TP24640043034-DEMO</field>
+        <field name="model_id" ref="model_e860tp"/><field name="product_id" ref="product_e860tp"/>
+        <field name="partner_id" ref="partner_food_demo"/><field name="install_location">สายการผลิต A กรุงเทพฯ</field>
+        <field name="ownership_type">sold</field><field name="state">operational</field>
+    </record>
+    <record id="machine_e860_demo_2" model="service.machine.asset">
+        <field name="name">EMICO E860TP (ตัวอย่าง)</field><field name="serial_number">860TP24640343037-DEMO</field>
+        <field name="model_id" ref="model_e860tp"/><field name="product_id" ref="product_e860tp"/>
+        <field name="partner_id" ref="partner_food_demo"/><field name="install_location">สายการผลิต B กรุงเทพฯ</field>
+        <field name="ownership_type">sold</field><field name="state">operational</field>
+    </record>
+    <record id="machine_e850_demo" model="service.machine.asset">
+        <field name="name">EMICO E850T (ตัวอย่าง)</field><field name="serial_number">850T25670909011-DEMO</field>
+        <field name="model_id" ref="model_e850t"/><field name="product_id" ref="product_e850t"/>
+        <field name="partner_id" ref="partner_pack_demo"/><field name="install_location">โรงงานสมุทรปราการ</field>
+        <field name="ownership_type">rental</field><field name="state">maintenance</field>
+    </record>
+    <record id="service_demo_field" model="service.order">
+        <field name="partner_id" ref="partner_food_demo"/><field name="machine_id" ref="machine_e860_demo_1"/>
+        <field name="report_kind">on_field</field><field name="order_type">breakdown</field>
+        <field name="symptoms">หัวพิมพ์สีจาง (ข้อมูลตัวอย่าง)</field><field name="diagnosis">หัวพิมพ์อุดตัน</field>
+        <field name="resolution">ทำความสะอาดหัวพิมพ์และทดสอบ</field><field name="test_results">พิมพ์ได้ตามปกติ</field>
+        <field name="state">done</field>
+    </record>
+    <record id="service_demo_inhouse" model="service.order">
+        <field name="partner_id" ref="partner_pack_demo"/><field name="machine_id" ref="machine_e850_demo"/>
+        <field name="report_kind">in_house</field><field name="repair_stage">repairing</field><field name="order_type">breakdown</field>
+        <field name="symptoms">เครื่องพิมพ์ไม่ออก (ข้อมูลตัวอย่าง)</field><field name="diagnosis">ชุดกรองหมึกอุดตัน</field>
+        <field name="state">in_progress</field>
+        <field name="part_line_ids" eval="[(0, 0, {'action': 'consume', 'new_product_id': ref('product_filter'), 'quantity': 1, 'unit_cost': 1800})]"/>
+    </record>
+
+</odoo>
+

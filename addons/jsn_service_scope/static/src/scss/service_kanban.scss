@@ -1,0 +1,47 @@
+.o_jsn_service_kanban .o_kanban_record {
+    width: 340px;
+    padding: 0;
+    border: 1px solid #dce6f3;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 5px 18px rgba(15, 39, 77, .08);
+    background: #fff;
+}
+.o_jsn_service_card { color: #152b4b; }
+.o_jsn_service_photo {
+    height: 150px;
+    background: linear-gradient(135deg, #eaf2fc, #f8fbff);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.o_jsn_service_photo img { width: 100%; height: 100%; object-fit: contain; }
+.o_jsn_service_photo_empty { font-size: 72px; color: #9eb6d5; line-height: 1; }
+.o_jsn_service_kind {
+    position: absolute;
+    left: 12px;
+    bottom: 10px;
+    background: #fff;
+    border-radius: 999px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.o_jsn_service_body { padding: 16px; }
+.o_jsn_service_heading { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+.o_jsn_service_heading strong { font-size: 16px; }
+.o_jsn_service_state { border-radius: 999px; padding: 5px 9px; font-size: 11px; white-space: nowrap; background: #edf2f7; color: #456; }
+.o_jsn_state_confirmed { background: #e9f1ff; color: #2257a5; }
+.o_jsn_state_in_progress, .o_jsn_state_parts_pending { background: #fff1d8; color: #976000; }
+.o_jsn_state_testing { background: #e8e8ff; color: #554fb2; }
+.o_jsn_state_done { background: #def5e9; color: #147549; }
+.o_jsn_state_cancel { background: #fce8e8; color: #ad3b3b; }
+.o_jsn_service_machine { font-weight: 650; margin-top: 12px; }
+.o_jsn_service_serial { font-size: 12px; color: #537093; margin-top: 2px; }
+.o_jsn_service_customer { margin-top: 10px; font-size: 13px; }
+.o_jsn_service_symptoms { margin-top: 8px; min-height: 34px; color: #52657e; font-size: 13px; }
+.o_jsn_service_footer { border-top: 1px solid #e8edf3; padding-top: 10px; margin-top: 10px; display: flex; justify-content: space-between; gap: 8px; color: #6c7d90; font-size: 11px; }
+
+/* Empty layout placeholders from the Kanban renderer appear as stray rules. */
+.o_jsn_service_kanban .o_kanban_ghost { display: none !important; }

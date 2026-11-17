@@ -45,8 +45,8 @@ export class PackingDashboard extends Component {
     }
 
     openPicking(id) {
-        return this.action.doAction({ type: "ir.actions.act_window", res_model: "stock.picking", res_id: id,
-            views: [[false, "form"]], target: "current" });
+        return this.action.doAction({ type: "ir.actions.client", name: "Packing Station",
+            tag: "thai_sales_stock_hub.PackingStation", params: { picking_id: id }, target: "current" });
     }
 
     openStations() { return this.action.doAction("thai_sales_stock_hub.action_hub_packing_stations"); }

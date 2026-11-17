@@ -26,6 +26,8 @@
 !smart_sale_tiktok/**
 !thai_mrp_easy/
 !thai_mrp_easy/**
+!jsn_service_scope/
+!jsn_service_scope/**
 spiffy_theme_backend/static/firebase-key/*.json
 **/__pycache__/
 **/*.pyc

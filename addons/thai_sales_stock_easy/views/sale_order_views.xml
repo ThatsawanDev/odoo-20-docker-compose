@@ -65,6 +65,7 @@
                             <span><i class="fa fa-building-o"/> ข้อมูลลูกค้า</span>
                             <field name="partner_id" widget="res_partner_many2one" context="{'res_partner_search_mode':'customer','show_address':False,'show_vat':False}" placeholder="เลือกลูกค้า" readonly="state in ['sale','cancel']"/>
                             <button name="action_easy_open_customer" type="object" class="btn btn-link p-1 ms-1" invisible="not partner_id" title="ดู / แก้ไขข้อมูลหลัก" aria-label="ดู / แก้ไขข้อมูลหลัก"><i class="fa fa-external-link"/></button>
+                            <field name="partner_id" class="o_tso_customer_full_name" readonly="1" invisible="not partner_id" options="{'no_open': True}"/>
                             <div class="o_tso_customer_pricelist" invisible="not thai_easy_enable_pricelist">
                                 <label for="pricelist_id"><i class="fa fa-tags"/> รายการราคา</label>
                                 <field name="pricelist_id" readonly="state in ['sale','cancel']" options="{'no_open': True}"/>

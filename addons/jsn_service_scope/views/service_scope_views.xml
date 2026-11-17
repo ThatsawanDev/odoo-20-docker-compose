@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_service_order_scope_form" model="ir.ui.view">
+        <field name="name">service.order.jsn.scope.form</field>
+        <field name="model">service.order</field>
+        <field name="inherit_id" ref="machine_service_management.view_service_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='order_type']" position="after">
+                <field name="report_kind"/><field name="repair_stage"/><field name="document_number"/><field name="customer_po"/>
+            </xpath>
+            <xpath expr="//field[@name='part_line_ids']" position="after">
+                <field name="issue_picking_id" readonly="1"/>
+                <button name="action_create_spare_issue" type="object" string="สร้างใบเบิกอะไหล่" class="btn-primary"/>
+                <field name="sale_order_id" readonly="1"/>
+                <button name="action_create_quotation" type="object" string="สร้างใบเสนอราคา" class="btn-primary"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_jsn_service_order_kanban" model="ir.ui.view">
+        <field name="name">service.order.jsn.kanban</field>
+        <field name="model">service.order</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <kanban class="o_jsn_service_kanban" sample="0">
+                <field name="name"/><field name="state"/><field name="report_kind"/>
+                <field name="partner_id"/><field name="machine_id"/><field name="machine_serial"/>
+                <field name="machine_image_128"/><field name="symptoms"/>
+                <field name="technician_id"/><field name="scheduled_date"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_jsn_service_card">
+                            <div class="o_jsn_service_photo">
+                                <t t-if="record.machine_image_128.raw_value">
+                                    <img t-attf-src="/web/image/service.order/#{record.id.raw_value}/machine_image_128" alt="รูปเครื่องจักร"/>
+                                </t>
+                                <t t-else=""><span class="o_jsn_service_photo_empty">⚙</span></t>
+                                <span class="o_jsn_service_kind"><field name="report_kind"/></span>
+                            </div>
+                            <div class="o_jsn_service_body">
+                                <div class="o_jsn_service_heading"><strong><field name="name"/></strong><span t-att-class="'o_jsn_service_state o_jsn_state_' + record.state.raw_value"><field name="state"/></span></div>
+                                <div class="o_jsn_service_machine"><field name="machine_id"/></div>
+                                <div class="o_jsn_service_serial">S/N <field name="machine_serial"/></div>
+                                <div class="o_jsn_service_customer"><field name="partner_id"/></div>
+                                <div class="o_jsn_service_symptoms"><field name="symptoms"/></div>
+                                <div class="o_jsn_service_footer"><span>ช่าง: <field name="technician_id"/></span><span><field name="scheduled_date"/></span></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="view_jsn_account_asset_form" model="ir.ui.view">
+        <field name="name">account.asset.asset.jsn.form</field>
+        <field name="model">account.asset.asset</field>
+        <field name="inherit_id" ref="base_accounting_kit.account_asset_asset_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="service_machine_id"/><field name="service_location"/><field name="service_responsible_id"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_machine_asset_scope_form" model="ir.ui.view">
+        <field name="name">service.machine.asset.jsn.scope.form</field>
+        <field name="model">service.machine.asset</field>
+        <field name="inherit_id" ref="machine_service_management.view_service_machine_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='install_location']" position="after">
+                <field name="ownership_type"/>
+                <button name="action_record_location" type="object" string="บันทึกการย้ายเครื่อง"/>
+                <field name="location_history_ids" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_machine_model_scope_form" model="ir.ui.view">
+        <field name="name">service.machine.model.jsn.scope.form</field>
+        <field name="model">service.machine.model</field>
+        <field name="inherit_id" ref="machine_service_management.view_service_machine_model_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="คู่มือและเอกสาร"><field name="document_ids"/></group>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_jsn_machine_document_list" model="ir.ui.view">
+        <field name="name">jsn.machine.document.list</field><field name="model">jsn.machine.document</field>
+        <field name="arch" type="xml"><list><field name="name"/><field name="model_id"/><field name="document_type"/><field name="attachment_id"/></list></field>
+    </record>
+    <record id="view_jsn_machine_document_form" model="ir.ui.view">
+        <field name="name">jsn.machine.document.form</field><field name="model">jsn.machine.document</field>
+        <field name="arch" type="xml"><form><sheet><group><field name="name"/><field name="model_id"/><field name="document_type"/><field name="attachment_id"/><field name="note"/></group></sheet></form></field>
+    </record>
+    <record id="view_jsn_machine_location_form" model="ir.ui.view">
+        <field name="name">jsn.machine.location.form</field><field name="model">jsn.machine.location.history</field>
+        <field name="arch" type="xml"><form><sheet><group><field name="machine_id"/><field name="move_date"/><field name="from_location"/><field name="to_location"/><field name="note"/></group></sheet><footer><button string="บันทึก" special="save" class="btn-primary"/><button string="ยกเลิก" special="cancel"/></footer></form></field>
+    </record>
+    <record id="action_jsn_service_all" model="ir.actions.act_window"><field name="name">รายงานบริการ</field><field name="res_model">service.order</field><field name="view_mode">kanban,list,form,pivot,graph</field><field name="view_id" ref="view_jsn_service_order_kanban"/></record>
+    <record id="action_jsn_service_inhouse" model="ir.actions.act_window"><field name="name">งานซ่อมภายใน</field><field name="res_model">service.order</field><field name="view_mode">kanban,list,form</field><field name="view_id" ref="view_jsn_service_order_kanban"/><field name="domain">[('report_kind','=','in_house')]</field><field name="context">{'default_report_kind':'in_house'}</field></record>
+    <record id="action_jsn_customers" model="ir.actions.act_window"><field name="name">ลูกค้า</field><field name="res_model">res.partner</field><field name="view_mode">kanban,list,form</field><field name="domain">[('customer_rank','&gt;',0)]</field><field name="context">{'default_customer_rank':1}</field></record>
+    <record id="action_jsn_documents" model="ir.actions.act_window"><field name="name">คู่มือและเอกสาร</field><field name="res_model">jsn.machine.document</field><field name="view_mode">list,form</field></record>
+    <record id="action_jsn_assets" model="ir.actions.act_window"><field name="name">สินทรัพย์ถาวร</field><field name="res_model">account.asset.asset</field><field name="view_mode">list,kanban,form</field><field name="domain">[('type','=','purchase')]</field></record>
+    <record id="action_jsn_stock_pickings" model="ir.actions.act_window"><field name="name">รับเข้า เบิกจ่าย โอนย้าย คืนอะไหล่</field><field name="res_model">stock.picking</field><field name="view_mode">list,form</field></record>
+    <record id="action_jsn_stock_quant" model="ir.actions.act_window"><field name="name">สต็อกคงเหลือ</field><field name="res_model">stock.quant</field><field name="view_mode">list,form</field></record>
+    <record id="action_jsn_service_analysis" model="ir.actions.act_window"><field name="name">วิเคราะห์งานบริการและต้นทุน</field><field name="res_model">service.order</field><field name="view_mode">pivot,graph,list</field></record>
+
+    <menuitem id="menu_jsn_root" name="Service ERP" sequence="1"/>
+    <menuitem id="menu_jsn_reports" name="รายงานบริการ" parent="menu_jsn_root" action="action_jsn_service_all" sequence="1"/>
+    <menuitem id="menu_jsn_quotation" name="ใบเสนอราคา" parent="menu_jsn_root" action="thai_sales_stock_easy.action_quotation" sequence="2"/>
+    <menuitem id="menu_jsn_repairs" name="งานซ่อมภายใน" parent="menu_jsn_root" action="action_jsn_service_inhouse" sequence="2"/>
+    <menuitem id="menu_jsn_customers" name="ลูกค้า" parent="menu_jsn_root" action="action_jsn_customers" sequence="3"/>
+    <menuitem id="menu_jsn_machines" name="เครื่องทั้งหมด" parent="menu_jsn_root" action="machine_service_management.action_service_machine_asset" sequence="4"/>
+    <menuitem id="menu_jsn_assets" name="สินทรัพย์" parent="menu_jsn_root" action="action_jsn_assets" sequence="5"/>
+    <menuitem id="menu_jsn_models" name="รุ่นเครื่อง" parent="menu_jsn_root" action="machine_service_management.action_service_machine_model" sequence="6"/>
+    <menuitem id="menu_jsn_documents" name="คู่มือและเอกสาร" parent="menu_jsn_root" action="action_jsn_documents" sequence="7"/>
+    <menuitem id="menu_jsn_parts" name="อะไหล่" parent="menu_jsn_root" action="machine_service_management.action_service_spare_products" sequence="8"/>
+    <menuitem id="menu_jsn_stock" name="คลังอะไหล่" parent="menu_jsn_root" action="action_jsn_stock_pickings" sequence="9"/>
+    <menuitem id="menu_jsn_stock_balance" name="สต็อกคงเหลือ" parent="menu_jsn_root" action="action_jsn_stock_quant" sequence="10"/>
+    <menuitem id="menu_jsn_analysis" name="รายงานและวิเคราะห์" parent="menu_jsn_root" action="action_jsn_service_analysis" sequence="11"/>
+    <menuitem id="menu_jsn_users" name="ผู้ใช้งานและสิทธิ์" parent="menu_jsn_root" action="base.action_res_users" groups="base.group_system" sequence="12"/>
+
+    <record id="machine_service_management.menu_machine_service_root" model="ir.ui.menu"><field name="active" eval="False"/></record>
+    <record id="sale.sale_menu_root" model="ir.ui.menu"><field name="active" eval="True"/></record>
+    <record id="stock.menu_stock_root" model="ir.ui.menu"><field name="active" eval="False"/></record>
+    <record id="mail.menu_root_discuss" model="ir.ui.menu"><field name="active" eval="False"/></record>
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" model="ir.ui.menu"><field name="active" eval="False"/></record>
+    <record id="account.menu_finance" model="ir.ui.menu"><field name="active" eval="False"/></record>
+    <record id="purchase.menu_purchase_root" model="ir.ui.menu"><field name="active" eval="False"/></record>
+    <record id="contacts.menu_contacts" model="ir.ui.menu"><field name="active" eval="False"/></record>
+    <record id="utm.menu_link_tracker_root" model="ir.ui.menu"><field name="active" eval="False"/></record>
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="active" eval="True"/>
+        <field name="group_ids" eval="[(6, 0, [ref('base.group_system')])]"/>
+    </record>
+    <record id="base.menu_tests" model="ir.ui.menu"><field name="active" eval="False"/></record>
+</odoo>
+

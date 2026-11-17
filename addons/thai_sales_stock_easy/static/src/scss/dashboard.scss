@@ -554,6 +554,7 @@ body:has(.o_tso_summary) .o_form_statusbar .o_statusbar_status .o_arrow_button_w
 .o_thai_sale_list_summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; padding:10px 14px; background:#f1f5fb; border-bottom:1px solid #dbe5f2; }
 .o_thai_sale_list_stat { display:flex; align-items:center; gap:10px; min-width:0; min-height:54px; padding:8px 12px; border:1px solid #dbe5f2; border-radius:9px; background:#fff; color:#5f718d; }
 .o_thai_sale_list_stat i { display:grid; place-items:center; flex:0 0 32px; width:32px; height:32px; border-radius:8px; background:#eaf3ff; color:#2479df; font-size:16px; }
+.o_thai_sale_list_stat .o_tsl_icon { box-sizing:content-box; flex:0 0 20px; width:20px; height:20px; padding:6px; border-radius:8px; background:#eaf3ff; color:#2479df; }
 .o_thai_sale_list_stat span { display:block; min-width:0; font-size:12px; line-height:1.25; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .o_thai_sale_list_stat strong { display:block; margin-top:3px; color:#17345f; font-size:18px; line-height:1.2; }
 @media(max-width:1000px){.o_thai_sale_list_summary{grid-template-columns:repeat(2,minmax(0,1fr))}}

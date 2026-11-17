@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_jsn_sale_machine_wizard" model="ir.ui.view">
+        <field name="name">jsn.sale.machine.wizard.form</field>
+        <field name="model">jsn.sale.machine.wizard</field>
+        <field name="arch" type="xml">
+            <form string="ลงทะเบียนเครื่องจากใบขาย">
+                <sheet><group>
+                    <field name="sale_order_id"/>
+                    <field name="product_id"/>
+                    <field name="model_id"/>
+                    <field name="lot_id"/>
+                    <field name="serial_number"/>
+                    <field name="install_location"/>
+                    <field name="installation_date"/>
+                    <field name="warranty_end_date"/>
+                </group></sheet>
+                <footer><button name="action_register" type="object" string="ลงทะเบียนเครื่อง" class="btn-primary"/><button string="ยกเลิก" special="cancel"/></footer>
+            </form>
+        </field>
+    </record>
+    <record id="view_jsn_service_purchase_wizard" model="ir.ui.view">
+        <field name="name">jsn.service.purchase.wizard.form</field>
+        <field name="model">jsn.service.purchase.wizard</field>
+        <field name="arch" type="xml">
+            <form string="สั่งซื้ออะไหล่ที่ขาด">
+                <sheet><group>
+                    <field name="service_order_id"/>
+                    <field name="vendor_id"/>
+                    <field name="warehouse_id"/>
+                </group><div class="alert alert-info">ระบบจะคำนวณเฉพาะจำนวนที่ขาดจากคลังที่เลือก ใบสั่งซื้อจะเป็นฉบับร่างและต้องยืนยันพร้อมรับสินค้าเข้าคลังก่อนเบิกไปใช้</div></sheet>
+                <footer><button name="action_create_purchase" type="object" string="สร้างใบสั่งซื้อ" class="btn-primary"/><button string="ยกเลิก" special="cancel"/></footer>
+            </form>
+        </field>
+    </record>
+    <record id="view_jsn_sale_order_workflow" model="ir.ui.view">
+        <field name="name">sale.order.jsn.machine.workflow</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_register_service_machine" type="object" string="ลงทะเบียนเครื่อง" invisible="state != 'sale'"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_service_machines" type="object" class="oe_stat_button" icon="fa-cogs">
+                    <field name="service_machine_count" widget="statinfo" string="เครื่องที่ขาย"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_jsn_service_order_workflow" model="ir.ui.view">
+        <field name="name">service.order.jsn.workflow</field>
+        <field name="model">service.order</field>
+        <field name="inherit_id" ref="machine_service_management.view_service_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='machine_id']" position="after">
+                <field name="billing_policy"/>
+                <field name="warehouse_id"/>
+            </xpath>
+            <xpath expr="//field[@name='part_line_ids']/list/field[@name='quantity']" position="after">
+                <field name="available_qty" readonly="1"/>
+                <field name="issue_move_id" readonly="1" optional="hide"/>
+            </xpath>
+            <xpath expr="//field[@name='part_line_ids']" position="after">
+                <field name="purchase_order_id" readonly="1"/>
+                <button name="action_create_parts_purchase" type="object" string="สั่งซื้ออะไหล่ที่ขาด"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_jsn_machine_sale_link" model="ir.ui.view">
+        <field name="name">service.machine.asset.jsn.sale.link</field>
+        <field name="model">service.machine.asset</field>
+        <field name="inherit_id" ref="machine_service_management.view_service_machine_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="sale_order_id" readonly="1"/>
+                <field name="delivery_picking_id" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

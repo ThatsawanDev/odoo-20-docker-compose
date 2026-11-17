@@ -518,9 +518,9 @@ body.o_web_client.top_menu_horizontal .o_main_navbar .o_menu_systray {
         }
     }
 
-    // Odoo's native developer button duplicates the theme's developer tool.
-    > .o_debug_manager,
-    > div:has(.o_debug_manager) {
+    // Once debug mode is active, use Odoo's developer menu in place of the
+    // theme's mode toggle so the developer actions remain available.
+    &:has(.o_debug_manager) .debug_activator {
         display: none !important;
     }
 

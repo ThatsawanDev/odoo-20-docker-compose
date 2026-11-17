@@ -1,0 +1,9 @@
+id,name,model_id,group_id/id,operation,domain
+access_jsn_machine_location_service,jsn.machine.location.service,jsn.machine.location.history,group_jsn_service,cru,
+access_jsn_machine_location_technician,jsn.machine.location.technician,jsn.machine.location.history,group_jsn_technician,r,
+access_jsn_machine_document_service,jsn.machine.document.service,jsn.machine.document,group_jsn_service,cru,
+access_jsn_machine_document_technician,jsn.machine.document.technician,jsn.machine.document,group_jsn_technician,r,
+access_jsn_account_asset_admin,jsn.account.asset.admin,account.asset.asset,group_jsn_admin,crud,
+access_jsn_account_asset_service,jsn.account.asset.service,account.asset.asset,group_jsn_service,r,
+access_jsn_sale_machine_wizard,jsn.sale.machine.wizard,jsn.sale.machine.wizard,group_jsn_service,crud,
+access_jsn_service_purchase_wizard,jsn.service.purchase.wizard,jsn.service.purchase.wizard,group_jsn_service,crud,
