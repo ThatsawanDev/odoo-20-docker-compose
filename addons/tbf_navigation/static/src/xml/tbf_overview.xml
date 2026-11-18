@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="tbf_navigation.OverviewDashboard">
+        <div class="tbf-overview-page">
+            <div class="tbf-ov-inner">
+            <!-- Header Bar -->
+            <div class="tbf-ov-header">
+                <div class="tbf-ov-title-wrap">
+                    <div class="tbf-ov-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="tbf-ov-title">คำสั่งขายและสถานะงาน</h1>
+                        <p class="tbf-ov-subtitle">ติดตามตั้งแต่ Sales Order (SO) จนถึงจัดส่งสินค้า (Shipment)</p>
+                    </div>
+                </div>
+                <div class="tbf-ov-controls">
+                    <div class="tbf-ov-period-box">
+                        <svg class="tbf-ov-ctrl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                            <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                            <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        <span class="tbf-ov-period-label">ช่วงเวลา:</span>
+                        <select class="tbf-ov-select" t-att-value="this.state.period" t-on-change="this.onPeriodChange">
+                            <option value="today">วันนี้</option>
+                            <option value="week">สัปดาห์นี้</option>
+                            <option value="month">เดือนนี้</option>
+                            <option value="year">ปีนี้</option>
+                            <option value="all">ทั้งหมด</option>
+                        </select>
+                    </div>
+                    <div class="tbf-ov-search-box">
+                        <svg class="tbf-ov-ctrl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input
+                            type="text"
+                            placeholder="ค้นหาเลข SO, ลูกค้า, สินค้า..."
+                            t-att-value="this.state.search"
+                            t-on-input="this.onSearchInput"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6-Stage Pipeline Cards -->
+            <div class="tbf-ov-pipeline">
+                <t t-foreach="this.state.stages" t-as="stage" t-key="stage.key">
+                    <div
+                        t-attf-class="tbf-stage-card tone-{{stage.tone}} {{this.state.activeStage === stage.key ? 'is-selected' : ''}}"
+                        t-on-click="() => this.selectStage(stage.key)"
+                    >
+                        <div class="tbf-stage-top">
+                            <div t-attf-class="tbf-stage-icon tone-{{stage.tone}}">
+                                <svg t-if="stage.key === 'so'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                                </svg>
+                                <svg t-elif="stage.key === 'epo'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+                                    <circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>
+                                </svg>
+                                <svg t-elif="stage.key === 'qc'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+                                </svg>
+                                <svg t-elif="stage.key === 'picking'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                                </svg>
+                                <svg t-elif="stage.key === 'awaiting'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                <svg t-else="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <polyline points="22 4 12 14.01 9 11.01"/>
+                                </svg>
+                            </div>
+                            <div class="tbf-stage-titles">
+                                <div class="tbf-stage-name" t-esc="stage.title"/>
+                                <div t-if="stage.subtitle" class="tbf-stage-sub" t-esc="stage.subtitle"/>
+                            </div>
+                        </div>
+                        <div class="tbf-stage-bottom">
+                            <span class="tbf-stage-count" t-esc="stage.count"/>
+                            <span class="tbf-stage-unit">รายการ</span>
+                            <svg class="tbf-stage-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div t-if="!stage_last" class="tbf-stage-arrow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </div>
+                </t>
+            </div>
+
+            <!-- Orders Table Card -->
+            <div class="tbf-ov-table-card">
+                <div class="tbf-ov-table-head">
+                    <h2 class="tbf-ov-table-title">รายการคำสั่งขาย (Sales Order)</h2>
+                    <div class="tbf-ov-tabs">
+                        <button
+                            type="button"
+                            t-attf-class="tbf-tab-btn {{this.state.activeTab === 'all' ? 'is-active' : ''}}"
+                            t-on-click="() => this.selectTab('all')"
+                        >
+                            ทั้งหมด (<t t-esc="this.state.tabCounts.all"/>)
+                        </button>
+                        <button
+                            type="button"
+                            t-attf-class="tbf-tab-btn {{this.state.activeTab === 'in_progress' ? 'is-active' : ''}}"
+                            t-on-click="() => this.selectTab('in_progress')"
+                        >
+                            กำลังดำเนินการ (<t t-esc="this.state.tabCounts.in_progress"/>)
+                        </button>
+                        <button
+                            type="button"
+                            t-attf-class="tbf-tab-btn {{this.state.activeTab === 'shipped' ? 'is-active' : ''}}"
+                            t-on-click="() => this.selectTab('shipped')"
+                        >
+                            จัดส่งแล้ว (<t t-esc="this.state.tabCounts.shipped"/>)
+                        </button>
+                        <button
+                            type="button"
+                            t-attf-class="tbf-tab-btn {{this.state.activeTab === 'partial' ? 'is-active' : ''}}"
+                            t-on-click="() => this.selectTab('partial')"
+                        >
+                            บางส่วน (<t t-esc="this.state.tabCounts.partial"/>)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tbf-ov-table-wrap">
+                    <table class="tbf-ov-table">
+                        <thead>
+                            <tr>
+                                <th class="col-check">
+                                    <input type="checkbox" t-att-checked="this.allSelected" t-on-change="this.toggleSelectAll"/>
+                                </th>
+                                <th>SO เลขที่</th>
+                                <th>ลูกค้า</th>
+                                <th>วันที่สั่งซื้อ</th>
+                                <th>จำนวนรายการ</th>
+                                <th class="text-end">มูลค่า</th>
+                                <th>สถานะงาน (Workflow)</th>
+                                <th class="text-end"/>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-if="this.state.loading">
+                                <td colspan="8" class="tbf-ov-empty">กำลังโหลดข้อมูล...</td>
+                            </tr>
+                            <tr t-elif="!this.filteredOrders.length">
+                                <td colspan="8" class="tbf-ov-empty">ไม่พบคำสั่งขายตามเงื่อนไขที่เลือก</td>
+                            </tr>
+                            <t t-else="" t-foreach="this.filteredOrders" t-as="order" t-key="order.id">
+                                <tr class="tbf-ov-row">
+                                    <td class="col-check">
+                                        <input
+                                            type="checkbox"
+                                            t-att-checked="this.state.selectedIds.includes(order.id)"
+                                            t-on-change="() => this.toggleSelectRow(order.id)"
+                                        />
+                                    </td>
+                                    <td>
+                                        <div class="tbf-so-cell">
+                                            <a
+                                                href="#"
+                                                class="tbf-so-link"
+                                                t-on-click.prevent="() => this.openSaleOrder(order.id)"
+                                                t-esc="order.name"
+                                            />
+                                            <span t-if="order.is_partial" class="tbf-partial-badge">Partial</span>
+                                        </div>
+                                    </td>
+                                    <td class="tbf-partner-cell" t-esc="order.partner_name"/>
+                                    <td class="tbf-date-cell" t-esc="order.date_display"/>
+                                    <td>
+                                        <a
+                                            href="#"
+                                            class="tbf-qty-link"
+                                            title="เปิดดูรายการสินค้าในคำสั่งขาย"
+                                            t-on-click.prevent="() => this.openSaleOrder(order.id)"
+                                        >
+                                            <t t-esc="order.line_count"/> รายการ
+                                        </a>
+                                    </td>
+                                    <td class="text-end tbf-amount-cell" t-esc="order.amount_display"/>
+                                    <td>
+                                        <div class="tbf-stepper">
+                                            <t t-foreach="order.steps" t-as="step" t-key="step.key">
+                                                <div t-attf-class="tbf-step is-{{step.state}} tone-{{step.tone}}">
+                                                    <div
+                                                        t-attf-class="tbf-step-node {{this.canOpenStep(order, step.key) ? 'is-clickable' : ''}}"
+                                                        t-att-title="this.canOpenStep(order, step.key) ? 'คลิกเพื่อเปิดเอกสาร ' + step.label : ''"
+                                                        t-on-click="() => this.canOpenStep(order, step.key) and this.openStepDocument(order, step.key)"
+                                                    >
+                                                        <span class="tbf-step-circle">
+                                                            <svg t-if="step.state === 'done'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                                                <polyline points="20 6 9 17 4 12"/>
+                                                            </svg>
+                                                        </span>
+                                                        <span class="tbf-step-label" t-esc="step.label"/>
+                                                    </div>
+                                                    <div
+                                                        t-if="!step_last"
+                                                        t-attf-class="tbf-step-line {{step.state === 'done' ? (order.steps[step_index + 1]?.state === 'active' ? 'to-active tone-' + order.steps[step_index + 1].tone : 'is-done') : ''}}"
+                                                    />
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <button
+                                            type="button"
+                                            t-attf-class="tbf-status-pill tone-{{order.status_tone}}"
+                                            t-att-title="order.active_epo_name ? 'เปิด ' + order.active_epo_name : 'เปิดคำสั่งขาย'"
+                                            t-on-click="() => this.openEpoOrOrder(order)"
+                                        >
+                                            <t t-esc="order.status_label"/>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </div>
+        </div>
+    </t>
+</templates>

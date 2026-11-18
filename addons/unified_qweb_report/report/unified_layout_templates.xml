@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Paperformat A4 สำหรับ Unified QWeb Report Layout -->
+        <record id="paperformat_unified_a4" model="report.paperformat">
+            <field name="name">Unified QWeb Report A4</field>
+            <field name="default" eval="False"/>
+            <field name="format">A4</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">27</field>
+            <field name="margin_bottom">14</field>
+            <field name="margin_left">0</field>
+            <field name="margin_right">0</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">1</field>
+            <field name="dpi">96</field>
+        </record>
+
+        <!-- =========================================================================
+             1. CUSTOM EXTERNAL LAYOUT (สืบทอดแนวคิดจาก web.external_layout)
+                - Header: โลโก้บริษัท ที่อยู่ ข้อมูลติดต่อ และคลื่นสีน้ำเงินมุมบนขวาชิดขอบบนสุด
+                - Footer: แถบคลื่นสีน้ำเงินด้านล่างชิดขอบล่างสุด ชื่อบริษัท และเลขประจำตัวผู้เสียภาษี
+             ========================================================================= -->
+        <template id="external_layout_unified">
+            <t t-if="not o" t-set="o" t-value="doc"/>
+            <t t-if="not company">
+                <t t-if="company_id">
+                    <t t-set="company" t-value="company_id"/>
+                </t>
+                <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                    <t t-set="company" t-value="o.company_id.sudo()"/>
+                </t>
+                <t t-else="">
+                    <t t-set="company" t-value="res_company"/>
+                </t>
+            </t>
+            <t t-set="u_data" t-value="o._get_unified_report_data(unified_doc_type if unified_doc_type else None) if (o and o._name in ('sale.order', 'purchase.order', 'stock.picking', 'account.move', 'account.payment')) else None"/>
+            <t t-set="c_info" t-value="u_data['company'] if u_data else {'name': 'Your Company' if (not company.name or company.name in ('My Company', 'Your Company')) else company.name, 'sub_name': 'บริษัท ตัวอย่าง จำกัด', 'footer_name': 'บริษัท ตัวอย่าง จำกัด' if (not company.name or company.name in ('My Company', 'Your Company')) else company.name, 'address': company.street or '999 ถนนสุขุมวิท แขวงบางนา เขตบางนา กรุงเทพฯ 10260', 'phone': company.phone or '02-123-4567', 'email': company.email or 'sales@yourcompany.co.th', 'website': company.website or 'www.yourcompany.co.th', 'vat': company.vat or '0123456789012', 'logo_uri': False}"/>
+
+            <!-- HEADER -->
+            <div class="header o_unified_header" style="font-family: 'Laksaman', 'Sarabun', 'Waree', 'DejaVu Sans', sans-serif; width: 100%; height: 112px; min-height: 112px; margin: 0; padding: 0; position: relative; background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNzAgMTE1IiB3aWR0aD0iMjcwIiBoZWlnaHQ9IjExNSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPHBhdGggZD0iTSAxMCwwIEMgOTAsNDggMTY1LDk1IDI3MCwxMTUgTCAyNzAsMCBaIiBmaWxsPSIjZDhlZWZjIi8+CiAgPHBhdGggZD0iTSA2MCwwIEMgMTMwLDQyIDE5NSw4MCAyNzAsOTYgTCAyNzAsMCBaIiBmaWxsPSIjNThhZWY1Ii8+CiAgPHBhdGggZD0iTSAxMTAsMCBDIDE2OCwzNCAyMTgsNjIgMjcwLDc2IEwgMjcwLDAgWiIgZmlsbD0iIzBiNWNhYiIvPgo8L3N2Zz4='); background-position: top right; background-repeat: no-repeat; background-size: 265px 112px;">
+                <style>
+                    html, body, body.o_body_pdf, body.container, #minimal_layout_report_headers {
+                        max-width: 100% !important;
+                        width: 100% !important;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                    }
+                </style>
+
+                <div style="padding: 18px 14mm 6px 14mm; position: relative; z-index: 1;">
+                    <table style="width: 100%; border-collapse: collapse; border: 0;">
+                        <tr>
+                            <!-- โลโก้และชื่อบริษัท -->
+                            <td style="width: 36%; vertical-align: middle; padding-right: 14px; border-right: 1.5px solid #4a90d9;">
+                                <table style="width: 100%; border-collapse: collapse; border: 0;">
+                                    <tr>
+                                        <td style="width: 58px; vertical-align: middle; padding-right: 10px;">
+                                            <t t-if="c_info.get('logo_uri') and c_info.get('name') not in ('My Company', 'Your Company')">
+                                                <img t-att-src="c_info['logo_uri']" style="max-width: 54px; max-height: 54px; object-fit: contain;"/>
+                                            </t>
+                                            <t t-else="">
+                                                <!-- ไอคอนโลโก้ 3 มิติสีน้ำเงินตามภาพตัวอย่าง -->
+                                                <svg width="50" height="54" viewBox="0 0 60 64" xmlns="http://www.w3.org/2000/svg">
+                                                    <polygon points="30,2 56,17 56,47 30,62 4,47 4,17" fill="#1e88e5"/>
+                                                    <polygon points="30,2 56,17 30,32 4,17" fill="#42a5f5"/>
+                                                    <polygon points="30,32 56,17 56,47 30,62" fill="#0d47a1"/>
+                                                    <polygon points="30,15 44,23 44,40 30,48 16,40 16,23" fill="#ffffff"/>
+                                                    <polygon points="30,22 38,27 30,32 22,27" fill="#1e88e5"/>
+                                                    <polygon points="30,32 38,27 38,37 30,42" fill="#0d47a1"/>
+                                                </svg>
+                                            </t>
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                            <div style="font-size: 21px; font-weight: 800; color: #0b2545; line-height: 1.15; letter-spacing: -0.2px;">
+                                                <t t-out="c_info['name']"/>
+                                            </div>
+                                            <div style="font-size: 14.5px; font-weight: 500; color: #1e293b; margin-top: 3px; line-height: 1.2;">
+                                                <t t-out="c_info['sub_name']"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+
+                            <!-- ที่อยู่และข้อมูลติดต่อ -->
+                            <td style="width: 64%; vertical-align: middle; padding-left: 16px;">
+                                <table style="width: 100%; border-collapse: collapse; border: 0; font-size: 12px; color: #0f294a; line-height: 1.45;">
+                                    <tr>
+                                        <td style="width: 20px; vertical-align: middle; padding: 1px 0;">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0d3b66" stroke-width="2.2" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M12 21s-7-6.5-7-12a7 7 0 1 1 14 0c0 5.5-7 12-7 12z"/>
+                                                <circle cx="12" cy="9" r="2.5"/>
+                                            </svg>
+                                        </td>
+                                        <td style="padding: 1px 0;"><t t-out="c_info['address']"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 20px; vertical-align: middle; padding: 1px 0;">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0d3b66" stroke-width="2.2" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                            </svg>
+                                        </td>
+                                        <td style="padding: 1px 0;"><t t-out="c_info['phone']"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 20px; vertical-align: middle; padding: 1px 0;">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0d3b66" stroke-width="2.2" xmlns="http://www.w3.org/2000/svg">
+                                                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                                <path d="M22 6l-10 7L2 6"/>
+                                            </svg>
+                                        </td>
+                                        <td style="padding: 1px 0;"><t t-out="c_info['email']"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 20px; vertical-align: middle; padding: 1px 0;">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0d3b66" stroke-width="2.2" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="12" cy="12" r="10"/>
+                                                <line x1="2" y1="12" x2="22" y2="12"/>
+                                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                                            </svg>
+                                        </td>
+                                        <td style="padding: 1px 0;"><t t-out="c_info['website']"/></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ARTICLE / BODY -->
+            <div class="article o_report_layout_unified" t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id" style="font-family: 'Laksaman', 'Sarabun', 'Waree', 'DejaVu Sans', sans-serif; padding: 2px 14mm 0 14mm; color: #0f294a;">
+                <t t-out="0"/>
+            </div>
+
+            <!-- FOOTER -->
+            <div class="footer o_unified_footer" style="font-family: 'Laksaman', 'Sarabun', 'Waree', 'DejaVu Sans', sans-serif; width: 100%; height: 74px; min-height: 74px; margin: 0; padding: 0; position: relative; background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAwIDcyIiB3aWR0aD0iMTAwMCIgaGVpZ2h0PSI3MiIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPHBhdGggZD0iTSAwLDQgQyA4MCwxMCAxNTAsMzggMjIwLDcyIEwgMCw3MiBaIiBmaWxsPSIjYmJkZWZiIi8+CiAgPHBhdGggZD0iTSAxMDAwLDQgQyA5MjAsMTAgODUwLDM4IDc4MCw3MiBMIDEwMDAsNzIgWiIgZmlsbD0iI2JiZGVmYiIvPgogIDxwYXRoIGQ9Ik0gMCwyOCBMIDEwMDAsMjggTCAxMDAwLDcyIEwgMCw3MiBaIiBmaWxsPSIjMTA2NWIwIi8+CiAgPHBhdGggZD0iTSAwLDEyIEMgNjUsMjAgMTMwLDQ0IDE4NSw3MiBMIDAsNzIgWiIgZmlsbD0iIzQyYTVmNSIvPgogIDxwYXRoIGQ9Ik0gMCwyOCBDIDUwLDM4IDEwMCw1NCAxNDUsNzIgTCAwLDcyIFoiIGZpbGw9IiNlM2YyZmQiLz4KICA8cGF0aCBkPSJNIDEwMDAsMTIgQyA5MzUsMjAgODcwLDQ0IDgxNSw3MiBMIDEwMDAsNzIgWiIgZmlsbD0iIzQyYTVmNSIvPgogIDxwYXRoIGQ9Ik0gMTAwMCwyOCBDIDk1MCwzOCA5MDAsNTQgODU1LDcyIEwgMTAwMCw3MiBaIiBmaWxsPSIjOTBjYWY5Ii8+Cjwvc3ZnPg=='); background-position: top left; background-repeat: no-repeat; background-size: 100% 74px;">
+                <style>
+                    html, body, body.o_body_pdf, body.container, #minimal_layout_report_footers {
+                        max-width: 100% !important;
+                        width: 100% !important;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                    }
+                </style>
+                <div style="position: relative; z-index: 1; text-align: center; padding-top: 32px; color: #ffffff; font-size: 12.5px; font-weight: 500; letter-spacing: 0.2px;">
+                    <span><t t-out="c_info['footer_name']"/></span>
+                    <span style="margin: 0 10px; opacity: 0.85;">|</span>
+                    <span>เลขประจำตัวผู้เสียภาษี <t t-out="c_info['vat']"/></span>
+                </div>
+            </div>
+        </template>
+
+        <!-- สืบทอด web.external_layout ให้ใช้ external_layout_unified โดยอัตโนมัติเมื่อเอกสารรองรับ -->
+        <template id="external_layout_inherit_unified" inherit_id="web.external_layout" priority="99">
+            <xpath expr="//t[@t-if='company.external_report_layout_id']" position="before">
+                <t t-set="is_unified_doc" t-value="bool(o and o._name in ('sale.order', 'purchase.order', 'stock.picking', 'account.move', 'account.payment'))"/>
+            </xpath>
+            <xpath expr="//t[@t-if='company.external_report_layout_id']" position="attributes">
+                <attribute name="t-if">not is_unified_doc and company.external_report_layout_id</attribute>
+            </xpath>
+            <xpath expr="//t[@t-else='']" position="replace">
+                <t t-elif="is_unified_doc" t-call="unified_qweb_report.external_layout_unified">
+                    <t t-out="0"/>
+                </t>
+                <t t-else="" t-call="web.external_layout_standard">
+                    <t t-out="0"/>
+                </t>
+            </xpath>
+        </template>
+
+        <!-- =========================================================================
+             2. MASTER DOCUMENT BODY TEMPLATE (ใช้ร่วมกันทุกเอกสาร)
+             ========================================================================= -->
+        <template id="unified_document_master">
+            <t t-set="target_doc" t-value="o or doc"/>
+            <t t-set="u_data" t-value="target_doc._get_unified_report_data(unified_doc_type if unified_doc_type else None)"/>
+            <t t-set="pc" t-value="u_data['partner_contact']"/>
+            <t t-set="totals" t-value="u_data['totals']"/>
+            <t t-set="show_disc" t-value="u_data.get('has_discount', False)"/>
+
+            <div class="unified-doc-wrapper" style="font-family: 'Laksaman', 'Sarabun', 'Waree', 'DejaVu Sans', sans-serif; color: #0f294a; font-size: 13px; line-height: 1.45;">
+                <style>
+                    .unified-doc-wrapper * {
+                        box-sizing: border-box;
+                    }
+                    .unified-product-table {
+                        width: 100%;
+                        border-collapse: separate;
+                        border-spacing: 0;
+                        margin-top: 8px;
+                        border: 1px solid #9cc2e6;
+                        border-radius: 10px;
+                        overflow: hidden;
+                    }
+                    .unified-product-table thead {
+                        display: table-header-group;
+                    }
+                    .unified-product-table tr {
+                        page-break-inside: avoid;
+                    }
+                    .unified-product-table thead th {
+                        background-color: #0e5a9c;
+                        color: #ffffff;
+                        font-weight: 700;
+                        font-size: 12.5px;
+                        text-align: center;
+                        vertical-align: middle;
+                        padding: 7px 6px;
+                        border-right: 1px solid #4889c2;
+                        line-height: 1.25;
+                    }
+                    .unified-product-table thead th:first-child {
+                        border-top-left-radius: 9px;
+                    }
+                    .unified-product-table thead th:last-child {
+                        border-right: 0;
+                        border-top-right-radius: 9px;
+                    }
+                    .unified-product-table tbody td {
+                        padding: 10px 8px;
+                        vertical-align: middle;
+                        border-right: 1px solid #c5dcf2;
+                        border-bottom: 1px solid #c5dcf2;
+                        background-color: #ffffff;
+                        color: #0b2545;
+                        font-size: 13px;
+                    }
+                    .unified-product-table tbody tr:last-child td {
+                        border-bottom: 0;
+                    }
+                    .unified-product-table tbody tr:last-child td:first-child {
+                        border-bottom-left-radius: 9px;
+                    }
+                    .unified-product-table tbody tr:last-child td:last-child {
+                        border-bottom-right-radius: 9px;
+                    }
+                    .unified-product-table tbody td:last-child {
+                        border-right: 0;
+                    }
+                </style>
+
+                <!-- 1. แบนเนอร์ชื่อเอกสาร + เลขที่เอกสาร/วันที่/อ้างอิง (ใช้ Base64 SVG background-size: 100% 100% เพื่อยืดตามความสูงตาราง 100% ไม่แหว่งด้านล่าง) -->
+                <div style="width: 100%; border-radius: 18px; overflow: hidden; margin-bottom: 14px; background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAwIDE0MCIgd2lkdGg9IjEwMDAiIGhlaWdodD0iMTQwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iYmdMIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIwJSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMwNzRhOGMiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSI1NSUiIHN0b3AtY29sb3I9IiMxMTcwYzgiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMjA4Y2U4Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJiZ1IiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjAlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Q3ZWRmYyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNjOWU2ZmIiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAwIiBoZWlnaHQ9IjE0MCIgcng9IjI2IiByeT0iMjYiIGZpbGw9InVybCgjYmdSKSIvPgogIDxwYXRoIGQ9Ik0gMjYsMCBMIDU5MCwwIEMgNTQyLDM4IDUzMiwxMDIgNDgwLDE0MCBMIDI2LDE0MCBBIDI2LDI2IDAgMCAxIDAsMTE0IEwgMCwyNiBBIDI2LDI2IDAgMCAxIDI2LDAgWiIgZmlsbD0iI2JmZTBmYiIvPgogIDxwYXRoIGQ9Ik0gMjYsMCBMIDU2MiwwIEMgNTE1LDM4IDUwNSwxMDIgNDUyLDE0MCBMIDI2LDE0MCBBIDI2LDI2IDAgMCAxIDAsMTE0IEwgMCwyNiBBIDI2LDI2IDAgMCAxIDI2LDAgWiIgZmlsbD0iIzhjYzZmNyIvPgogIDxwYXRoIGQ9Ik0gMjYsMCBMIDUzNSwwIEMgNDg4LDM4IDQ3OCwxMDIgNDI1LDE0MCBMIDI2LDE0MCBBIDI2LDI2IDAgMCAxIDAsMTE0IEwgMCwyNiBBIDI2LDI2IDAgMCAxIDI2LDAgWiIgZmlsbD0idXJsKCNiZ0wpIi8+Cjwvc3ZnPg=='); background-size: 100% 100%; background-repeat: no-repeat;">
+                    <table style="width: 100%; min-height: 116px; border-collapse: collapse; border: 0;">
+                        <tr>
+                            <!-- ซ้าย: ไอคอนเอกสาร + ชื่อเอกสารไทย/อังกฤษ -->
+                            <td style="width: 49%; vertical-align: middle; padding: 16px 12px 16px 28px;">
+                                <table style="border-collapse: collapse; border: 0;">
+                                    <tr>
+                                        <td style="vertical-align: middle; padding-right: 16px;">
+                                            <svg width="46" height="54" viewBox="0 0 48 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M10 4H31L42 15V48C42 50.2 40.2 52 38 52H10C7.8 52 6 50.2 6 48V8C6 5.8 7.8 4 10 4Z" stroke="#ffffff" stroke-width="3.2" stroke-linejoin="round"/>
+                                                <path d="M30 4V16H42" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                <line x1="14" y1="24" x2="26" y2="24" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round"/>
+                                                <line x1="14" y1="33" x2="34" y2="33" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round"/>
+                                                <line x1="14" y1="42" x2="34" y2="42" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round"/>
+                                            </svg>
+                                        </td>
+                                        <td style="vertical-align: middle;">
+                                            <div style="font-size: 28px; font-weight: 800; color: #ffffff; line-height: 1.15; letter-spacing: 0.2px;">
+                                                <t t-out="u_data['title_th']"/>
+                                            </div>
+                                            <div style="font-size: 17px; font-weight: 400; color: #f0f8ff; margin-top: 3px; line-height: 1.2;">
+                                                <t t-out="u_data['title_en']"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+
+                            <!-- ขวา: เลขที่ / วันที่ / อ้างอิง -->
+                            <td style="width: 51%; vertical-align: middle; padding: 12px 26px 14px 32px;">
+                                <table style="width: 100%; border-collapse: collapse; border: 0;">
+                                    <tr style="border-bottom: 1px solid #9ecaf2;">
+                                        <td style="padding: 4px 0; font-size: 12.5px; color: #0f294a; font-weight: 500; width: 46%;">เลขที่ / No.</td>
+                                        <td style="padding: 4px 0; font-size: 17px; color: #0b2545; font-weight: 800; text-align: left; line-height: 1.2;">
+                                            <t t-out="u_data['doc_no']"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #9ecaf2;">
+                                        <td style="padding: 4px 0; font-size: 12.5px; color: #0f294a; font-weight: 500;">
+                                            <t t-out="u_data['date_label']"/>
+                                        </td>
+                                        <td style="padding: 4px 0; font-size: 14px; color: #0b2545; font-weight: 700; text-align: left; line-height: 1.25;">
+                                            <t t-out="u_data['doc_date']"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 4px 0; font-size: 12.5px; color: #0f294a; font-weight: 500;">
+                                            <t t-out="u_data['ref_label']"/>
+                                        </td>
+                                        <td style="padding: 4px 0; font-size: 13.5px; color: #0b2545; font-weight: 700; text-align: left; line-height: 1.25;">
+                                            <t t-out="u_data['doc_ref']"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- 2. ข้อมูลลูกค้า/คู่ค้า และ ผู้ติดต่อ -->
+                <div style="border-bottom: 1px solid #cbd5e1; padding-bottom: 12px; margin-bottom: 12px;">
+                    <table style="width: 100%; border-collapse: collapse; border: 0;">
+                        <tr>
+                            <!-- ซ้าย: เรียน / To -->
+                            <td style="width: 56%; vertical-align: top; padding-right: 16px; border-right: 1.5px solid #9ec5e8;">
+                                <table style="width: 100%; border-collapse: collapse; border: 0;">
+                                    <tr>
+                                        <td style="width: 44px; vertical-align: top; padding-top: 2px;">
+                                            <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="18" cy="18" r="17" fill="#0d74ce"/>
+                                                <circle cx="18" cy="13" r="5.5" fill="#ffffff"/>
+                                                <path d="M8 29c1.8-5 5.5-7.5 10-7.5s8.2 2.5 10 7.5" fill="#ffffff"/>
+                                            </svg>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <div style="font-size: 13px; font-weight: 700; color: #0f294a;">
+                                                <t t-out="pc['partner_label']"/>
+                                            </div>
+                                            <div style="font-size: 15.5px; font-weight: 800; color: #0b2545; margin: 2px 0 4px 0;">
+                                                <t t-out="pc['partner_name']"/>
+                                            </div>
+                                            <div style="font-size: 13px; color: #1e293b; line-height: 1.45;">
+                                                ที่อยู่ : <t t-out="pc['partner_address']"/>
+                                            </div>
+                                            <div t-if="pc.get('partner_vat')" style="font-size: 12.5px; color: #334155; margin-top: 2px;">
+                                                เลขประจำตัวผู้เสียภาษี : <t t-out="pc['partner_vat']"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+
+                            <!-- ขวา: ผู้ติดต่อ / Contact -->
+                            <td style="width: 44%; vertical-align: top; padding-left: 22px;">
+                                <table style="width: 100%; border-collapse: collapse; border: 0;">
+                                    <tr>
+                                        <td style="width: 44px; vertical-align: top; padding-top: 2px;">
+                                            <svg width="34" height="34" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="18" cy="18" r="17" fill="#0d74ce"/>
+                                                <circle cx="18" cy="13" r="5.5" fill="#ffffff"/>
+                                                <path d="M8 29c1.8-5 5.5-7.5 10-7.5s8.2 2.5 10 7.5" fill="#ffffff"/>
+                                            </svg>
+                                        </td>
+                                        <td style="vertical-align: top;">
+                                            <div style="font-size: 13px; font-weight: 700; color: #0f294a;">
+                                                <t t-out="pc['contact_label']"/>
+                                            </div>
+                                            <div style="font-size: 15.5px; font-weight: 800; color: #0b2545; margin: 2px 0 5px 0;">
+                                                <t t-out="pc['contact_name']"/>
+                                            </div>
+                                            <table style="border-collapse: collapse; border: 0; font-size: 13px; color: #1e293b;">
+                                                <tr>
+                                                    <td style="width: 20px; padding: 1px 0; vertical-align: middle;">
+                                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0d3b66" stroke-width="2.2" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.12.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.58 2.81.7A2 2 0 0 1 22 16.92z"/>
+                                                        </svg>
+                                                    </td>
+                                                    <td style="padding: 1px 0;"><t t-out="pc['contact_phone']"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width: 20px; padding: 1px 0; vertical-align: middle;">
+                                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0d3b66" stroke-width="2.2" xmlns="http://www.w3.org/2000/svg">
+                                                            <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                                            <path d="M22 6l-10 7L2 6"/>
+                                                        </svg>
+                                                    </td>
+                                                    <td style="padding: 1px 0;"><t t-out="pc['contact_email']"/></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- 3. ข้อความเกริ่นนำก่อนตาราง -->
+                <div style="margin-bottom: 8px;">
+                    <div style="font-size: 13.5px; font-weight: 700; color: #0b2545;">
+                        <t t-out="u_data['intro_th']"/>
+                    </div>
+                    <div style="font-size: 12.5px; color: #1e293b;">
+                        <t t-out="u_data['intro_en']"/>
+                    </div>
+                </div>
+
+                <!-- 4. ตารางรายการสินค้า (หัวตารางซ้ำในหน้าถัดไปอัตโนมัติ) -->
+                <table class="unified-product-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 7%;">ลำดับ<br/><span style="font-weight: 400; font-size: 11.5px;">No.</span></th>
+                            <th t-attf-style="width: #{39 if show_disc else 45}%;">รายการ<br/><span style="font-weight: 400; font-size: 11.5px;">Description</span></th>
+                            <th style="width: 9%;">จำนวน<br/><span style="font-weight: 400; font-size: 11.5px;">Qty</span></th>
+                            <th style="width: 8%;">หน่วย<br/><span style="font-weight: 400; font-size: 11.5px;">Unit</span></th>
+                            <th style="width: 12%;">ราคาต่อหน่วย<br/><span style="font-weight: 400; font-size: 11.5px;">Unit Price</span></th>
+                            <th t-if="show_disc" style="width: 6%;">ส่วนลด<br/><span style="font-weight: 400; font-size: 11.5px;">Disc.</span></th>
+                            <th style="width: 7%;">ภาษี<br/><span style="font-weight: 400; font-size: 11.5px;">VAT</span></th>
+                            <th style="width: 12%;">จำนวนเงิน<br/><span style="font-weight: 400; font-size: 11.5px;">Amount</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="u_data['lines']" t-as="line">
+                            <t t-if="line.get('display_type') == 'line_section'">
+                                <tr>
+                                    <td t-att-colspan="8 if show_disc else 7" style="background-color: #f0f7fd; font-weight: 700; color: #0b2545; padding: 7px 12px;">
+                                        <t t-out="line['name']"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-elif="line.get('display_type') == 'line_note'">
+                                <tr>
+                                    <td t-att-colspan="8 if show_disc else 7" style="font-style: italic; color: #475569; padding: 6px 12px;">
+                                        <t t-out="line['name']"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <t t-else="">
+                                <tr>
+                                    <td style="text-align: center; font-weight: 600;">
+                                        <t t-out="line['no']"/>
+                                    </td>
+                                    <td>
+                                        <table style="width: 100%; border-collapse: collapse; border: 0;">
+                                            <tr>
+                                                <td style="width: 66px; padding: 0 10px 0 2px; border: 0; vertical-align: middle;">
+                                                    <t t-if="line.get('image_uri')">
+                                                        <div style="width: 58px; height: 44px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; text-align: center; overflow: hidden;">
+                                                            <img t-att-src="line['image_uri']" style="width: 56px; height: 42px; object-fit: contain;"/>
+                                                        </div>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <div style="width: 58px; height: 44px; background-color: #f1f5f9; border: 1px solid #dbe4f0; border-radius: 4px; text-align: center; padding-top: 8px;">
+                                                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.6" xmlns="http://www.w3.org/2000/svg">
+                                                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                                                <circle cx="8.5" cy="8.5" r="1.5"/>
+                                                                <path d="M21 15l-5-5L5 21"/>
+                                                            </svg>
+                                                        </div>
+                                                    </t>
+                                                </td>
+                                                <td style="padding: 0; border: 0; vertical-align: middle;">
+                                                    <div style="font-weight: 700; color: #0b2545; font-size: 13px; line-height: 1.35;">
+                                                        <t t-out="line['product_title']"/>
+                                                    </div>
+                                                    <div t-if="line.get('description')" style="color: #1e293b; font-size: 12.5px; line-height: 1.35; margin-top: 1px;">
+                                                        <t t-out="line['description']"/>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td style="text-align: center; font-weight: 600; white-space: nowrap;">
+                                        <t t-out="line['qty']"/>
+                                    </td>
+                                    <td style="text-align: center; white-space: nowrap;">
+                                        <t t-out="line['uom']"/>
+                                    </td>
+                                    <td style="text-align: right; font-weight: 600; white-space: nowrap;">
+                                        <t t-out="line['price_unit']"/>
+                                    </td>
+                                    <td t-if="show_disc" style="text-align: center; white-space: nowrap;">
+                                        <t t-out="line['discount']"/>
+                                    </td>
+                                    <td style="text-align: center; font-weight: 600; white-space: nowrap;">
+                                        <t t-out="line['vat']"/>
+                                    </td>
+                                    <td style="text-align: right; font-weight: 700; white-space: nowrap;">
+                                        <t t-out="line['amount']"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </t>
+                    </tbody>
+                </table>
+
+                <!-- 5. ยอดรวม และ ลายเซ็น/หมายเหตุ (ป้องกันการถูกตัดกลางหน้า) -->
+                <div style="page-break-inside: avoid; margin-top: 14px;">
+                    <!-- ตารางสรุปยอดรวมชิดขวา -->
+                    <table style="width: 100%; border-collapse: collapse; border: 0;">
+                        <tr>
+                            <td style="width: 47%;"/>
+                            <td style="width: 53%;">
+                                <div style="border: 1px solid #9cc2e6; border-radius: 8px; overflow: hidden;">
+                                    <table style="width: 100%; border-collapse: collapse; border: 0;">
+                                        <tr t-if="totals.get('discount_total')" style="background-color: #f3f9fe; border-bottom: 1px solid #c5dcf2;">
+                                            <td style="padding: 7px 14px; font-size: 13px; color: #0b2545; border-right: 1px solid #c5dcf2; width: 62%;">
+                                                ส่วนลดรวม / Total Discount
+                                            </td>
+                                            <td style="padding: 7px 14px; font-size: 13.5px; font-weight: 700; color: #0b2545; text-align: right; white-space: nowrap;">
+                                                -<t t-out="totals['discount_total']"/>
+                                            </td>
+                                        </tr>
+                                        <tr style="background-color: #f3f9fe; border-bottom: 1px solid #c5dcf2;">
+                                            <td style="padding: 7px 14px; font-size: 13px; color: #0b2545; border-right: 1px solid #c5dcf2; width: 62%;">
+                                                ยอดก่อนภาษี / Subtotal
+                                            </td>
+                                            <td style="padding: 7px 14px; font-size: 14px; font-weight: 700; color: #0b2545; text-align: right; white-space: nowrap;">
+                                                <t t-out="totals['subtotal']"/>
+                                            </td>
+                                        </tr>
+                                        <tr style="background-color: #f3f9fe; border-bottom: 1px solid #9cc2e6;">
+                                            <td style="padding: 7px 14px; font-size: 13px; color: #0b2545; border-right: 1px solid #c5dcf2;">
+                                                <t t-out="totals['vat_label']"/>
+                                            </td>
+                                            <td style="padding: 7px 14px; font-size: 14px; font-weight: 700; color: #0b2545; text-align: right; white-space: nowrap;">
+                                                <t t-out="totals['vat_amount']"/>
+                                            </td>
+                                        </tr>
+                                        <tr style="background-color: #0d62a9;">
+                                            <td style="padding: 9px 14px; font-size: 15px; font-weight: 700; color: #ffffff; border-right: 1px solid #3582c4; border-bottom-left-radius: 7px;">
+                                                ยอดรวมทั้งสิ้น / Grand Total
+                                            </td>
+                                            <td style="padding: 9px 14px; font-size: 18.5px; font-weight: 800; color: #ffffff; text-align: right; white-space: nowrap; border-bottom-right-radius: 7px;">
+                                                <t t-out="totals['grand_total']"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- 6. หมายเหตุ (ซ้าย) และ ลายเซ็น (ขวา) -->
+                    <table style="width: 100%; border-collapse: collapse; border: 0; margin-top: 22px;">
+                        <tr>
+                            <!-- กล่องหมายเหตุ -->
+                            <td style="width: 54%; vertical-align: top; padding-right: 22px; border-right: 1px solid #cbd5e1;">
+                                <div style="background-color: #e8f3fc; border-radius: 10px; padding: 12px 16px; min-height: 102px;">
+                                    <table style="border-collapse: collapse; border: 0; margin-bottom: 6px;">
+                                        <tr>
+                                            <td style="padding-right: 8px; vertical-align: middle;">
+                                                <svg width="18" height="20" viewBox="0 0 24 24" fill="none" stroke="#0d4a80" stroke-width="2" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                                                    <rect x="8" y="2" width="8" height="4" rx="1"/>
+                                                    <line x1="8" y1="11" x2="16" y2="11"/>
+                                                    <line x1="8" y1="15" x2="16" y2="15"/>
+                                                    <line x1="8" y1="19" x2="13" y2="19"/>
+                                                </svg>
+                                            </td>
+                                            <td style="vertical-align: middle; font-size: 14px; font-weight: 800; color: #0d4a80;">
+                                                หมายเหตุ / Remarks
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <ul style="margin: 0; padding-left: 18px; color: #0f294a; font-size: 12.5px; line-height: 1.6;">
+                                        <t t-foreach="u_data['remarks']" t-as="rmk">
+                                            <li><t t-out="rmk"/></li>
+                                        </t>
+                                    </ul>
+                                </div>
+                            </td>
+
+                            <!-- ส่วนลายเซ็น (เปลี่ยนตามประเภทเอกสาร) -->
+                            <td style="width: 46%; vertical-align: bottom; padding-left: 26px; text-align: center;">
+                                <div style="padding-top: 36px; width: 88%; margin: 0 auto;">
+                                    <div style="border-bottom: 1.5px solid #1e293b; height: 22px; margin-bottom: 8px;"/>
+                                    <div style="font-size: 14px; font-weight: 700; color: #0b2545; margin-bottom: 6px;">
+                                        <t t-out="u_data['signature_label']"/>
+                                    </div>
+                                    <div style="font-size: 13px; color: #1e293b;">
+                                        วันที่ _____ / _____ / _____
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </template>
+
+        <!-- =========================================================================
+             3. SUB-TEMPLATES แยกส่วนเนื้อหาตามประเภทเอกสารทั้ง 7 ประเภท
+             ========================================================================= -->
+        <!-- 3.1 ใบเสนอราคา (Quotation) -->
+        <template id="doc_quotation">
+            <t t-set="unified_doc_type" t-value="'quotation'"/>
+            <t t-call="unified_qweb_report.unified_document_master"/>
+        </template>
+
+        <!-- 3.2 ใบสั่งขาย (Sales Order) -->
+        <template id="doc_sales_order">
+            <t t-set="unified_doc_type" t-value="'sales_order'"/>
+            <t t-call="unified_qweb_report.unified_document_master"/>
+        </template>
+
+        <!-- 3.3 ใบสั่งซื้อ (Purchase Order) -->
+        <template id="doc_purchase_order">
+            <t t-set="unified_doc_type" t-value="'purchase_order'"/>
+            <t t-call="unified_qweb_report.unified_document_master"/>
+        </template>
+
+        <!-- 3.4 ใบส่งสินค้า (Delivery Note) -->
+        <template id="doc_delivery_note">
+            <t t-set="unified_doc_type" t-value="'delivery_note'"/>
+            <t t-call="unified_qweb_report.unified_document_master"/>
+        </template>
+
+        <!-- 3.5 ใบแจ้งหนี้ (Invoice) -->
+        <template id="doc_invoice">
+            <t t-set="unified_doc_type" t-value="'invoice'"/>
+            <t t-call="unified_qweb_report.unified_document_master"/>
+        </template>
+
+        <!-- 3.6 ใบเสร็จรับเงิน (Receipt) -->
+        <template id="doc_receipt">
+            <t t-set="unified_doc_type" t-value="'receipt'"/>
+            <t t-call="unified_qweb_report.unified_document_master"/>
+        </template>
+
+        <!-- 3.7 ใบลดหนี้ (Credit Note) -->
+        <template id="doc_credit_note">
+            <t t-set="unified_doc_type" t-value="'credit_note'"/>
+            <t t-call="unified_qweb_report.unified_document_master"/>
+        </template>
+    </data>
+</odoo>

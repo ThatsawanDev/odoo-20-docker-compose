@@ -1,0 +1,6 @@
+<odoo>
+    <record id="action_tbf_overview" model="ir.actions.client">
+        <field name="name">คำสั่งขายและสถานะงาน</field>
+        <field name="tag">tbf_navigation.overview_dashboard</field>
+    </record>
+</odoo>

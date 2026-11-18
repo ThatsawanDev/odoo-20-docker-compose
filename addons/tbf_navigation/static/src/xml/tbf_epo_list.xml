@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="tbf_navigation.EpoListView" t-inherit="web.ListView" t-inherit-mode="primary">
+        <xpath expr="//t[@t-component='this.props.Renderer']" position="before">
+            <div class="tbf-epo-dash-bar">
+                <button
+                    type="button"
+                    t-attf-class="tbf-epo-dash-card tone-all {{this.epoSummary.activeState === '' ? 'is-active' : ''}}"
+                    t-on-click="() => this.filterState('')"
+                >
+                    <span class="tbf-epo-dash-label">ทั้งหมด</span>
+                    <strong class="tbf-epo-dash-count" t-esc="this.epoSummary.all"/>
+                </button>
+                <button
+                    type="button"
+                    t-attf-class="tbf-epo-dash-card tone-new {{this.epoSummary.activeState === 'new' ? 'is-active' : ''}}"
+                    t-on-click="() => this.filterState('new')"
+                >
+                    <span class="tbf-epo-dash-label">รอส่งงานให้ QC</span>
+                    <strong class="tbf-epo-dash-count" t-esc="this.epoSummary.new"/>
+                </button>
+                <button
+                    type="button"
+                    t-attf-class="tbf-epo-dash-card tone-confirmed {{this.epoSummary.activeState === 'confirmed' ? 'is-active' : ''}}"
+                    t-on-click="() => this.filterState('confirmed')"
+                >
+                    <span class="tbf-epo-dash-label">QC รับทราบ</span>
+                    <strong class="tbf-epo-dash-count" t-esc="this.epoSummary.confirmed"/>
+                </button>
+                <button
+                    type="button"
+                    t-attf-class="tbf-epo-dash-card tone-verified {{this.epoSummary.activeState === 'verified' ? 'is-active' : ''}}"
+                    t-on-click="() => this.filterState('verified')"
+                >
+                    <span class="tbf-epo-dash-label">QC ตรวจสอบผ่าน</span>
+                    <strong class="tbf-epo-dash-count" t-esc="this.epoSummary.verified"/>
+                </button>
+                <button
+                    type="button"
+                    t-attf-class="tbf-epo-dash-card tone-ready {{this.epoSummary.activeState === 'ready' ? 'is-active' : ''}}"
+                    t-on-click="() => this.filterState('ready')"
+                >
+                    <span class="tbf-epo-dash-label">รอโหลดและจัดส่ง</span>
+                    <strong class="tbf-epo-dash-count" t-esc="this.epoSummary.ready"/>
+                </button>
+                <button
+                    type="button"
+                    t-attf-class="tbf-epo-dash-card tone-shipped {{this.epoSummary.activeState === 'shipped' ? 'is-active' : ''}}"
+                    t-on-click="() => this.filterState('shipped')"
+                >
+                    <span class="tbf-epo-dash-label">จัดส่งแล้ว</span>
+                    <strong class="tbf-epo-dash-count" t-esc="this.epoSummary.shipped"/>
+                </button>
+            </div>
+        </xpath>
+    </t>
+</templates>

@@ -1,0 +1,177 @@
+<odoo>
+    <record id="view_tbf_epo_list" model="ir.ui.view">
+        <field name="name">tbf.epo.list</field>
+        <field name="model">tbf.epo</field>
+        <field name="arch" type="xml">
+            <list string="Picking Order (E-PO)" js_class="tbf_epo_list" decoration-success="state == 'shipped'">
+                <field name="name"/>
+                <field name="sale_order_id"/>
+                <field name="partner_id"/>
+                <field name="parent_id"/>
+                <field name="officer_id"/>
+                <field name="state" widget="badge"
+                    decoration-muted="state == 'new'"
+                    decoration-warning="state == 'confirmed'"
+                    decoration-info="state == 'verified'"
+                    decoration-primary="state == 'ready'"
+                    decoration-success="state == 'shipped'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_tbf_epo_form" model="ir.ui.view">
+        <field name="name">tbf.epo.form</field>
+        <field name="model">tbf.epo</field>
+        <field name="arch" type="xml">
+            <form string="Picking Order (E-PO)">
+                <header>
+                    <button name="action_qc_confirm" type="object" string="CONFIRMED — QC รับงาน" class="btn-primary" invisible="state != 'new'"/>
+                    <button name="action_product_verified" type="object" string="PRODUCT VERIFIED — ตรวจผ่าน" class="btn-primary" invisible="state != 'confirmed'"/>
+                    <button name="action_picking_completed" type="object" string="PICKING COMPLETED — ย้ายสต็อก" class="btn-primary" invisible="state != 'verified'"/>
+                    <button name="action_shipped_out" type="object" string="SHIPPED OUT — จัดส่ง" class="btn-primary" invisible="state != 'ready'"/>
+                    <button name="%(action_report_tbf_epo)d" type="action" string="พิมพ์ E-PO"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,confirmed,verified,ready,shipped"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_sale" type="object" class="oe_stat_button" icon="fa-tasks">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Sales Order</span>
+                            </div>
+                        </button>
+                        <button name="action_view_transfer" type="object" class="oe_stat_button" icon="fa-inbox" invisible="not internal_picking_id">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">ย้ายสต็อก</span>
+                            </div>
+                        </button>
+                        <button name="action_view_shipment" type="object" class="oe_stat_button" icon="fa-check">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Shipment Out</span>
+                            </div>
+                        </button>
+                    </div>
+                    <h1><field name="name"/></h1>
+                    <group>
+                        <group>
+                            <field name="sale_order_id"/>
+                            <field name="picking_id"/>
+                            <field name="partner_id"/>
+                            <field name="parent_id" invisible="not parent_id"/>
+                        </group>
+                        <group>
+                            <field name="officer_id"/>
+                            <field name="awaiting_location_id" invisible="not awaiting_location_id"/>
+                            <field name="internal_picking_id" invisible="not internal_picking_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="รายการสินค้า">
+                            <field name="line_ids" readonly="state in ('verified', 'ready', 'shipped')">
+                                <list editable="bottom" create="false" delete="false">
+                                    <field name="product_image" widget="image" options="{'size': [44, 44]}" string="รูป"/>
+                                    <field name="product_id"/>
+                                    <field name="requested_qty"/>
+                                    <field name="uom_id"/>
+                                    <field name="source_location_id"/>
+                                    <field name="picked_qty"/>
+                                    <field name="scanned_qty"/>
+                                </list>
+                            </field>
+                            <group invisible="state != 'ready'">
+                                <field name="scan_code" placeholder="สแกน Barcode หรือพิมพ์รหัสแล้วกดปุ่ม"/>
+                                <button name="action_scan" type="object" string="บันทึกการสแกน" class="btn-secondary"/>
+                            </group>
+                        </page>
+                        <page string="เอกสารส่งบางส่วน">
+                            <field name="child_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="picking_id"/>
+                                    <field name="state" widget="badge"
+                                        decoration-muted="state == 'new'"
+                                        decoration-warning="state == 'confirmed'"
+                                        decoration-info="state == 'verified'"
+                                        decoration-primary="state == 'ready'"
+                                        decoration-success="state == 'shipped'"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_tbf_epo_search" model="ir.ui.view">
+        <field name="name">tbf.epo.search</field>
+        <field name="model">tbf.epo</field>
+        <field name="arch" type="xml">
+            <search string="ค้นหา Picking Order (E-PO)">
+                <field name="name"/>
+                <field name="sale_order_id"/>
+                <field name="partner_id"/>
+                <field name="officer_id"/>
+                <filter string="รอส่งงานให้ QC" name="state_new" domain="[('state', '=', 'new')]"/>
+                <filter string="QC รับทราบ" name="state_confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <filter string="QC ตรวจสอบผ่าน" name="state_verified" domain="[('state', '=', 'verified')]"/>
+                <filter string="รอโหลดและจัดส่ง" name="state_ready" domain="[('state', '=', 'ready')]"/>
+                <filter string="จัดส่งแล้ว" name="state_shipped" domain="[('state', '=', 'shipped')]"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_tbf_epo" model="ir.actions.act_window">
+        <field name="name">Picking Order (E-PO)</field>
+        <field name="res_model">tbf.epo</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_tbf_epo_qc" model="ir.actions.act_window">
+        <field name="name">งานตรวจสอบ QC</field>
+        <field name="res_model">tbf.epo</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', 'in', ('new', 'confirmed'))]</field>
+    </record>
+    <record id="action_tbf_epo_loading" model="ir.actions.act_window">
+        <field name="name">งานรอโหลดสินค้า</field>
+        <field name="res_model">tbf.epo</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'ready')]</field>
+    </record>
+    <record id="view_sale_order_form_tbf_epo" model="ir.ui.view">
+        <field name="name">sale.order.form.tbf.epo</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Picking Order (E-PO)">
+                    <field name="tbf_epo_ids" readonly="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="picking_id"/>
+                            <field name="state" widget="badge"
+                                decoration-muted="state == 'new'"
+                                decoration-warning="state == 'confirmed'"
+                                decoration-info="state == 'verified'"
+                                decoration-primary="state == 'ready'"
+                                decoration-success="state == 'shipped'"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_res_config_settings_tbf_epo" model="ir.ui.view">
+        <field name="name">res.config.settings.tbf.epo</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app name="tbf_navigation" string="TBF ERP">
+                    <block title="Picking Order (E-PO)">
+                        <setting help="ผู้ใช้ที่จะได้รับแจ้งเตือนเมื่อระบบสร้าง E-PO จากใบขาย">
+                            <field name="tbf_warehouse_officer_id"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

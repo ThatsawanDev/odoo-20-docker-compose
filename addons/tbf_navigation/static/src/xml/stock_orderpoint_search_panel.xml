@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="tbf_navigation.StockOrderpointSearchPanel.Regular"
+       t-inherit="stock.StockOrderpointSearchPanel.Regular"
+       t-inherit-mode="extension">
+        <xpath expr="//b[text()='Horizon']" position="replace">
+            <b>ระยะเวลาวางแผนเติมสินค้า</b>
+        </xpath>
+    </t>
+</templates>

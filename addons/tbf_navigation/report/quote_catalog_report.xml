@@ -1,0 +1,51 @@
+<odoo>
+    <template id="quote_catalog_pages">
+        <t t-if="doc.tbf_show_catalog_images">
+            <div class="page" style="page-break-before:always;font-family:'Noto Sans Thai','DejaVu Sans',sans-serif">
+                <h2 style="color:#123c76;border-bottom:2px solid #1e6bb8;padding-bottom:8px;margin-bottom:16px">
+                    แคตตาล็อกภาพสินค้าในใบเสนอราคา <span t-field="doc.name"/>
+                </h2>
+                <t t-set="seen_tmpl" t-value="set()"/>
+                <t t-foreach="doc.order_line.filtered(lambda line: line.product_id and not line.display_type)" t-as="line">
+                    <t t-set="product" t-value="line.product_id.product_tmpl_id"/>
+                    <t t-if="product.id not in seen_tmpl">
+                        <t t-set="dummy" t-value="seen_tmpl.add(product.id)"/>
+                        <div t-if="product.image_1920 or product.thai_image_ids" style="margin:0 0 20px;padding:12px;border:1px solid #dbe4f0;border-radius:8px;page-break-inside:avoid">
+                            <div style="border-bottom:1px solid #e2e8f0;padding-bottom:6px;margin-bottom:10px">
+                                <strong style="font-size:15px;color:#0f172a"><span t-field="product.display_name"/></strong>
+                                <span style="float:right;font-size:12px;color:#475569">
+                                    จำนวน <span t-field="line.product_uom_qty"/> <span t-field="line.product_uom_id"/> |
+                                    ราคา <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                </span>
+                            </div>
+                            <div>
+                                <div t-if="product.image_1920" style="display:inline-block;width:31%;vertical-align:top;margin:0 1% 10px 0;text-align:center;border:1px solid #e2e8f0;border-radius:6px;padding:6px">
+                                    <img t-att-src="image_data_uri(product.image_512)" style="max-width:100%;height:145px;object-fit:contain"/>
+                                    <div style="font-size:11.5px;font-weight:bold;color:#334155;margin-top:4px">รูปหลัก (มุมตรง)</div>
+                                </div>
+                                <t t-foreach="product.thai_image_ids.sorted('sequence')" t-as="photo">
+                                    <div style="display:inline-block;width:31%;vertical-align:top;margin:0 1% 10px 0;text-align:center;border:1px solid #e2e8f0;border-radius:6px;padding:6px">
+                                        <img t-att-src="image_data_uri(photo.image_1920)" style="max-width:100%;height:145px;object-fit:contain"/>
+                                        <div style="font-size:11.5px;font-weight:bold;color:#334155;margin-top:4px"><span t-field="photo.name"/></div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_saleorder_catalog" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@class='page']" position="after">
+            <t t-call="tbf_navigation.quote_catalog_pages"/>
+        </xpath>
+    </template>
+
+    <template id="report_saleorder_clean_catalog" inherit_id="thai_sales_stock_easy.report_saleorder_clean">
+        <xpath expr="//div[contains(@class,'kjtax-report')]" position="after">
+            <t t-call="tbf_navigation.quote_catalog_pages"/>
+        </xpath>
+    </template>
+</odoo>

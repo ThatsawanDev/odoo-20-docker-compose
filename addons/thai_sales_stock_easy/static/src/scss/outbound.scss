@@ -2,6 +2,7 @@
 .o_easy_outbound_main, .o_easy_outbound_side { background: #fff; border: 1px solid #dbe7f8; border-radius: 16px; box-shadow: 0 5px 17px #1b4d8b12; padding: 20px; }
 .o_easy_outbound_heading { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #e4ecf8; padding-bottom: 17px; }
 .o_easy_outbound_icon { display: grid; place-items: center; flex: none; width: 58px; height: 58px; border-radius: 14px; background: #edf5ff; color: #1675ec; font-size: 28px; }
+.o_easy_outbound_icon svg { display: block; width: 32px; height: 32px; }
 .o_easy_outbound-heading small, .o_easy_outbound_heading small { color: #6680a5; font-weight: 700; }
 .o_easy_outbound_heading h2 { margin: 2px 0; font-size: 27px; font-weight: 800; }
 .o_easy_outbound_heading span { color: #587196; }

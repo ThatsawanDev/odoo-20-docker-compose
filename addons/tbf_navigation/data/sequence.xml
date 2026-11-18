@@ -1,0 +1,9 @@
+<odoo noupdate="1">
+    <record id="seq_tbf_epo" model="ir.sequence">
+        <field name="name">TBF Picking Order</field>
+        <field name="code">tbf.epo</field>
+        <field name="prefix">E-PO/</field>
+        <field name="padding">4</field>
+        <field name="company_id" eval="False"/>
+    </record>
+</odoo>

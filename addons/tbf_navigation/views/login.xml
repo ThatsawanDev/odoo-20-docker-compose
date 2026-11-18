@@ -1,0 +1,8 @@
+<odoo>
+    <template id="tbf_login_without_odoo_link" inherit_id="web.login_layout" name="TBF Login Footer">
+        <xpath expr="//a[contains(@href, 'www.odoo.com')]" position="replace"/>
+        <xpath expr="//a[@href='/web/database/manager']" position="attributes">
+            <attribute name="class">me-1</attribute>
+        </xpath>
+    </template>
+</odoo>

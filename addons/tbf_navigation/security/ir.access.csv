@@ -1,0 +1,5 @@
+id,name,model_id,group_id/id,operation,domain
+access_tbf_epo_sales,TBF E-PO sales,tbf.epo,sales_team.group_sale_salesman,r,
+access_tbf_epo_stock,TBF E-PO stock,tbf.epo,stock.group_stock_user,cru,
+access_tbf_epo_line_sales,TBF E-PO line sales,tbf.epo.line,sales_team.group_sale_salesman,r,
+access_tbf_epo_line_stock,TBF E-PO line stock,tbf.epo.line,stock.group_stock_user,cru,

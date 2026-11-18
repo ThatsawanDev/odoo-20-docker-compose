@@ -1,0 +1,5 @@
+report = env.ref('tbf_navigation.action_report_tbf_epo')
+epo = env['tbf.epo'].search([], limit=1)
+pdf, mime = report._render_qweb_pdf(report.report_name, res_ids=epo.ids)
+print('EPO REPORT OK', epo.name, len(pdf), mime)
+env.cr.rollback()

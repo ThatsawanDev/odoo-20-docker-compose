@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- =========================================================================
+             1. ผูก Paperformat A4 มาตรฐานเข้ากับ Report Actions ทั้งหมด
+             ========================================================================= -->
+        <record id="sale.action_report_saleorder" model="ir.actions.report">
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+        <record id="sale.action_report_pro_forma_invoice" model="ir.actions.report">
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+        <record id="sale_pdf_quote_builder.action_report_saleorder_raw" model="ir.actions.report">
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+        <record id="thai_sales_stock_easy.action_report_saleorder_clean" model="ir.actions.report">
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+        <record id="purchase.action_report_purchase_order" model="ir.actions.report">
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+        <record id="purchase.report_purchase_quotation" model="ir.actions.report">
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+        <record id="stock.action_report_delivery" model="ir.actions.report">
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+        <record id="stock.action_report_picking" model="ir.actions.report">
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+        <record id="account.account_invoices" model="ir.actions.report">
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+        <record id="account.account_invoices_without_payment" model="ir.actions.report">
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+        <record id="account.action_report_payment_receipt" model="ir.actions.report">
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+
+        <!-- =========================================================================
+             2. OVERRIDE STANDARD REPORT DOCUMENT TEMPLATES
+                ใช้เทคนิค t-if="False" บนเนื้อหาเดิมเพื่อรักษา DOM สำหรับ XPath ของโมดูลอื่น
+             ========================================================================= -->
+
+        <!-- 2.1 ใบเสนอราคา (Quotation) & ใบสั่งขาย (Sales Order) : sale.report_saleorder_document -->
+        <template id="report_saleorder_document_unified" inherit_id="sale.report_saleorder_document" priority="99">
+            <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')]" position="before">
+                <div class="page o_unified_page">
+                    <t t-if="(doc.env.context.get('unified_doc_type') == 'quotation') or (not doc.env.context.get('unified_doc_type') and doc.state in ('draft', 'sent'))">
+                        <t t-call="unified_qweb_report.doc_quotation"/>
+                    </t>
+                    <t t-else="">
+                        <t t-call="unified_qweb_report.doc_sales_order"/>
+                    </t>
+                </div>
+            </xpath>
+            <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')][not(hasclass('o_unified_page'))]" position="attributes">
+                <attribute name="t-if">False</attribute>
+            </xpath>
+        </template>
+
+        <!-- 2.2 Override thai_sales_stock_easy.report_saleorder_clean ให้ใช้ Layout กลางชุดเดียวกัน -->
+        <template id="report_saleorder_clean_unified" inherit_id="thai_sales_stock_easy.report_saleorder_clean" priority="99">
+            <xpath expr="//t[@t-call='web.basic_layout']" position="before">
+                <t t-call="web.external_layout">
+                    <div class="page o_unified_page">
+                        <t t-if="(doc.env.context.get('unified_doc_type') == 'quotation') or (not doc.env.context.get('unified_doc_type') and doc.state in ('draft', 'sent'))">
+                            <t t-call="unified_qweb_report.doc_quotation"/>
+                        </t>
+                        <t t-else="">
+                            <t t-call="unified_qweb_report.doc_sales_order"/>
+                        </t>
+                    </div>
+                </t>
+            </xpath>
+            <xpath expr="//t[@t-call='web.basic_layout']" position="attributes">
+                <attribute name="t-if">False</attribute>
+            </xpath>
+        </template>
+
+        <!-- 2.3 ใบสั่งซื้อ (Purchase Order) : purchase.report_purchaseorder_document & purchase.report_purchasequotation_document -->
+        <template id="report_purchaseorder_document_unified" inherit_id="purchase.report_purchaseorder_document" priority="99">
+            <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')]" position="before">
+                <div class="page o_unified_page">
+                    <t t-call="unified_qweb_report.doc_purchase_order"/>
+                </div>
+            </xpath>
+            <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')][not(hasclass('o_unified_page'))]" position="attributes">
+                <attribute name="t-if">False</attribute>
+            </xpath>
+        </template>
+
+        <template id="report_purchasequotation_document_unified" inherit_id="purchase.report_purchasequotation_document" priority="99">
+            <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')]" position="before">
+                <div class="page o_unified_page">
+                    <t t-call="unified_qweb_report.doc_purchase_order"/>
+                </div>
+            </xpath>
+            <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')][not(hasclass('o_unified_page'))]" position="attributes">
+                <attribute name="t-if">False</attribute>
+            </xpath>
+        </template>
+
+        <!-- 2.4 ใบส่งสินค้า (Delivery Note) : stock.report_delivery_document -->
+        <template id="report_delivery_document_unified" inherit_id="stock.report_delivery_document" priority="99">
+            <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')]" position="before">
+                <div class="page o_unified_page">
+                    <t t-call="unified_qweb_report.doc_delivery_note"/>
+                </div>
+            </xpath>
+            <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')][not(hasclass('o_unified_page'))]" position="attributes">
+                <attribute name="t-if">False</attribute>
+            </xpath>
+        </template>
+
+        <!-- 2.5 ใบแจ้งหนี้ (Invoice), ใบลดหนี้ (Credit Note), ใบเสร็จรับเงิน (Receipt) : account.report_invoice_document -->
+        <template id="report_invoice_document_unified" inherit_id="account.report_invoice_document" priority="99">
+            <xpath expr="//div[hasclass('invoice_main')]/div[hasclass('page')]" position="before">
+                <div class="page o_unified_page">
+                    <t t-if="o.env.context.get('unified_doc_type') == 'receipt' or o.move_type in ('out_receipt', 'in_receipt')">
+                        <t t-call="unified_qweb_report.doc_receipt"/>
+                    </t>
+                    <t t-elif="o.env.context.get('unified_doc_type') == 'credit_note' or o.move_type in ('out_refund', 'in_refund')">
+                        <t t-call="unified_qweb_report.doc_credit_note"/>
+                    </t>
+                    <t t-else="">
+                        <t t-call="unified_qweb_report.doc_invoice"/>
+                    </t>
+                </div>
+            </xpath>
+            <xpath expr="//div[hasclass('invoice_main')]/div[hasclass('page')][not(hasclass('o_unified_page'))]" position="attributes">
+                <attribute name="t-if">False</attribute>
+            </xpath>
+        </template>
+
+        <!-- 2.6 ใบเสร็จรับเงินจากหน้า Payment (Receipt) : account.report_payment_receipt_document -->
+        <template id="report_payment_receipt_document_unified" inherit_id="account.report_payment_receipt_document" priority="99">
+            <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')]" position="before">
+                <div class="page o_unified_page">
+                    <t t-call="unified_qweb_report.doc_receipt"/>
+                </div>
+            </xpath>
+            <xpath expr="//t[@t-call='web.external_layout']/div[hasclass('page')][not(hasclass('o_unified_page'))]" position="attributes">
+                <attribute name="t-if">False</attribute>
+            </xpath>
+        </template>
+
+        <!-- =========================================================================
+             3. DEDICATED PRINT ACTIONS (สำหรับเลือกพิมพ์แยกชื่อเอกสารจากเมนู Print ได้ทันที)
+             ========================================================================= -->
+        <!-- 3.1 พิมพ์ใบเสนอราคา (Quotation) โดยตรง แม้สถานะจะเป็น Sales Order แล้ว -->
+        <template id="report_quotation_explicit">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-set="o" t-value="doc.with_context(lang=doc.partner_id.lang, unified_doc_type='quotation')"/>
+                    <t t-set="unified_doc_type" t-value="'quotation'"/>
+                    <t t-call="web.external_layout">
+                        <div class="page o_unified_page">
+                            <t t-call="unified_qweb_report.doc_quotation"/>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <record id="action_report_unified_quotation" model="ir.actions.report">
+            <field name="name">ใบเสนอราคา (Quotation)</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">unified_qweb_report.report_quotation_explicit</field>
+            <field name="print_report_name">'Quotation - %s' % object.name</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+
+        <!-- 3.2 พิมพ์ใบสั่งขาย (Sales Order) โดยตรง -->
+        <template id="report_sales_order_explicit">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-set="o" t-value="doc.with_context(lang=doc.partner_id.lang, unified_doc_type='sales_order')"/>
+                    <t t-set="unified_doc_type" t-value="'sales_order'"/>
+                    <t t-call="web.external_layout">
+                        <div class="page o_unified_page">
+                            <t t-call="unified_qweb_report.doc_sales_order"/>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <record id="action_report_unified_sales_order" model="ir.actions.report">
+            <field name="name">ใบสั่งขาย (Sales Order)</field>
+            <field name="model">sale.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">unified_qweb_report.report_sales_order_explicit</field>
+            <field name="print_report_name">'Sales Order - %s' % object.name</field>
+            <field name="binding_model_id" ref="sale.model_sale_order"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+
+        <!-- 3.3 พิมพ์ใบเสร็จรับเงิน (Receipt) จากหน้าใบแจ้งหนี้ (account.move) โดยตรง -->
+        <template id="report_invoice_receipt_explicit">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="o" t-value="o.with_context(lang=o.partner_id.lang, unified_doc_type='receipt')"/>
+                    <t t-set="unified_doc_type" t-value="'receipt'"/>
+                    <t t-call="web.external_layout">
+                        <div class="page o_unified_page">
+                            <t t-call="unified_qweb_report.doc_receipt"/>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <record id="action_report_unified_invoice_receipt" model="ir.actions.report">
+            <field name="name">ใบเสร็จรับเงิน (Receipt)</field>
+            <field name="model">account.move</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">unified_qweb_report.report_invoice_receipt_explicit</field>
+            <field name="print_report_name">'Receipt - %s' % object.name</field>
+            <field name="binding_model_id" ref="account.model_account_move"/>
+            <field name="binding_type">report</field>
+            <field name="paperformat_id" ref="unified_qweb_report.paperformat_unified_a4"/>
+        </record>
+    </data>
+</odoo>

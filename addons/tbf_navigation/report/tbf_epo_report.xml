@@ -1,0 +1,36 @@
+<odoo>
+    <record id="action_report_tbf_epo" model="ir.actions.report">
+        <field name="name">Picking Order (E-PO)</field>
+        <field name="model">tbf.epo</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">tbf_navigation.report_tbf_epo</field>
+        <field name="binding_model_id" ref="model_tbf_epo"/>
+    </record>
+    <template id="report_tbf_epo">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Picking Order (E-PO) <span t-field="o.name"/></h2>
+                        <p>Sales Order: <span t-field="o.sale_order_id.name"/>　 ลูกค้า: <span t-field="o.partner_id.name"/></p>
+                        <table class="table table-sm">
+                            <thead><tr><th>รูป</th><th>สินค้า</th><th>ตำแหน่งหยิบ</th><th>จำนวนสั่ง</th><th>จำนวนตรวจผ่าน</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="o.line_ids" t-as="line">
+                                    <td style="width:52px">
+                                        <img t-if="line.product_image" t-att-src="image_data_uri(line.product_image)" style="width:42px;height:42px;object-fit:contain"/>
+                                    </td>
+                                    <td><span t-field="line.product_id"/></td>
+                                    <td><span t-field="line.source_location_id"/></td>
+                                    <td><span t-field="line.requested_qty"/></td>
+                                    <td><span t-field="line.picked_qty"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <p t-if="o.parent_id">เอกสารต่อจาก <span t-field="o.parent_id.name"/></p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

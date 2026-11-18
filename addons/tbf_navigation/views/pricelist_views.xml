@@ -1,0 +1,74 @@
+<odoo>
+    <record id="product.product_pricelist_action2" model="ir.actions.act_window">
+        <field name="name">ราคาขายตามประเภทลูกค้า</field>
+    </record>
+
+    <record id="view_tbf_pricelist_list" model="ir.ui.view">
+        <field name="name">tbf.product.pricelist.list.labels</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="string">ราคาขายตามประเภทลูกค้า</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="string">ประเภทลูกค้า / ระดับราคา</attribute>
+            </xpath>
+            <xpath expr="//field[@name='country_group_ids']" position="attributes">
+                <attribute name="optional">hide</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_tbf_pricelist_form" model="ir.ui.view">
+        <field name="name">tbf.product.pricelist.form.labels</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="string">ราคาขายตามประเภทลูกค้า</attribute>
+            </xpath>
+            <xpath expr="//div[@class='oe_title']/h1/field[@name='name']" position="attributes">
+                <attribute name="placeholder">เช่น ราคาขายส่ง ราคาขายปลีก ราคาหน่วยงานรัฐ</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_open_daily_rates']" position="replace"/>
+            <xpath expr="//page[@name='pricelist_rules']" position="attributes">
+                <attribute name="string">ราคาของสินค้า</attribute>
+            </xpath>
+            <xpath expr="//page[@name='pricelist_rules']//list" position="attributes">
+                <attribute name="string">ราคาสินค้าในกลุ่มนี้</attribute>
+            </xpath>
+            <xpath expr="//page[@name='pricelist_rules']//list/field[@name='product_tmpl_id']" position="attributes">
+                <attribute name="column_invisible">False</attribute>
+                <attribute name="string">สินค้า</attribute>
+            </xpath>
+            <xpath expr="//page[@name='pricelist_rules']//list/field[@name='name']" position="attributes">
+                <attribute name="string">เงื่อนไขการใช้ราคา</attribute>
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//page[@name='pricelist_rules']//list/field[@name='min_quantity']" position="attributes">
+                <attribute name="string">จำนวนขั้นต่ำ</attribute>
+            </xpath>
+            <xpath expr="//page[@name='pricelist_rules']//list/field[@name='date_start']" position="attributes">
+                <attribute name="string">ช่วงวันที่ใช้ราคา</attribute>
+            </xpath>
+            <xpath expr="//page[@name='pricelist_rules']//list/field[@name='price']" position="attributes">
+                <attribute name="string">ราคาขาย</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_tbf_pricelist_search" model="ir.ui.view">
+        <field name="name">tbf.product.pricelist.search.labels</field>
+        <field name="model">product.pricelist</field>
+        <field name="inherit_id" ref="product.product_pricelist_view_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="attributes">
+                <attribute name="string">ค้นหาราคาขายตามประเภทลูกค้า</attribute>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="attributes">
+                <attribute name="string">ชื่อประเภทลูกค้า</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

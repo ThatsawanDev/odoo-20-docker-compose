@@ -1,4 +1,6 @@
 *
+!tbf_navigation/
+!tbf_navigation/**
 !.gitignore
 !eb_odoo_mcp_server_studio/
 !eb_odoo_mcp_server_studio/**
@@ -28,6 +30,8 @@
 !thai_mrp_easy/**
 !jsn_service_scope/
 !jsn_service_scope/**
+!unified_qweb_report/
+!unified_qweb_report/**
 spiffy_theme_backend/static/firebase-key/*.json
 **/__pycache__/
 **/*.pyc

@@ -1,0 +1,31 @@
+{
+    'name': 'TBF Furniture Workflow',
+    'author': 'TBF Furniture',
+    'version': '20.0.1.0.0',
+    'depends': ['sale_stock', 'mail', 'thai_sales_stock_easy'],
+    'data': [
+        'security/ir.access.csv',
+        'data/sequence.xml',
+        'report/tbf_epo_report.xml',
+        'report/quote_catalog_report.xml',
+        'views/tbf_epo_views.xml',
+        'views/tbf_overview_views.xml',
+        'views/quote_catalog_views.xml',
+        'views/pricelist_views.xml',
+        'views/stock_labels_views.xml',
+        'views/login.xml',
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'tbf_navigation/static/src/xml/stock_orderpoint_search_panel.xml',
+            'tbf_navigation/static/src/js/tbf_overview.js',
+            'tbf_navigation/static/src/xml/tbf_overview.xml',
+            'tbf_navigation/static/src/js/tbf_epo_list.js',
+            'tbf_navigation/static/src/xml/tbf_epo_list.xml',
+            'tbf_navigation/static/src/scss/tbf_overview.scss',
+        ],
+    },
+    'installable': True,
+    'application': False,
+    'license': 'LGPL-3',
+}

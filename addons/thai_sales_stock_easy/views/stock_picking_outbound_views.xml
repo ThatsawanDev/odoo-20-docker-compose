@@ -11,7 +11,7 @@
                 <div class="o_easy_outbound" invisible="picking_type_code != 'outgoing'">
                     <div class="o_easy_outbound_main">
                         <div class="o_easy_outbound_heading">
-                            <div class="o_easy_outbound_icon"><i class="fa fa-cube"/></div>
+                            <div class="o_easy_outbound_icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 21 7v10l-9 5-9-5V7l9-5Z"/><path d="m3 7 9 5 9-5M12 12v10"/></svg></div>
                             <div><small>ใบส่งสินค้า (Outbound)</small><h2><field name="name" readonly="1"/></h2><span>เอกสารอ้างอิง: <field name="origin" readonly="1"/> · กำหนดจัดส่ง: <field name="scheduled_date" readonly="1"/></span></div>
                             <strong class="o_easy_outbound_badge" invisible="state != 'assigned'"><i class="fa fa-check-circle"/> พร้อมหยิบสินค้า</strong>
                             <strong class="o_easy_outbound_badge is-waiting" invisible="state == 'assigned' or state in ('done', 'cancel')"><i class="fa fa-clock-o"/> รอสินค้า</strong>

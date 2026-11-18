@@ -30,6 +30,7 @@
         height: 86px;
         border-radius: 18px;
         font-size: 39px;
+        svg { width: 44px; height: 44px; }
     }
     .o_easy_outbound_heading h2 {
         margin: 2px 0 3px;
@@ -89,7 +90,7 @@
     .o_easy_outbound_form:has(.o_easy_outbound:not(.o_invisible_modifier)) {
         .o_form_sheet_bg { padding: 4px; }
         .o_easy_outbound_main { padding: 12px; }
-        .o_easy_outbound_icon { width: 56px; height: 56px; font-size: 28px; }
+        .o_easy_outbound_icon { width: 56px; height: 56px; font-size: 28px; svg { width: 30px; height: 30px; } }
         .o_easy_outbound_stats { grid-template-columns: 1fr; }
         .o_easy_outbound_stats > div:nth-last-child(2) { border-bottom: 1px solid #dce6f5; }
     }
